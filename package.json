@@ -1,0 +1,35 @@
+{
+	"name": "nuxt-tailwind-ui",
+	"version": "1.0.4",
+	"description": "Nuxt JS&Tailwind CSS&Feather Icons UI Framework~",
+	"main": "dist/nuxt-tailwind-ui.umd.js",
+	"scripts": {
+		"build": "vue-cli-service build --target lib main.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/hxnzyl/nuxt-tailwind-ui.git"
+	},
+	"keywords": [
+		"nuxt-tailwind-ui"
+	],
+	"author": "OWen <379368435@qq.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/hxnzyl/nuxt-tailwind-ui/issues"
+	},
+	"homepage": "https://github.com/hxnzyl/nuxt-tailwind-ui#readme",
+	"dependencies": {
+		"async-validator": "^4.2.5",
+		"feathericon": "^1.0.2",
+		"swiper": "^5.4.5",
+		"tailwindcss": "^3.2.4",
+		"vue": "2.7.10",
+		"vue-awesome-swiper": "^4.1.1"
+	},
+	"devDependencies": {
+		"@vue/cli-service": "^4.4.4",
+		"vue-server-renderer": "^2.7.10",
+		"vue-template-compiler": "^2.7.10"
+	}
+}

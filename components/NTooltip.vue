@@ -1,0 +1,50 @@
+<template>
+	<div ref="visible" class="n-tooltip flex items-center relative" @mouseenter="show" @mouseleave="leave">
+		<slot name="trigger"></slot>
+		<div
+			v-show="visibleNum"
+			@mouseenter="show"
+			@mouseleave="leave"
+			class="absolute z-10"
+			:class="{
+				'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
+				'top-1/2 -translate-y-2/4': position == 'left' || position == 'right',
+				'top-full pt-2': position == 'bottom',
+				'bottom-full pb-2': position == 'top',
+				'right-full pr-2': position == 'left',
+				'right-full pl-2': position == 'left'
+			}"
+		>
+			<div class="rounded-md bg-white shadow-lg min-w-max">
+				<slot name="content"></slot>
+			</div>
+		</div>
+		<div
+			v-show="visibleNum"
+			class="absolute z-20 text-white"
+			:class="{
+				'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
+				'top-1/2 -translate-y-2/4': position == 'left' || position == 'right',
+				'top-full -mt-1.5': position == 'bottom',
+				'bottom-full -mb-1.5': position == 'top',
+				'right-full mr-1': position == 'left',
+				'left-full ml-1': position == 'right'
+			}"
+		>
+			<i
+				class="fe"
+				:class="{
+					'fe-drop-up': position == 'bottom',
+					'fe-drop-down': position == 'top',
+					'fe-drop-right': position == 'left',
+					'fe-drop-left': position == 'right'
+				}"
+			></i>
+		</div>
+	</div>
+</template>
+
+<script>
+import visible from '../mixins/visible'
+export default { name: 'NTooltip', mixins: [visible] }
+</script>
