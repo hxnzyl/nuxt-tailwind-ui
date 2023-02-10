@@ -12,7 +12,8 @@
 						: 'border-transparent' + (disabled ? ' text-gray-500 pointer-events-none text-opacity-50' : '')
 				]"
 			>
-				<NLink v-if="tab.to" :to="tab.to" class="block p-4">{{ tab.label }}</NLink>
+				<a v-if="queryName" :href="`?${queryName}=${tab.value}`" @click.prevent="onChange(tab, key)" class="block p-4">{{ tab.label }}</a>
+				<NLink v-else-if="tab.to" :to="tab.to" class="block p-4">{{ tab.label }}</NLink>
 				<div v-else class="p-4 cursor-pointer" @click.stop="onChange(tab, key)">{{ tab.label }}</div>
 			</div>
 		</div>
@@ -23,8 +24,11 @@
 </template>
 
 <script>
+import query from '../mixins/query'
+
 export default {
 	name: 'NTabs',
+	mixins: [query],
 	model: {
 		prop: 'value',
 		event: 'change'
@@ -69,12 +73,13 @@ export default {
 			this.currentIndex = index
 			this.currentValue = tab.value || null
 			this.$emit('change', this.currentValue)
+			this.changeQueryObject(this.currentValue)
 		},
 		isActived(tab, index) {
 			if (tab.children && tab.children.length > 0 && tab.children.some(this.isActived)) return true
-			if (typeof tab.to === 'string' && this.$route) return tab.to === this.$route.path
-			if (this.currentValue != null) return tab.value === this.currentValue
-			if (this.currentTab != null) return tab.label === this.currentTab.label
+			if (typeof tab.to === 'string' && this.$route) return tab.to == this.$route.path
+			if (this.currentValue != null) return tab.value == this.currentValue
+			if (this.currentTab != null) return tab.label == this.currentTab.label
 			if (typeof this.active === 'function') return this.active(tab, index)
 			return false
 		}

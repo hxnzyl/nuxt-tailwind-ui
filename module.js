@@ -1,11 +1,8 @@
 const { resolve } = require('path')
 
 module.exports = function nuxtTailwindUIModule(moduleOptions = {}) {
-	const { components, tailwindcss, tailwindui = {} } = this.options
+	const { components, tailwindcss, build, tailwindui = {} } = this.options
 	const options = Object.assign({}, moduleOptions, tailwindui)
-
-	// Devlopment
-	const dev = tailwindui.dev || process.env.NUXT_TAILWIND_UI_DEV === '1'
 
 	// Add tailwindcss components dir
 	tailwindcss.config.purge.push(resolve(__dirname, './components/**/*.{js,vue}'))
@@ -13,9 +10,14 @@ module.exports = function nuxtTailwindUIModule(moduleOptions = {}) {
 	// Add component dir
 	components.dirs.push(resolve(__dirname, './components'))
 
+	// Add component alias
+	build.extend = (config) => {
+		config.resolve.alias['@nuxt-tailwind-ui'] = resolve(__dirname, './')
+	}
+
 	// Add plugin
 	this.addPlugin({
-		src: resolve(__dirname, dev ? './plugin.dev.js' : './plugin.js'),
+		src: resolve(__dirname, './plugin.js'),
 		ssr: false,
 		fileName: 'nuxt-tailwind-ui.js',
 		options

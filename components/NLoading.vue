@@ -1,9 +1,14 @@
 <template>
+	<div v-if="mask" class="n-loading absolute top-0 left-0 z-50 w-full h-full flex items-center justify-center">
+		<div class="absolute top-0 left-0 z-10 w-full h-full bg-gray-50 bg-opacity-50"></div>
+		<NLoading class="relative z-20" :size="size" :color="color"></NLoading>
+	</div>
 	<svg
+		v-else
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
 		viewBox="0 0 24 24"
-		class="animate-spin"
+		class="n-loading animate-spin"
 		:class="{
 			'text-white': color == 'white',
 			'text-gray-500': color == 'gray',
@@ -16,8 +21,8 @@
 			'text-pink-500': color == 'pink',
 			'w-3 h-3': size == 'sm',
 			'w-4 h-4': size == 'md',
-			'w-5 h-5': size == 'lg',
-			'w-6 h-6': size == 'xl'
+			'w-6 h-6': size == 'lg',
+			'w-8 h-8': size == 'xl'
 		}"
 	>
 		<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -34,7 +39,8 @@ export default {
 	name: 'NLoading',
 	props: {
 		size: { type: String, default: 'md' },
-		color: { type: String, default: 'white' }
+		color: { type: String, default: 'white' },
+		mask: Boolean
 	}
 }
 </script>

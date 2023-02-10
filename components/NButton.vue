@@ -1,11 +1,13 @@
 <template>
-	<NLink v-if="to" class="n-button flex items-center justify-center tranistion duration-500 py-2" :class="buttonClass" :to="to">
+	<NLink v-if="to" class="n-button flex items-center justify-center tranistion duration-500" :class="buttonClass" :to="to">
 		<NLoading v-show="loading" :size="size" class="mr-2"></NLoading>
-		<slot></slot>
+		<slot>
+			<span>{{ text }}</span>
+		</slot>
 	</NLink>
 	<button
 		v-else
-		class="n-button flex items-center justify-center tranistion duration-500 py-2 appearance-none"
+		class="n-button flex items-center justify-center tranistion duration-500 appearance-none"
 		type="button"
 		:disabled="disabled"
 		:class="buttonClass"
@@ -13,7 +15,9 @@
 	>
 		<NLoading v-show="loading" :size="size" class="mr-2"></NLoading>
 		<input v-if="upload" ref="file" type="file" class="hidden" @change="onChange" :accept="accept" :multiple="multiple" />
-		<slot></slot>
+		<slot>
+			<span>{{ text }}</span>
+		</slot>
 	</button>
 </template>
 
@@ -31,6 +35,8 @@ export default {
 		disabled: Boolean,
 		//加载中
 		loading: Boolean,
+		//按钮文本
+		text: String,
 		//链接按钮
 		to: String,
 		//上传按钮
@@ -63,10 +69,11 @@ export default {
 				'hover:bg-gray-500': !this.loading && !this.disabled && this.color == 'black',
 				'focus:outline-none focus:ring-1 focus:ring-gray-500 focus:ring-opacity-50': !this.disabled,
 				'text-white': this.color != 'white',
-				'px-3 text-sm': this.size == 'sm',
-				'px-6 text-base': this.size == 'md',
-				'px-9 text-lg': this.size == 'lg',
-				'px-12 text-xl': this.size == 'xl'
+				'px-1 py-px text-xs': this.size == 'xs',
+				'px-3 py-1 text-sm': this.size == 'sm',
+				'px-6 py-1.5 text-base': this.size == 'md',
+				'px-9 py-2 text-lg': this.size == 'lg',
+				'px-12 py-2.5 text-xl': this.size == 'xl'
 			}
 		}
 	},
