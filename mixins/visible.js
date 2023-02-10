@@ -2,7 +2,11 @@ import { getMouseElement } from '../utils/dom'
 
 export default {
 	props: {
-		value: [String, Boolean],
+		//是否显示
+		value: [Number, Boolean],
+		//是否一直显示
+		visible: Boolean,
+		//显示位置
 		position: { type: String, default: 'bottom' }
 	},
 	model: {
@@ -11,37 +15,48 @@ export default {
 	},
 	watch: {
 		value(newValue, oldValue) {
-			if (newValue != oldValue) {
-				if (newValue) this.show()
-				else this.hide()
-			}
+			if (newValue != oldValue) this.updateValue(false, newValue)
 		}
 	},
 	data() {
 		return {
-			visibleNum: this.value ? 1 : 0
+			currentVisible: this.value || this.visible ? 1 : 0
 		}
 	},
+	mounted() {
+		this.updateValue(true, this.value)
+	},
 	methods: {
+		updateValue(init, value) {
+			init || this.toggle()
+		},
 		show() {
-			this.visibleNum++
+			if (this.visible) return
+			this.currentVisible++
 			this.$emit('toggle', true)
 			this.$emit('show')
+			//如果是表单相关组件引入时显示视为focus
+			if (this.NForm) this.validate('focus')
 		},
 		hide() {
-			this.visibleNum = 0
+			if (this.visible) return
+			this.currentVisible = 0
 			this.$emit('toggle', false)
 			this.$emit('hide')
+			//如果是表单相关组件引入时隐藏视为blur
+			if (this.NForm) this.validate('blur')
 		},
 		leave(event) {
-			if (!this.visibleNum) return
-			let { visible } = this.$refs
+			if (this.visible || !this.currentVisible) return
+			let { root } = this.$refs
+			if (!root) return
 			let mouseElement = getMouseElement(event)
-			if (!mouseElement || !Array.from(visible.childNodes).concat(visible).includes(mouseElement)) this.hide()
+			if (!mouseElement || !Array.from(root.childNodes).concat(root).includes(mouseElement)) this.hide()
 		},
 		toggle() {
-			if (this.visibleNum) this.hide()
-			else this.show()
+			if (this.visible) return
+			if (this.currentVisible) this.show()
+			else this.hide()
 		}
 	}
 }

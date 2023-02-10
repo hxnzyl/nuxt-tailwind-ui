@@ -1,8 +1,8 @@
 <template>
-	<div ref="visible" class="n-tooltip flex items-center relative" @mouseenter="show" @mouseleave="leave">
+	<div ref="root" class="n-tooltip flex items-center relative" @mouseenter="show" @mouseleave="leave">
 		<slot name="trigger"></slot>
 		<div
-			v-show="visibleNum"
+			v-show="currentVisible"
 			@mouseenter="show"
 			@mouseleave="leave"
 			class="absolute z-10"
@@ -20,7 +20,7 @@
 			</div>
 		</div>
 		<div
-			v-show="visibleNum"
+			v-show="currentVisible"
 			class="absolute z-20 text-white"
 			:class="{
 				'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',

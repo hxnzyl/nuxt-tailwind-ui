@@ -26,8 +26,8 @@ export default {
 		}
 	},
 	watch: {
-		value(val) {
-			if (val !== this.currentValue) this.updateValue(false)
+		value(newValue, oldValue) {
+			if (newValue !== oldValue) this.updateValue(false)
 		}
 	},
 	data() {

@@ -1,5 +1,5 @@
 <template>
-	<div class="n-select flex" :class="{ 'flex-col gap-2': getDirection == 'col', relative: getDirection == 'row' }">
+	<div ref="root" class="n-select flex" :class="{ 'flex-col gap-2': getDirection == 'col', relative: getDirection == 'row' }">
 		<div class="flex items-center" :class="{ 'justify-between': getDirection == 'col' }">
 			<div v-if="label" class="text-base">
 				<span v-if="getRequired" class="text-red-500">*</span>
@@ -12,15 +12,15 @@
 		<div
 			class="relative flex items-center py-2 px-3 cursor-default"
 			@click.stop="show"
-			@mouseleave="delayHide"
+			@mouseleave="leave"
 			:class="{
 				border: border,
 				'border-red-500': border && invalidField != null,
 				'border-gray-200': border && invalidField == null,
-				'ring-blue-500': currentVisible > 0 && ring == 'blue' && invalidField == null,
-				'ring-gray-500': currentVisible > 0 && ring == 'gray' && invalidField == null,
-				'ring-red-300': currentVisible > 0 && ring != 'none' && invalidField != null,
-				'ring-1 ring-opacity-50': currentVisible > 0 && ring != 'none',
+				'ring-blue-500': currentVisible && ring == 'blue' && invalidField == null,
+				'ring-gray-500': currentVisible && ring == 'gray' && invalidField == null,
+				'ring-red-300': currentVisible && ring != 'none' && invalidField != null,
+				'ring-1 ring-opacity-50': currentVisible && ring != 'none',
 				'rounded-sm': rounded == 'sm',
 				'rounded-md': rounded == 'md',
 				'rounded-lg': rounded == 'lg'
@@ -28,7 +28,11 @@
 		>
 			<div class="flex flex-wrap grow gap-2">
 				<template v-if="multiple">
-					<div v-for="(opt, key) in currentOption" :key="key" class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5">
+					<div
+						v-for="(opt, key) in currentOption"
+						:key="key"
+						class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5"
+					>
 						<span>{{ opt.label }}</span>
 						<a href="#remove" @click.stop.prevent="removeOption(opt, key)" class="hover:text-red-500"><i class="fe fe-close"></i></a>
 					</div>
@@ -49,12 +53,12 @@
 				<i class="fe fe-close"></i>
 			</a>
 			<a href="#arrow" @click.prevent="" class="text-gray-500">
-				<i class="fe fe-arrow-right transition direction-500" :class="{ 'rotate-90': currentVisible > 0 }"></i>
+				<i class="fe fe-arrow-right transition direction-500" :class="{ 'rotate-90': currentVisible }"></i>
 			</a>
 			<div
-				v-show="currentVisible > 0"
+				v-show="currentVisible"
 				@mouseenter="show"
-				@mouseleave="delayHide"
+				@mouseleave="leave"
 				class="absolute left-1/2 -translate-x-2/4 z-10 origin-top-right rounded-md bg-gray-100 shadow-lg w-full"
 				:class="{
 					'top-full': position == 'bottom',
@@ -73,7 +77,9 @@
 									v-for="(option, key2) in optionList"
 									:key="key2"
 									class="px-6 py-2 text-sm min-w-max transition"
-									:class="isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
+									:class="
+										isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
+									"
 									@click.stop="onChange(option, key2)"
 								>
 									{{ option.label }}
@@ -81,7 +87,7 @@
 							</div>
 						</div>
 						<!-- 多列无数据 -->
-						<div v-else class="py-1.5 text-sm text-gray-400 text-center">{{ noOptionsText }}</div>
+						<div v-else class="py-1.5 text-sm text-gray-400 text-center">{{ optionsPlaceholder }}</div>
 					</div>
 					<!-- 单列 -->
 					<div v-else-if="options.length > 0" class="py-1.5 max-h-96 overflow-y-auto" :class="{ 'divide-y': multiple }" @mousewheel.stop="">
@@ -96,13 +102,13 @@
 						</div>
 					</div>
 					<!-- 单列无数据 -->
-					<div v-else class="py-1.5 text-sm text-gray-400 text-center">{{ noOptionsText }}</div>
+					<div v-else class="py-1.5 text-sm text-gray-400 text-center">{{ optionsPlaceholder }}</div>
 				</slot>
 			</div>
 		</div>
 		<div
 			v-if="!visible"
-			v-show="currentVisible > 0"
+			v-show="currentVisible"
 			class="absolute z-20 left-1/2 -translate-x-2/4 text-gray-100"
 			:class="{ 'top-full -mt-2.5': position == 'bottom', 'bottom-full -mb-2.5': position == 'top' }"
 		>
@@ -116,10 +122,11 @@
 
 <script>
 import NFormValidator from './NFormValidator'
+import visible from '../mixins/visible'
 
 export default {
 	name: 'NSelect',
-	mixins: [NFormValidator],
+	mixins: [NFormValidator, visible],
 	model: {
 		prop: 'value',
 		event: 'change'
@@ -131,12 +138,8 @@ export default {
 		placeholder: { type: String, default: '请选择' },
 		//下拉选项
 		options: { type: Array, default: () => [] },
-		//无下拉
-		noOptionsText: { type: String, default: '暂无数据' },
-		//位置
-		position: { type: String, default: 'bottom' },
-		//是否一直显示
-		visible: Boolean,
+		//下拉选项占位文本
+		optionsPlaceholder: { type: String, default: '暂无数据' },
 		//轮廓环
 		ring: { type: String, default: 'blue' },
 		//圆角
@@ -149,11 +152,8 @@ export default {
 		clearable: { type: Boolean, default: true }
 	},
 	watch: {
-		value(value) {
-			if (value !== this.currentValue) this.updateValue(false, value)
-		},
-		options() {
-			this.updateValue(false, this.currentValue)
+		options(newValue, oldValue) {
+			if (newValue !== oldValue) this.updateValue(false, newValue)
 		}
 	},
 	data() {
@@ -165,9 +165,6 @@ export default {
 			currentOption: this.multiple ? [] : {},
 			currentValue: this.multiple ? [] : null
 		}
-	},
-	mounted() {
-		this.updateValue(true, this.value)
 	},
 	methods: {
 		updateValue(init, value) {
@@ -199,7 +196,7 @@ export default {
 				this.hide()
 				this.$emit('change', this.currentValue)
 			}
-            this.$nextTick(() => this.validate('change'))
+			this.$nextTick(() => this.validate('change'))
 		},
 		isActived(option, index) {
 			if (this.multiple) {
@@ -218,28 +215,6 @@ export default {
 		removeOption(option, index) {
 			this.currentValue.splice(index, 1)
 			this.currentOption.splice(index, 1)
-		},
-		show() {
-			if (this.visible) return
-			this.currentVisible++
-			this.$emit('show')
-		},
-		hide() {
-			if (this.visible) return
-			this.currentVisible = 0
-			this.$emit('hide')
-			this.validate('blur')
-		},
-		delayHide() {
-			if (this.visible || !this.currentVisible) return
-			this.currentVisible = 1.1
-			clearTimeout(this.hideTimer)
-			this.hideTimer = setTimeout(() => this.currentVisible == 1.1 && this.hide(), 167)
-		},
-		toggle() {
-			if (this.visible) return
-			if (this.currentVisible > 0) this.hide()
-			else this.show()
 		}
 	}
 }

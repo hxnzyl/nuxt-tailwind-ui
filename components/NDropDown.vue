@@ -1,5 +1,5 @@
 <template>
-	<div ref="visible" class="n-dropdown flex items-center" @mouseenter="show" @mouseleave="leave">
+	<div ref="root" class="n-dropdown flex items-center" @mouseenter="show" @mouseleave="leave">
 		<slot name="label" v-bind="{ menu: currentMenu, index: currentIndex, isActived }">
 			<span>{{ label }}</span>
 		</slot>
@@ -7,7 +7,7 @@
 			<i class="fe fe-arrow-down ml-2"></i>
 		</slot>
 		<div
-			v-show="visibleNum"
+			v-show="currentVisible"
 			@mouseenter="show"
 			@mouseleave="leave"
 			class="absolute z-10"
@@ -32,7 +32,9 @@
 									:key="key2"
 									:to="menu.to"
 									class="block px-6 py-2 text-sm min-w-max transition"
-									:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
+									:class="
+										isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
+									"
 								>
 									{{ menu.label }}
 								</NLink>
@@ -40,7 +42,9 @@
 									v-else
 									:key="key2"
 									class="px-6 py-2 text-sm min-w-max transition"
-									:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
+									:class="
+										isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
+									"
 									@click.stop="onChange(menu, key2)"
 								>
 									{{ menu.label }}
@@ -75,7 +79,7 @@
 			</slot>
 		</div>
 		<div
-			v-show="visibleNum"
+			v-show="currentVisible"
 			class="absolute z-20 text-white"
 			:class="{
 				'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',

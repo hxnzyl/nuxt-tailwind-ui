@@ -46,8 +46,8 @@ export default {
 		disabled: Boolean
 	},
 	watch: {
-		value(value) {
-			if (value !== this.currentValue) this.updateValue(false, value)
+		value(newValue, oldValue) {
+			if (newValue !== oldValue) this.updateValue(false, newValue)
 		}
 	},
 	data() {

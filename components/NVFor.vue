@@ -9,7 +9,7 @@
 
 <script>
 export default {
-	name: 'v-for-else',
-	props: { value: Array }
+	name: 'NVFor',
+	props: { value: [Array, Object] }
 }
 </script>

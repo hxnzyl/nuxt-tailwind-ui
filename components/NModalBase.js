@@ -1,10 +1,8 @@
+import visible from '../mixins/visible'
+
 export default {
-	model: {
-		prop: 'value',
-		event: 'change'
-	},
+	mixins: [visible],
 	props: {
-		value: Boolean,
 		title: String,
 		message: String,
 		showCancelButton: Boolean,
@@ -13,20 +11,16 @@ export default {
 	},
 	data() {
 		return {
-			currentValue: this.value || false,
 			currentTitle: this.title || '',
 			currentMessage: this.message || ''
 		}
 	},
 	watch: {
-		value(val) {
-			if (val !== this.currentValue) this.currentValue = val
+		title(newValue, oldValue) {
+			if (newValue !== oldValue) this.currentTitle = newValue
 		},
-		title(val) {
-			if (val !== this.currentTitle) this.currentTitle = val
-		},
-		message(val) {
-			if (val !== this.currentMessage) this.currentMessage = val
+		message(newValue, oldValue) {
+			if (newValue !== oldValue) this.currentMessage = newValue
 		}
 	},
 	methods: {
@@ -34,15 +28,9 @@ export default {
 			if (this.clickMaskClose) this.hide()
 		},
 		show(title, message) {
-			this.currentValue = true
 			this.currentTitle = message ? title : ''
 			this.currentMessage = message || title || ''
-			this.$emit('change', true)
-		},
-		hide() {
-			this.currentValue = false
-			this.currentMessage = ''
-			this.$emit('change', false)
+			visible.methods.show.call(this)
 		},
 		confirm() {
 			if (this.clickConfirmClose) this.hide()
