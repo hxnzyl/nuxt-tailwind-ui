@@ -10,6 +10,6 @@
 <script>
 export default {
 	name: 'NVFor',
-	props: { value: [Array, Object] }
+	props: { value: Array }
 }
 </script>

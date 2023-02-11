@@ -63,12 +63,12 @@ export default {
 			})
 		},
 		validateOk(resolve) {
-			this.NForm.$emit('validate', true, this.name, this.currentValue)
+			if (this.NForm) this.NForm.$emit('validate', true, this.name, this.currentValue)
 			this.invalidField = null
 			resolve([true])
 		},
 		validateNo(resolve, errors) {
-			this.NForm.$emit('validate', false, this.name, this.currentValue)
+			if (this.NForm) this.NForm.$emit('validate', false, this.name, this.currentValue)
 			this.invalidField = errors[0]
 			resolve([false, errors[0]])
 		},

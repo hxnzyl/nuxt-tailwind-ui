@@ -64,10 +64,10 @@
 								:class="head.tdClass"
 								:rowspan="getRowspan(item, head)"
 							>
-								<v-for-else v-if="head.key == 'action'" :value="getActions(item, head)" class="flex flex-col items-center justify-center gap-2">
+								<NVFor v-if="head.key == 'action'" :value="getActions(item, head)" class="flex flex-col items-center justify-center gap-2">
 									<template slot="if" slot-scope="action"><NButton v-bind="action"></NButton></template>
 									<template slot="else">{{ valuePlaceholder }}</template>
-								</v-for-else>
+								</NVFor>
 								<template v-else>
 									{{ formatter(item, head) }}
 								</template>
@@ -109,12 +109,15 @@ export default {
 	},
 	methods: {
 		getRowspan(item, head) {
-			if (!head.target || !this.layerTarget) return ''
-			if (head._layerRowspan) return head._layerRowspan
-			//每条数据记录下被跨行的列
-			this.items.forEach((item1) => (item1._layerRowspan ? (item1._layerRowspan[head.key] = 1) : (item1._layerRowspan = { [head.key]: 1 })))
+			if (!head.target || !this.layerTarget || this.items.length <= 1) return ''
+			//第二层数据记录下被跨行的列
+			this.items.forEach((item) => this.setRowspan(item, head))
 			delete item._layerRowspan
-			return (head._layerRowspan = this.layerTarget[this.layerKey].length)
+			return this.layerTarget[this.layerKey].length
+		},
+		setRowspan(item, head) {
+			item._layerRowspan = item._layerRowspan || {}
+			item._layerRowspan[head.key] = 1
 		},
 		getActions(item, head) {
 			return (this.actions || []).reduce((actions, action, props) => actions.concat((props = action(item, head, this)) || []), [])
