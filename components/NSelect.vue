@@ -1,5 +1,5 @@
 <template>
-	<div ref="root" class="n-select flex" :class="{ 'flex-col gap-2': getDirection == 'col', relative: getDirection == 'row' }">
+	<div ref="root" class="n-select flex relative" :class="{ 'flex-col gap-2': getDirection == 'col' }" @mouseleave="leave">
 		<div class="flex items-center" :class="{ 'justify-between': getDirection == 'col' }">
 			<div v-if="label" class="text-base">
 				<span v-if="getRequired" class="text-red-500">*</span>
@@ -9,30 +9,10 @@
 				{{ invalidMessage }}
 			</div>
 		</div>
-		<div
-			class="relative flex items-center py-2 px-3 cursor-default"
-			@click.stop="show"
-			@mouseleave="leave"
-			:class="{
-				border: border,
-				'border-red-500': border && invalidField != null,
-				'border-gray-200': border && invalidField == null,
-				'ring-blue-500': currentVisible && ring == 'blue' && invalidField == null,
-				'ring-gray-500': currentVisible && ring == 'gray' && invalidField == null,
-				'ring-red-300': currentVisible && ring != 'none' && invalidField != null,
-				'ring-1 ring-opacity-50': currentVisible && ring != 'none',
-				'rounded-sm': rounded == 'sm',
-				'rounded-md': rounded == 'md',
-				'rounded-lg': rounded == 'lg'
-			}"
-		>
+		<div class="relative flex items-center py-2 px-3 cursor-default" @click.stop="show" @mouseleave="leave" :class="selectClass">
 			<div class="flex flex-wrap grow gap-2">
 				<template v-if="multiple">
-					<div
-						v-for="(opt, key) in currentOption"
-						:key="key"
-						class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5"
-					>
+					<div v-for="(opt, key) in currentOption" :key="key" class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5">
 						<span>{{ opt.label }}</span>
 						<a href="#remove" @click.stop.prevent="removeOption(opt, key)" class="hover:text-red-500"><i class="fe fe-close"></i></a>
 					</div>
@@ -58,18 +38,19 @@
 			<div
 				v-show="currentVisible"
 				@mouseenter="show"
-				@mouseleave="leave"
-				class="absolute left-1/2 -translate-x-2/4 z-10 origin-top-right rounded-md bg-gray-100 shadow-lg w-full"
+				class="absolute z-10 w-full"
 				:class="{
-					'top-full': position == 'bottom',
-					'mt-1': !visible && position == 'bottom',
-					'bottom-full': position == 'top',
-					'mb-1': !visible && position == 'top'
+					'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
+					'top-1/2 -translate-y-2/4': position == 'left' || position == 'right',
+					'top-full pt-2': position == 'bottom',
+					'bottom-full pb-2': position == 'top',
+					'right-full pr-2': position == 'left',
+					'right-full pl-2': position == 'left'
 				}"
 			>
 				<slot name="options">
 					<!-- 多列 -->
-					<div v-if="Array.isArray(options[0])" class="flex flex-col">
+					<div v-if="Array.isArray(options[0])" class="flex flex-col rounded-md bg-white shadow-lg bg-gray-100">
 						<h6 class="px-4 pt-2 text-lg text-gray-900 font-medium">{{ text }}</h6>
 						<div v-if="options[0].length > 0" class="flex max-h-96 overflow-y-auto" :class="{ 'divide-y': multiple }" @mousewheel.stop="">
 							<div v-for="(optionList, key1) in options" :key="key1" class="w-1/2 py-1.5">
@@ -77,9 +58,7 @@
 									v-for="(option, key2) in optionList"
 									:key="key2"
 									class="px-6 py-2 text-sm min-w-max transition"
-									:class="
-										isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
-									"
+									:class="isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
 									@click.stop="onChange(option, key2)"
 								>
 									{{ option.label }}
@@ -90,7 +69,12 @@
 						<div v-else class="py-1.5 text-sm text-gray-400 text-center">{{ optionsPlaceholder }}</div>
 					</div>
 					<!-- 单列 -->
-					<div v-else-if="options.length > 0" class="py-1.5 max-h-96 overflow-y-auto" :class="{ 'divide-y': multiple }" @mousewheel.stop="">
+					<div
+						v-else-if="options.length > 0"
+						class="py-1.5 max-h-96 overflow-y-auto rounded-md bg-white shadow-lg bg-gray-100"
+						:class="{ 'divide-y': multiple }"
+						@mousewheel.stop=""
+					>
 						<div
 							v-for="(option, key) in options"
 							:key="key"
@@ -109,10 +93,25 @@
 		<div
 			v-if="!visible"
 			v-show="currentVisible"
-			class="absolute z-20 left-1/2 -translate-x-2/4 text-gray-100"
-			:class="{ 'top-full -mt-2.5': position == 'bottom', 'bottom-full -mb-2.5': position == 'top' }"
+			class="absolute z-20 text-gray-100"
+			:class="{
+				'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
+				'top-1/2 -translate-y-2/4': position == 'left' || position == 'right',
+				'top-full -mt-1.5': position == 'bottom',
+				'bottom-full -mb-1.5': position == 'top',
+				'right-full mr-1': position == 'left',
+				'left-full ml-1': position == 'right'
+			}"
 		>
-			<i class="fe" :class="{ 'fe-drop-up': position == 'bottom', 'fe-drop-down': position == 'top' }"></i>
+			<i
+				class="fe"
+				:class="{
+					'fe-drop-up': position == 'bottom',
+					'fe-drop-down': position == 'top',
+					'fe-drop-right': position == 'left',
+					'fe-drop-left': position == 'right'
+				}"
+			></i>
 		</div>
 		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
@@ -123,6 +122,7 @@
 <script>
 import NFormValidator from './NFormValidator'
 import visible from '../mixins/visible'
+import tailwindui from './tailwindui'
 
 export default {
 	name: 'NSelect',
@@ -140,16 +140,36 @@ export default {
 		options: { type: Array, default: () => [] },
 		//下拉选项占位文本
 		optionsPlaceholder: { type: String, default: '暂无数据' },
-		//轮廓环
-		ring: { type: String, default: 'blue' },
-		//圆角
-		rounded: { type: String, default: 'md' },
-		//边框
+		//文本颜色
+		color: { type: String, default: 'gray' },
+		//大小
+		size: { type: String, default: 'md' },
+		//是否有圆角
+		rounded: { type: Boolean, default: true },
+		//是否有边框
 		border: { type: Boolean, default: true },
+		//是否有轮廓环
+		ring: { type: Boolean, default: true },
 		//是否多选
 		multiple: Boolean,
 		//是否可清除
 		clearable: { type: Boolean, default: true }
+	},
+	computed: {
+		invalidColor() {
+			if (this.disabled) return 'gray'
+			if (this.invalidField) return 'red'
+			return this.color
+		},
+		selectClass() {
+			return [
+				this.rounded ? tailwindui.roundedSize(this.size) : '',
+				this.border ? 'border' : '',
+				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidColor == 'gray') : '',
+				this.ring && this.currentVisible ? 'ring-1 ring-opacity-50' : '',
+				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor, this.disabled) : ''
+			]
+		}
 	},
 	watch: {
 		options(newValue, oldValue) {
@@ -178,7 +198,7 @@ export default {
 				let option = this.options[index] || {}
 				this.currentIndex = index
 				this.currentOption = option
-				this.currentValue = option.value || null
+				this.currentValue = option.value == null ? null : option.value
 			}
 			init || this.$nextTick(() => this.validate('change'))
 		},
@@ -192,7 +212,7 @@ export default {
 			} else {
 				this.currentIndex = index
 				this.currentOption = option
-				this.currentValue = option.value || null
+				this.currentValue = option.value == null ? null : option.value
 				this.hide()
 				this.$emit('change', this.currentValue)
 			}

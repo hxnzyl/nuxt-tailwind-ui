@@ -1,10 +1,16 @@
 <template>
 	<div class="n-table relative w-full">
-		<table class="border-collapse table-fixed text-center w-full">
+		<table class="border-collapse table-auto text-center w-full">
 			<thead v-if="!hideThead" class="bg-gray-200">
 				<tr>
 					<template v-if="layer">
-						<th v-for="(head, key) in heads[0]" :key="key" class="border-0 p-3 text-gray-500" :class="head.thClass">
+						<th
+							v-for="(head, key) in heads[0]"
+							:key="key"
+							class="border-0 p-3 text-gray-500"
+							:class="head.thClass"
+							:style="`width:${layerThWidth[key]}px`"
+						>
 							{{ head.label }}
 						</th>
 					</template>
@@ -18,7 +24,7 @@
 			<tbody>
 				<!-- 数据为空 -->
 				<tr v-if="!items.length" class="h-20">
-					<td :colspan="heads[0].length">
+					<td :colspan="layer ? heads[0].length : heads.length">
 						<!-- 非加载中 -->
 						<div v-show="!loading" class="flex items-center justify-center">
 							{{ itemsPlaceholder }}
@@ -34,7 +40,7 @@
 						<td :colspan="heads[0].length">
 							<div class="flex flex-col items-center w-full bg-gray-100">
 								<div class="flex items-center justify-around w-full p-3 text-gray-400">
-									<div v-for="(head, key3) in heads[1]" :key="key3">
+									<div v-for="(head, key3) in heads[1]" :key="key3" :class="head.class">
 										<span>{{ head.label }}</span>
 										<span>{{ formatter(item, head) }}</span>
 									</div>
@@ -46,6 +52,7 @@
 									:layer="false"
 									:layer-key="layerKey"
 									:layer-target="item"
+									@layer-loaded="layerLoaded"
 									class="bg-white"
 									hide-thead
 								></NTable>
@@ -60,14 +67,18 @@
 							<td
 								v-if="!item._layerRowspan || !item._layerRowspan[head.key]"
 								:key="key2"
+								:ref="`td-${key2}`"
 								class="border border-gray-200 p-3 text-gray-400"
-								:class="head.tdClass"
+								:class="head.class"
 								:rowspan="getRowspan(item, head)"
 							>
 								<NVFor v-if="head.key == 'action'" :value="getActions(item, head)" class="flex flex-col items-center justify-center gap-2">
 									<template slot="if" slot-scope="action"><NButton v-bind="action"></NButton></template>
 									<template slot="else">{{ valuePlaceholder }}</template>
 								</NVFor>
+								<template v-else-if="head.component">
+									<NComponent :value="component(item, head)"></NComponent>
+								</template>
 								<template v-else>
 									{{ formatter(item, head) }}
 								</template>
@@ -83,6 +94,9 @@
 </template>
 
 <script>
+import Formatter from '../helpers/formatter'
+import Component from '../helpers/component'
+
 export default {
 	name: 'NTable',
 	props: {
@@ -107,7 +121,22 @@ export default {
 		//为null时的占位文本
 		valuePlaceholder: { type: String, default: '-' }
 	},
+	data() {
+		return {
+			layerThWidth: []
+		}
+	},
+	mounted() {
+		if (this.layerKey) this.$emit('layer-loaded', this)
+	},
 	methods: {
+		layerLoaded(layerTable) {
+			layerTable.heads.forEach((head, key) => {
+				let layerTdList = layerTable.$refs[`td-${key}`].map((td) => td.offsetWidth)
+				layerTdList.push(this.layerThWidth[key] || 0)
+				this.$set(this.layerThWidth, key, Math.max(...layerTdList))
+			})
+		},
 		getRowspan(item, head) {
 			if (!head.target || !this.layerTarget || this.items.length <= 1) return ''
 			//第二层数据记录下被跨行的列
@@ -122,15 +151,38 @@ export default {
 		getActions(item, head) {
 			return (this.actions || []).reduce((actions, action, props) => actions.concat((props = action(item, head, this)) || []), [])
 		},
-		formatter(item, head) {
+		component(item, head) {
+			let { target, key, component } = head
 			//展示来自layerTarget的数据
-			if (head.target) item = this.layerTarget || {}
+			if (target) item = this.layerTarget || {}
 			//NULL值处理
-			if (item[head.key] == null) return this.valuePlaceholder
-			//字典翻译
-			if (head.dict) return head.dict[item[head.key]]
+			if (item[key] == null) return this.valuePlaceholder
+			//自定义组件参数处理
+			let name, props
+			if (typeof component === 'string') name = component
+			else (name = component.name), (props = component)
+			if (Component[name]) return Component[name](item, head, props)
+			console.warn(`NTable.heads[{key:"${key}",component:{name:"${name} invalid"}}]`)
 			//默认处理
-			return item[head.key]
+			return item[key]
+		},
+		formatter(item, head) {
+			let { target, key, dict, formatter } = head
+			//展示来自layerTarget的数据
+			if (target) item = this.layerTarget || {}
+			//NULL值处理
+			if (item[key] == null) return this.valuePlaceholder
+			//字典翻译
+			if (dict && typeof dict === 'object') return dict[item[key]]
+			//自定义格式化方法
+			if (typeof formatter === 'function') return formatter(item[key], item, head)
+			//已集成的格式化类型
+			if (typeof formatter === 'string') {
+				if (Formatter[formatter]) return Formatter[formatter](item[key])
+				console.warn(`NTable.heads[{key:"${key}",formatter:"${formatter} invalid"}]`)
+			}
+			//默认处理
+			return item[key]
 		}
 	}
 }

@@ -1,5 +1,5 @@
 <template>
-	<div ref="root" class="n-dropdown flex items-center" @mouseenter="show" @mouseleave="leave">
+	<div ref="root" class="n-dropdown flex relative items-center" @mouseenter="show" @mouseleave="leave">
 		<slot name="label" v-bind="{ menu: currentMenu, index: currentIndex, isActived }">
 			<span>{{ label }}</span>
 		</slot>
@@ -21,8 +21,8 @@
 			}"
 		>
 			<slot name="menus" v-bind="{ isActived, menus, onChange }">
-				<!-- 按列分 -->
-				<div v-if="menus && Array.isArray(menus[0])" class="flex flex-col rounded-md bg-white shadow-lg min-w-max">
+				<!-- 多列 -->
+				<div v-if="Array.isArray(menus[0])" class="flex flex-col rounded-md bg-white shadow-lg min-w-max">
 					<h6 class="px-4 pt-2 text-lg text-gray-900 font-medium">{{ label }}</h6>
 					<div class="flex max-h-96 overflow-x-hidden overflow-y-auto" @mousewheel.stop="">
 						<div v-for="(menuList, key1) in menus" :key="key1" class="w-1/2 py-1.5">
@@ -32,9 +32,7 @@
 									:key="key2"
 									:to="menu.to"
 									class="block px-6 py-2 text-sm min-w-max transition"
-									:class="
-										isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
-									"
+									:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
 								>
 									{{ menu.label }}
 								</NLink>
@@ -42,9 +40,7 @@
 									v-else
 									:key="key2"
 									class="px-6 py-2 text-sm min-w-max transition"
-									:class="
-										isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
-									"
+									:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
 									@click.stop="onChange(menu, key2)"
 								>
 									{{ menu.label }}
@@ -79,6 +75,7 @@
 			</slot>
 		</div>
 		<div
+			v-if="!visible"
 			v-show="currentVisible"
 			class="absolute z-20 text-white"
 			:class="{

@@ -51,7 +51,7 @@ export default {
 			let { root } = this.$refs
 			if (!root) return
 			let mouseElement = getMouseElement(event)
-			if (!mouseElement || !Array.from(root.childNodes).concat(root).includes(mouseElement)) this.hide()
+			if (!mouseElement || !root.contains(mouseElement)) this.hide()
 		},
 		toggle() {
 			if (this.visible) return

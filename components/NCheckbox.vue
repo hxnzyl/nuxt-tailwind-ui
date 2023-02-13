@@ -17,18 +17,7 @@
 				</div>
 			</div>
 			<div class="flex grow items-center">
-				<div
-					class="flex items-center justify-center border pt-px"
-					:class="{
-						'border-blue-500 text-blue-500': invalidField == null && checked && !disabled,
-						'border-gray-200 text-gray-400': invalidField == null && (!checked || disabled),
-						'border-red-500 text-red-500': invalidField != null,
-						'text-sm w-3 h-3': size == 'sm',
-						'text-base w-4 h-4': size == 'md',
-						'text-lg w-5 h-5': size == 'lg',
-						'text-xl w-6 h-6': size == 'xl'
-					}"
-				>
+				<div class="flex items-center justify-center pt-px" :class="checkboxClass">
 					<i v-show="checked" class="fe fe-check"></i>
 				</div>
 				<div class="flex items-center grow pl-2">

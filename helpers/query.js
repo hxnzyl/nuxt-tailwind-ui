@@ -30,7 +30,8 @@ export default function (queryData = {}) {
 		},
 		methods: {
 			replaceQueryObject(object) {
-				if (this.$router) this.$router.push('?' + qs.stringify(Object.assign({ ...this.queryObject }, object)))
+				this.$nuxt.$loading.set(0)
+				this.$router.push('?_=' + Date.now() + '&' + qs.stringify(Object.assign({ ...this.queryObject }, object)))
 			}
 		}
 	}

@@ -66,12 +66,12 @@ export default {
 			let tab = this.tabs[index] || {}
 			this.currentTab = tab
 			this.currentIndex = index
-			this.currentValue = tab.value || null
+			this.currentValue = tab.value == null ? null : tab.value
 		},
 		onChange(tab, index) {
 			this.currentTab = tab
 			this.currentIndex = index
-			this.currentValue = tab.value || null
+			this.currentValue = tab.value == null ? null : tab.value
 			this.$emit('change', this.currentValue)
 			this.changeQueryObject(this.currentValue)
 		},
