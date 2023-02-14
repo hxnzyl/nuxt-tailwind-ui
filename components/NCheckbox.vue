@@ -16,11 +16,11 @@
 					{{ invalidMessage }}
 				</div>
 			</div>
-			<div class="flex grow items-center">
+			<div class="flex grow items-center gap-2">
 				<div class="flex items-center justify-center pt-px" :class="checkboxClass">
 					<i v-show="checked" class="fe fe-check"></i>
 				</div>
-				<div class="flex items-center grow pl-2">
+				<div class="flex items-center grow" :class="textboxClass">
 					<slot v-bind="{ disabled }"></slot>
 				</div>
 			</div>

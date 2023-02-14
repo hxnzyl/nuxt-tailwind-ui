@@ -4,13 +4,7 @@
 			<thead v-if="!hideThead" class="bg-gray-200">
 				<tr>
 					<template v-if="layer">
-						<th
-							v-for="(head, key) in heads[0]"
-							:key="key"
-							class="border-0 p-3 text-gray-500"
-							:class="head.thClass"
-							:style="`width:${layerThWidth[key]}px`"
-						>
+						<th v-for="(head, key) in heads[0]" :key="key" class="border-0 p-3 text-gray-500" :class="head.thClass" :width="`${layerThWidth[key]}px`">
 							{{ head.label }}
 						</th>
 					</template>
@@ -69,11 +63,14 @@
 								:key="key2"
 								:ref="`td-${key2}`"
 								class="border border-gray-200 p-3 text-gray-400"
-								:class="head.class"
+								:class="head.tdClass"
+								:width="`${layerThWidth[key]}px`"
 								:rowspan="getRowspan(item, head)"
 							>
 								<NVFor v-if="head.key == 'action'" :value="getActions(item, head)" class="flex flex-col items-center justify-center gap-2">
-									<template slot="if" slot-scope="action"><NButton v-bind="action"></NButton></template>
+									<template slot="if" slot-scope="action">
+										<NButton v-bind="action"></NButton>
+									</template>
 									<template slot="else">{{ valuePlaceholder }}</template>
 								</NVFor>
 								<template v-else-if="head.component">
@@ -95,7 +92,6 @@
 
 <script>
 import Formatter from '../helpers/formatter'
-import Component from '../helpers/component'
 
 export default {
 	name: 'NTable',
@@ -157,14 +153,15 @@ export default {
 			if (target) item = this.layerTarget || {}
 			//NULL值处理
 			if (item[key] == null) return this.valuePlaceholder
+			//自定义组件，将当前值当value传递
+			if (typeof component === 'string') return { is: component, value: item[key] }
 			//自定义组件参数处理
-			let name, props
-			if (typeof component === 'string') name = component
-			else (name = component.name), (props = component)
-			if (Component[name]) return Component[name](item, head, props)
-			console.warn(`NTable.heads[{key:"${key}",component:{name:"${name} invalid"}}]`)
+			if (typeof component === 'function') {
+				if ((component = component(item[key], item, head)) && component.is) return component
+				console.warn(`NTable.heads[].${key}.component.is: invalid ${component}`)
+			}
 			//默认处理
-			return item[key]
+			return { value: item[key] }
 		},
 		formatter(item, head) {
 			let { target, key, dict, formatter } = head
@@ -179,7 +176,7 @@ export default {
 			//已集成的格式化类型
 			if (typeof formatter === 'string') {
 				if (Formatter[formatter]) return Formatter[formatter](item[key])
-				console.warn(`NTable.heads[{key:"${key}",formatter:"${formatter} invalid"}]`)
+				console.warn(`NTable.heads[].${key}.formatter: invalid ${formatter}`)
 			}
 			//默认处理
 			return item[key]

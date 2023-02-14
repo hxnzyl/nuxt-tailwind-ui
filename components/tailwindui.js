@@ -37,10 +37,10 @@ export default {
 	 */
 	textBoxSize(size) {
 		if (size == 'xs') return 'px-1 py-px text-xs'
-		if (size == 'sm') return 'px-2 py-1 text-sm'
-		if (size == 'md') return 'px-3 py-2 text-base'
-		if (size == 'lg') return 'px-4 py-2.5 text-lg'
-		if (size == 'xl') return 'px-5 py-3 text-xl'
+		if (size == 'sm') return 'px-2 py-1 text-xs'
+		if (size == 'md') return 'px-3 py-2 text-sm'
+		if (size == 'lg') return 'px-4 py-2.5 text-base'
+		if (size == 'xl') return 'px-5 py-3 text-lg'
 	},
 	/**
 	 * 全边框大小
@@ -137,5 +137,20 @@ export default {
 		if (color == 'green') return light ? 'border-green-200' : 'border-green-500'
 		if (color == 'blue') return light ? 'border-blue-200' : 'border-blue-500'
 		if (color == 'pink') return light ? 'border-pink-200' : 'border-pink-500'
+	},
+	/**
+	 * hover时缩放
+	 *
+	 * @param {Number} scale
+	 * @returns {String}
+	 */
+	hoverScale(scale) {
+		if (!scale || scale == 1 || scale == 100) return ''
+		if (scale == 0.5 || scale == 50) return 'transition duration-500 hover:scale-50'
+		if (scale == 0.75 || scale == 75) return 'transition duration-500 hover:scale-75'
+		if (scale == 0.9 || scale == 90) return 'transition duration-500 hover:scale-90'
+		if (scale == 1.1 || scale == 110) return 'transition duration-500 hover:scale-110'
+		if (scale == 1.25 || scale == 125) return 'transition duration-500 hover:scale-125'
+		if (scale == 1.5 || scale == 150) return 'transition duration-500 hover:scale-150'
 	}
 }

@@ -1,26 +1,30 @@
 <template>
-	<div class="overflow-hidden rounded-md">
-		<img
-			:src="src"
-			class="w-full"
-			:class="{
-				'transition duration-500': scale != 100,
-				'hover:scale-110': scale == 110,
-				'hover:scale-125': scale == 125,
-				'hover:scale-150': scale == 150
-			}"
-		/>
+	<NLink v-if="to" :to="to" class="n-img overflow-hidden" :class="rootClass">
+		<img :src="src" :class="img1Class" />
+	</NLink>
+	<div v-else class="n-img overflow-hidden" :class="rootClass">
+		<img :src="src" :class="img1Class" />
 	</div>
 </template>
 
 <script>
+import tailwindui from './tailwindui'
+
 export default {
 	name: 'NImg',
 	props: {
+		to: String,
 		src: String,
-		scale: {
-			type: Number,
-			default: 125
+		size: { type: String, default: 'md' },
+		scale: { type: Number, default: 125 },
+		imgClass: { type: String, default: 'w-full' }
+	},
+	computed: {
+		rootClass() {
+			return tailwindui.roundedSize(this.size)
+		},
+		img1Class() {
+			return [tailwindui.hoverScale(this.scale), this.imgClass]
 		}
 	}
 }

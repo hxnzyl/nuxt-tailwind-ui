@@ -24,9 +24,9 @@ export default {
 		size: { type: String, default: 'md' },
 		//按钮颜色
 		color: { type: String, default: 'blue' },
-		//按钮圆角大小
-		rounded: { type: String, default: 'md' },
-		//是否使用边框
+		//是否有圆角
+		rounded: Boolean,
+		//是否有边框
 		border: Boolean,
 		//是否空心
 		plain: Boolean,
@@ -50,7 +50,7 @@ export default {
 			return [
 				'n-button flex items-center justify-center tranistion duration-500 appearance-none',
 				tailwindui.buttonSize(this.size),
-				tailwindui.roundedSize(this.rounded),
+				tailwindui.roundedSize(this.size),
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.color, this.disabled) : '',
 				this.border ? (this.disabled ? 'border-opacity-50' : 'hover:border-opacity-50') : '',

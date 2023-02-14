@@ -1,6 +1,6 @@
 <template>
 	<component v-if="value.is" :is="value.is" v-bind="value.props"></component>
-	<span v-else>{{ value }}</span>
+	<span v-else>{{ value.value }}</span>
 </template>
 
 <script>

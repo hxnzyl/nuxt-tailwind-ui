@@ -1,23 +1,25 @@
 <template>
-	<div class="n-tabs flex" :class="{ 'gap-4': direction == 'row', 'flex-col': direction == 'col' }">
-		<div class="flex" :class="{ 'flex-col w-1/5': direction == 'row', 'w-full bg-white': direction == 'col' }">
+	<div class="n-tabs flex relative" :class="[direction == 'row' ? 'gap-4' : 'flex-col']">
+		<div class="flex" :class="[direction == 'row' ? 'flex-col w-1/5' : 'w-full bg-white']">
 			<div
 				v-for="(tab, key) in tabs"
 				:key="key"
 				class="hover:bg-gray-200"
 				:class="[
 					direction == 'row' ? 'border-l-2 bg-white' : 'border-b-2',
-					isActived(tab, key)
-						? `text-indigo-500 border-indigo-500`
-						: 'border-transparent' + (disabled ? ' text-gray-500 pointer-events-none text-opacity-50' : '')
+					!isActived(tab, key)
+						? disabled
+							? 'border-transparent text-gray-500 text-opacity-50 pointer-events-none'
+							: 'border-transparent'
+						: 'text-indigo-500 border-indigo-500'
 				]"
 			>
-				<a v-if="queryName" :href="`?${queryName}=${tab.value}`" @click.prevent="onChange(tab, key)" class="block p-4">{{ tab.label }}</a>
-				<NLink v-else-if="tab.to" :to="tab.to" class="block p-4">{{ tab.label }}</NLink>
+				<NLink v-if="tab.to" :to="tab.to" class="block p-4">{{ tab.label }}</NLink>
+				<a v-else-if="queryName" :href="`?${queryName}=${tab.value}`" @click.prevent="onChange(tab, key)" class="block p-4">{{ tab.label }}</a>
 				<div v-else class="p-4 cursor-pointer" @click.stop="onChange(tab, key)">{{ tab.label }}</div>
 			</div>
 		</div>
-		<div class="flex bg-white" :class="{ 'w-4/5': direction == 'row', 'flex-col gap-4 grow': direction == 'col' }">
+		<div class="flex bg-white" :class="[bodyClass, direction == 'row' ? 'w-4/5' : 'flex-col grow']">
 			<slot v-bind="{ index: currentIndex, tab: currentTab, value: currentValue }"></slot>
 		</div>
 	</div>
@@ -42,6 +44,8 @@ export default {
 		tabs: { type: Array, required: true },
 		//方向
 		direction: { type: String, default: 'row' },
+		//内容class
+		bodyClass: { type: String, default: 'gap-4' },
 		//禁用状态
 		disabled: Boolean
 	},

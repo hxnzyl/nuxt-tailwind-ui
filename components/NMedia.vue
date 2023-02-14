@@ -1,9 +1,10 @@
 <template>
-	<div class="flex items-center gap-4">
-		<NImg class="w-2/5" :src="src" :scale="scale"></NImg>
-		<div class="flex flex-col grow">
-			<h3 class="text-blue-500 text-sm font-medium">{{ title }}</h3>
-			<p class="text-gray-500 text-xs">{{ desc }}</p>
+	<div class="n-media flex items-center gap-4">
+		<NImg :to="to" :src="src" :scale="scale" :img-class="imgClass"></NImg>
+		<div class="flex flex-col grow gap-8">
+			<NLink v-if="to" :to="to" class="text-base font-medium" :class="titleClass">{{ title }}</NLink>
+			<h3 v-else>{{ title }}</h3>
+			<p v-if="desc" class="text-sm" :class="descClass">{{ desc }}</p>
 		</div>
 	</div>
 </template>
@@ -12,10 +13,14 @@
 export default {
 	name: 'NMedia',
 	props: {
+		to: String,
 		src: String,
 		scale: Number,
+		imgClass: { type: String, default: 'w-full' },
 		title: String,
-		desc: String
+		desc: String,
+		titleClass: { type: String, default: 'text-blue-500' },
+		descClass: { type: String, default: 'text-gray-400' }
 	}
 }
 </script>

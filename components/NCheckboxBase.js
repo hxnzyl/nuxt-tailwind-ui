@@ -20,6 +20,8 @@ export default {
 		uncheckedColor: { type: String, default: 'none' },
 		//大小
 		size: { type: String, default: 'md' },
+		//文本class
+		textboxClass: String,
 		//填充模式
 		fill: Boolean,
 		//禁用状态
