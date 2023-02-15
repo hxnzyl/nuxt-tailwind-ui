@@ -50,7 +50,7 @@ export default {
 			return [
 				'n-button flex items-center justify-center tranistion duration-500 appearance-none',
 				tailwindui.buttonSize(this.size),
-				tailwindui.roundedSize(this.size),
+				this.rounded ? tailwindui.roundedSize(this.size) : '',
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.color, this.disabled) : '',
 				this.border ? (this.disabled ? 'border-opacity-50' : 'hover:border-opacity-50') : '',

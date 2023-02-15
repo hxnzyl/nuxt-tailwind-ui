@@ -25,7 +25,7 @@ export default {
 		},
 		//用户未定义时，如果在表单中，使用表单的排版方向
 		getDirection() {
-			return this.direction || (this.name && this.NForm && this.NForm.direction) || ''
+			return this.direction || (this.NForm && this.NForm.direction) || ''
 		},
 		//校验规则中未定义时不必填
 		getRequired() {

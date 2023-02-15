@@ -1,10 +1,16 @@
 <template>
-	<div class="n-table relative w-full">
+	<div class="n-table w-full relative">
 		<table class="border-collapse table-auto text-center w-full">
 			<thead v-if="!hideThead" class="bg-gray-200">
 				<tr>
 					<template v-if="layer">
-						<th v-for="(head, key) in heads[0]" :key="key" class="border-0 p-3 text-gray-500" :class="head.thClass" :width="`${layerThWidth[key]}px`">
+						<th
+							v-for="(head, key) in heads[0]"
+							:key="key"
+							class="border-0 p-3 text-gray-500"
+							:class="head.thClass"
+							:style="`width:${layerThWidth[key] || ''}px;${head.thCssText || ''}`"
+						>
 							{{ head.label }}
 						</th>
 					</template>
@@ -60,11 +66,11 @@
 						<template v-for="(head, key2) in heads">
 							<td
 								v-if="!item._layerRowspan || !item._layerRowspan[head.key]"
-								:key="key2"
+								:key="`td-${key1}-${key2}`"
 								:ref="`td-${key2}`"
 								class="border border-gray-200 p-3 text-gray-400"
 								:class="head.tdClass"
-								:width="`${layerThWidth[key]}px`"
+								:style="`width:${layerThWidth[key2] || ''}px;${head.tdCssText || ''}`"
 								:rowspan="getRowspan(item, head)"
 							>
 								<NVFor v-if="head.key == 'action'" :value="getActions(item, head)" class="flex flex-col items-center justify-center gap-2">
@@ -73,12 +79,9 @@
 									</template>
 									<template slot="else">{{ valuePlaceholder }}</template>
 								</NVFor>
-								<template v-else-if="head.component">
-									<NComponent :value="component(item, head)"></NComponent>
-								</template>
-								<template v-else>
-									{{ formatter(item, head) }}
-								</template>
+								<NComponent v-else-if="head.component" :value="component(item, head)"></NComponent>
+								<div v-else-if="head.formatter" v-html="formatter(item, head)"></div>
+								<template v-else>{{ formatter(item, head) }}</template>
 							</td>
 						</template>
 					</tr>
@@ -86,15 +89,17 @@
 			</tbody>
 		</table>
 		<!-- 数据加载中 -->
-		<NLoading v-show="loading" size="lg" color="gray" mask></NLoading>
+		<NLoading v-show="currentLoading" size="lg" color="gray" mask></NLoading>
 	</div>
 </template>
 
 <script>
 import Formatter from '../helpers/formatter'
+import loading from '../mixins/loading'
 
 export default {
 	name: 'NTable',
+	mixins: [loading],
 	props: {
 		//表头
 		heads: Array,
@@ -110,8 +115,6 @@ export default {
 		layerKey: String,
 		//上层数据
 		layerTarget: Object,
-		//加载中
-		loading: Boolean,
 		//无数据占位文本
 		itemsPlaceholder: { type: String, default: '暂无数据' },
 		//为null时的占位文本

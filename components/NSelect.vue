@@ -9,18 +9,18 @@
 				{{ invalidMessage }}
 			</div>
 		</div>
-		<div class="relative flex items-center py-2 px-3 cursor-default" @click.stop="show" @mouseleave="leave" :class="selectClass">
+		<div class="relative flex items-center cursor-default" @click.stop="show" @mouseleave="leave" :class="selectClass">
 			<div class="flex flex-wrap grow gap-2">
 				<template v-if="multiple">
 					<div v-for="(opt, key) in currentOption" :key="key" class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5">
 						<span>{{ opt.label }}</span>
 						<a href="#remove" @click.stop.prevent="removeOption(opt, key)" class="hover:text-red-500"><i class="fe fe-close"></i></a>
 					</div>
-					<div v-show="!currentOption.length" class="text-gray-400 select-none">{{ placeholder }}</div>
+					<span v-show="!currentOption.length" class="text-gray-400 select-none">{{ placeholder }}</span>
 				</template>
 				<template v-else>
-					<div v-show="currentOption.label" class="text-gray-500">{{ currentOption.label }}</div>
-					<div v-show="!currentOption.label" class="text-gray-400 select-none">{{ placeholder }}</div>
+					<span v-show="currentOption.label">{{ currentOption.label }}</span>
+					<span v-show="!currentOption.label" class="text-gray-400 select-none">{{ placeholder }}</span>
 				</template>
 			</div>
 			<a
@@ -163,6 +163,8 @@ export default {
 		},
 		selectClass() {
 			return [
+				tailwindui.textBoxSize(this.size),
+				tailwindui.textColor(this.invalidColor),
 				this.rounded ? tailwindui.roundedSize(this.size) : '',
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidColor == 'gray') : '',

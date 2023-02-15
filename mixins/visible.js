@@ -20,7 +20,7 @@ export default {
 	},
 	data() {
 		return {
-			currentVisible: this.value || this.visible ? 1 : 0
+			currentVisible: 0
 		}
 	},
 	mounted() {
@@ -28,7 +28,9 @@ export default {
 	},
 	methods: {
 		updateValue(init, value) {
-			init || this.toggle()
+			this.currentVisible = value + 0
+			if (init) this.visible || value ? this.show() : this.hide()
+			else value ? this.show() : this.hide()
 		},
 		show() {
 			if (this.visible) return
@@ -55,8 +57,8 @@ export default {
 		},
 		toggle() {
 			if (this.visible) return
-			if (this.currentVisible) this.show()
-			else this.hide()
+			if (this.currentVisible) this.hide()
+			else this.show()
 		}
 	}
 }

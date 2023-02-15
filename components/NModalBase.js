@@ -6,6 +6,9 @@ export default {
 		title: String,
 		message: String,
 		showCancelButton: Boolean,
+        bodyClass: String,
+		showHeader: { type: Boolean, default: true },
+		showFooter: { type: Boolean, default: true },
 		clickMaskClose: { type: Boolean, default: true },
 		clickConfirmClose: { type: Boolean, default: true }
 	},

@@ -1,12 +1,16 @@
 <template>
-	<form class="n-form appearance-none flex flex-col gap-6" @submit.stop.prevent="onSubmit">
+	<form class="n-form appearance-none flex flex-col gap-6 relative" @submit.stop.prevent="onSubmit">
 		<slot></slot>
+		<NLoading v-show="currentLoading" size="lg" color="gray" mask></NLoading>
 	</form>
 </template>
 
 <script>
+import loading from '../mixins/loading'
+
 export default {
-    name: 'NForm',
+	name: 'NForm',
+	mixins: [loading],
 	model: {
 		prop: 'model',
 		event: 'input'

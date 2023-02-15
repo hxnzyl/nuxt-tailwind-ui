@@ -10,8 +10,9 @@ export default {
 	methods: {
 		changeQueryObject(value) {
 			if (this.queryName) {
-				this.$nuxt.$loading.set(0)
+				if (this.showLoading) this.showLoading()
 				this.$router.push('?_=' + Date.now() + '&' + qs.stringify(Object.assign({ ...this.queryObject }, { [this.queryName]: value })))
+				if (this.hideLoading) this.$nuxt.$once('routeChanged', this.hideLoading)
 			}
 		}
 	}

@@ -22,15 +22,17 @@
 		<div class="flex bg-white" :class="[bodyClass, direction == 'row' ? 'w-4/5' : 'flex-col grow']">
 			<slot v-bind="{ index: currentIndex, tab: currentTab, value: currentValue }"></slot>
 		</div>
+		<NLoading v-show="currentLoading" size="lg" color="gray" mask></NLoading>
 	</div>
 </template>
 
 <script>
 import query from '../mixins/query'
+import loading from '../mixins/loading'
 
 export default {
 	name: 'NTabs',
-	mixins: [query],
+	mixins: [query, loading],
 	model: {
 		prop: 'value',
 		event: 'change'
