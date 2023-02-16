@@ -20,7 +20,7 @@
 				<div class="flex items-center justify-center pt-px" :class="checkboxClass">
 					<i v-show="checked" class="fe fe-check"></i>
 				</div>
-				<div class="flex items-center grow" :class="textboxClass">
+				<div class="flex items-center grow" :class="bodyClass">
 					<slot v-bind="{ disabled }"></slot>
 				</div>
 			</div>
@@ -33,5 +33,5 @@
 
 <script>
 import NCheckboxBase from './NCheckboxBase'
-export default { name: 'NCheckbox', mixins: [NCheckboxBase] }
+export default { name: 'NCheckbox', extends: NCheckboxBase }
 </script>

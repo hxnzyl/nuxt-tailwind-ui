@@ -21,9 +21,14 @@ export default {
 		}
 	},
 	props: {
+        //检验对象
 		model: Object,
+        //校验规则
 		rules: Object,
-		direction: { type: String, default: 'col' }
+		//排版方向
+		direction: { type: String, default: 'col' },
+		//label类名
+		labelClass: String
 	},
 	data() {
 		return {

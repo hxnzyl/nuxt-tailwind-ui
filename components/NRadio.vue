@@ -7,7 +7,7 @@
 		<div class="flex items-center justify-center rounded-full" :class="checkboxClass">
 			<div v-show="checked" class="rounded-full w-1/2 h-1/2" :class="checkedClass"></div>
 		</div>
-		<div class="flex grow items-center" :class="textboxClass">
+		<div class="flex grow items-center" :class="bodyClass">
 			<slot v-bind="{ disabled }"></slot>
 		</div>
 	</div>
@@ -15,5 +15,5 @@
 
 <script>
 import NCheckboxBase from './NCheckboxBase'
-export default { name: 'NRadio', mixins: [NCheckboxBase] }
+export default { name: 'NRadio', extends: NCheckboxBase }
 </script>

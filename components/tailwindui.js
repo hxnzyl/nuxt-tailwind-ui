@@ -152,5 +152,13 @@ export default {
 		if (scale == 1.1 || scale == 110) return 'transition duration-500 hover:scale-110'
 		if (scale == 1.25 || scale == 125) return 'transition duration-500 hover:scale-125'
 		if (scale == 1.5 || scale == 150) return 'transition duration-500 hover:scale-150'
+	},
+	/**
+	 * 格子布局
+	 */
+	grid(grid) {
+		if (grid == 2) return 'grid grid-cols-2'
+		if (grid == 3) return 'grid grid-cols-3'
+		if (grid == 4) return 'grid grid-cols-4'
 	}
 }

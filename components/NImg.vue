@@ -1,9 +1,11 @@
 <template>
-	<NLink v-if="to" :to="to" class="n-img overflow-hidden" :class="rootClass">
+	<NLink v-if="to" :to="to" :target="target" class="n-img overflow-hidden rounded-md">
 		<img :src="src" :class="img1Class" />
+		<slot></slot>
 	</NLink>
-	<div v-else class="n-img overflow-hidden" :class="rootClass">
+	<div v-else class="n-img overflow-hidden rounded-md">
 		<img :src="src" :class="img1Class" />
+		<slot></slot>
 	</div>
 </template>
 
@@ -14,15 +16,12 @@ export default {
 	name: 'NImg',
 	props: {
 		to: String,
+		target: String,
 		src: String,
-		size: { type: String, default: 'md' },
 		scale: { type: Number, default: 125 },
 		imgClass: { type: String, default: 'w-full' }
 	},
 	computed: {
-		rootClass() {
-			return tailwindui.roundedSize(this.size)
-		},
 		img1Class() {
 			return [tailwindui.hoverScale(this.scale), this.imgClass]
 		}

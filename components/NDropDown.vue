@@ -21,41 +21,17 @@
 			}"
 		>
 			<slot name="menus" v-bind="{ isActived, menus, onChange }">
-				<!-- 多列 -->
-				<div v-if="Array.isArray(menus[0])" class="flex flex-col rounded-md bg-white shadow-lg min-w-max">
-					<h6 class="px-4 pt-2 text-lg text-gray-900 font-medium">{{ label }}</h6>
-					<div class="flex max-h-96 overflow-x-hidden overflow-y-auto" @mousewheel.stop="">
-						<div v-for="(menuList, key1) in menus" :key="key1" class="w-1/2 py-1.5">
-							<template v-for="(menu, key2) in menuList">
-								<NLink
-									v-if="menu.to"
-									:key="key2"
-									:to="menu.to"
-									class="block px-6 py-2 text-sm min-w-max transition"
-									:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
-								>
-									{{ menu.label }}
-								</NLink>
-								<div
-									v-else
-									:key="key2"
-									class="px-6 py-2 text-sm min-w-max transition"
-									:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
-									@click.stop="onChange(menu, key2)"
-								>
-									{{ menu.label }}
-								</div>
-							</template>
-						</div>
-					</div>
-				</div>
-				<!-- 单列 -->
-				<div v-else class="py-1.5 max-h-96 overflow-x-hidden overflow-y-auto rounded-md bg-white shadow-lg min-w-max" @mousewheel.stop="">
+				<div
+					class="py-1.5 max-h-96 overflow-x-hidden overflow-y-auto rounded-md bg-white shadow-lg min-w-max"
+					:class="menusClass"
+					@mousewheel.stop=""
+				>
 					<template v-for="(menu, key) in menus">
 						<NLink
 							v-if="menu.to"
 							:key="key"
 							:to="menu.to"
+							:target="menu.target"
 							class="block px-4 py-2 text-sm min-w-max transition"
 							:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
 						>
@@ -102,6 +78,7 @@
 
 <script>
 import visible from '../mixins/visible'
+import tailwindui from './tailwindui'
 
 export default {
 	name: 'NDropDown',
@@ -110,7 +87,18 @@ export default {
 		label: String,
 		active: Function,
 		menus: Array,
+		grid: [Boolean, String, Number],
 		arrow: { type: Boolean, default: true }
+	},
+	computed: {
+		menusClass() {
+			let type = typeof this.grid
+			return [
+				type === 'boolean' && this.grid === true ? 'grid grid-cols-2' : '',
+				type === 'number' && this.grid > 0 ? tailwindui.grid(this.grid) : '',
+				type === 'string' && this.grid !== '' ? this.grid : ''
+			]
+		}
 	},
 	data() {
 		let index = this.menus ? this.menus.findIndex(this.isActived) : -1

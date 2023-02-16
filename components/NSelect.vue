@@ -1,15 +1,19 @@
 <template>
-	<div ref="root" class="n-select flex relative" :class="{ 'flex-col gap-2': getDirection == 'col' }" @mouseleave="leave">
-		<div class="flex items-center" :class="{ 'justify-between': getDirection == 'col' }">
+	<div ref="root" class="n-select flex relative gap-2" :class="{ 'flex-col': getDirection == 'col' }" @mouseleave="leave">
+		<div
+			v-if="label || getDirection == 'col'"
+			class="flex items-center"
+			:class="[getDirection == 'col' ? 'justify-between' : '', this.getLabelClass]"
+		>
 			<div v-if="label" class="text-base">
-				<span v-if="getRequired" class="text-red-500">*</span>
 				<span class="text-gray-500">{{ label }}</span>
+				<span v-if="getRequired" class="text-red-500">*</span>
 			</div>
 			<div v-if="getDirection == 'col'" v-show="invalidField != null" class="text-red-500 text-xs">
 				{{ invalidMessage }}
 			</div>
 		</div>
-		<div class="relative flex items-center cursor-default" @click.stop="show" @mouseleave="leave" :class="selectClass">
+		<div class="relative flex items-center grow" @click.stop="show" @mouseleave="leave" :class="selectClass">
 			<div class="flex flex-wrap grow gap-2">
 				<template v-if="multiple">
 					<div v-for="(opt, key) in currentOption" :key="key" class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5">
@@ -23,13 +27,7 @@
 					<span v-show="!currentOption.label" class="text-gray-400 select-none">{{ placeholder }}</span>
 				</template>
 			</div>
-			<a
-				v-if="clearable"
-				v-show="multiple ? currentValue.length > 0 : !!currentValue"
-				href="#clear"
-				@click.stop.prevent="updateValue(false, null)"
-				class="text-gray-400 hover:text-opacity-50 px-3"
-			>
+			<a v-if="clearable" v-show="valueNotEmpty" href="#clear" @click.stop.prevent="clear" class="text-gray-400 hover:text-opacity-50 px-3">
 				<i class="fe fe-close"></i>
 			</a>
 			<a href="#arrow" @click.prevent="" class="text-gray-500">
@@ -122,11 +120,12 @@
 <script>
 import NFormValidator from './NFormValidator'
 import visible from '../mixins/visible'
+import clearable from '../mixins/clearable'
 import tailwindui from './tailwindui'
 
 export default {
 	name: 'NSelect',
-	mixins: [NFormValidator, visible],
+	mixins: [NFormValidator, visible, clearable],
 	model: {
 		prop: 'value',
 		event: 'change'
@@ -151,9 +150,7 @@ export default {
 		//是否有轮廓环
 		ring: { type: Boolean, default: true },
 		//是否多选
-		multiple: Boolean,
-		//是否可清除
-		clearable: { type: Boolean, default: true }
+		multiple: Boolean
 	},
 	computed: {
 		invalidColor() {
@@ -163,6 +160,8 @@ export default {
 		},
 		selectClass() {
 			return [
+				this.bodyClass,
+				this.disabled ? 'bg-opacity-50 pointer-events-none' : 'cursor-default',
 				tailwindui.textBoxSize(this.size),
 				tailwindui.textColor(this.invalidColor),
 				this.rounded ? tailwindui.roundedSize(this.size) : '',
@@ -181,8 +180,6 @@ export default {
 	data() {
 		return {
 			hideTimer: null,
-			propValueType: typeof this.value,
-			currentVisible: this.visible ? 1 : 0,
 			currentIndex: this.multiple ? null : -1,
 			currentOption: this.multiple ? [] : {},
 			currentValue: this.multiple ? [] : null
@@ -200,7 +197,7 @@ export default {
 				let option = this.options[index] || {}
 				this.currentIndex = index
 				this.currentOption = option
-				this.currentValue = option.value == null ? null : option.value
+				this.currentValue = option.value == null ? this.getDefaultValue() : option.value
 			}
 			init || this.$nextTick(() => this.validate('change'))
 		},
@@ -214,7 +211,7 @@ export default {
 			} else {
 				this.currentIndex = index
 				this.currentOption = option
-				this.currentValue = option.value == null ? null : option.value
+				this.currentValue = option.value == null ? this.getDefaultValue() : option.value
 				this.hide()
 				this.$emit('change', this.currentValue)
 			}

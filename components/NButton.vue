@@ -1,5 +1,5 @@
 <template>
-	<NLink v-if="to" :class="buttonClass" :to="to">
+	<NLink v-if="to" :class="buttonClass" :to="to" :target="target">
 		<NLoading v-show="loading" :size="size" class="mr-2"></NLoading>
 		<slot>
 			<span>{{ text }}</span>
@@ -25,7 +25,7 @@ export default {
 		//按钮颜色
 		color: { type: String, default: 'blue' },
 		//是否有圆角
-		rounded: Boolean,
+		rounded: { type: Boolean, default: true },
 		//是否有边框
 		border: Boolean,
 		//是否空心
@@ -38,6 +38,8 @@ export default {
 		text: String,
 		//链接按钮
 		to: String,
+		//a[traget]
+		target: String,
 		//上传按钮
 		upload: Boolean,
 		//上传文件类型

@@ -5,15 +5,18 @@ import { normalizeString } from '../utils/string'
  * 查询辅助
  *
  * @param {Object} queryData {'查询名': '默认查询值'}
+ * @param {Object} queryData {'查询名': '默认查询值'}
  * @returns
  */
-export default function (queryData = {}) {
+export default function (queryData = {}, querying = false) {
 	return {
 		watchQuery: true,
 		data() {
 			let { query } = this.$route
-			let { pageIndex, pageSize } = query
-			//分页组件参数
+			//初始化分页参数
+			let pageIndex = query.pageIndex || queryData.pageIndex
+			let pageSize = query.pageSize || queryData.pageSize
+			//正确化分页参数
 			pageIndex = (pageIndex && parseInt(pageIndex, 10)) || 1
 			pageSize = (pageSize && parseInt(pageSize, 10)) || 10
 			//自定义数据
@@ -21,7 +24,7 @@ export default function (queryData = {}) {
 			Object.keys(queryData).forEach(
 				(key) => (queryObject[key] = query[key] == null || query[key] === '' ? queryData[key] : normalizeString(query[key]))
 			)
-			return { queryObject }
+			return { queryObject, querying }
 		},
 		computed: {
 			queryString() {
@@ -30,9 +33,15 @@ export default function (queryData = {}) {
 		},
 		methods: {
 			replaceQueryObject(object) {
-				if (this.showLoading) this.showLoading()
+				this.showLoading()
 				this.$router.push('?_=' + Date.now() + '&' + qs.stringify(Object.assign({ ...this.queryObject }, object)))
-				if (this.hideLoading) this.$nuxt.$once('routeChanged', this.hideLoading)
+				this.$nuxt.$once('routeChanged', this.hideLoading)
+			},
+			showLoading() {
+				this.querying = true
+			},
+			hideLoading() {
+				this.$nextTick(() => (this.querying = false))
 			}
 		}
 	}

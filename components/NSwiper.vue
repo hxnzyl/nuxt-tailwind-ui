@@ -1,10 +1,7 @@
 <template>
 	<Swiper class="n-swiper rounded-md !ml-0 !mr-0" :options="options">
 		<SwiperSlide v-for="(image, key) in images" :key="key">
-			<NImg v-if="!image.to" class="w-full" :src="image.url"></NImg>
-			<NLink v-else :to="image.to">
-				<NImg class="w-full" :src="image.url"></NImg>
-			</NLink>
+			<NImg class="w-full" :to="image.to" :target="image.target" :src="image.url"></NImg>
 		</SwiperSlide>
 	</Swiper>
 </template>

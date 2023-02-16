@@ -14,7 +14,7 @@
 						: 'text-indigo-500 border-indigo-500'
 				]"
 			>
-				<NLink v-if="tab.to" :to="tab.to" class="block p-4">{{ tab.label }}</NLink>
+				<NLink v-if="tab.to" :to="tab.to" :target="tab.target" class="block p-4">{{ tab.label }}</NLink>
 				<a v-else-if="queryName" :href="`?${queryName}=${tab.value}`" @click.prevent="onChange(tab, key)" class="block p-4">{{ tab.label }}</a>
 				<div v-else class="p-4 cursor-pointer" @click.stop="onChange(tab, key)">{{ tab.label }}</div>
 			</div>

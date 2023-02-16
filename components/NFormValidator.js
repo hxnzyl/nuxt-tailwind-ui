@@ -9,6 +9,10 @@ export default {
 		name: String,
 		//字段显示名
 		label: String,
+		//label类名
+		labelClass: String,
+		//body类名
+		bodyClass: String,
 		//是否必填
 		required: Boolean,
 		//排版方向，默认row
@@ -23,9 +27,13 @@ export default {
 		invalidMessage() {
 			return (this.invalidField && this.invalidField.message) || this.placeholder
 		},
-		//用户未定义时，如果在表单中，使用表单的排版方向
+		//用户未定义时，如果在表单中，使用表单的
 		getDirection() {
 			return this.direction || (this.NForm && this.NForm.direction) || ''
+		},
+		//用户未定义时，如果在表单中，使用表单的
+		getLabelClass() {
+			return this.labelClass || (this.NForm && this.NForm.labelClass) || ''
 		},
 		//校验规则中未定义时不必填
 		getRequired() {

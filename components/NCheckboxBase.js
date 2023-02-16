@@ -20,8 +20,6 @@ export default {
 		uncheckedColor: { type: String, default: 'none' },
 		//大小
 		size: { type: String, default: 'md' },
-		//文本class
-		textboxClass: String,
 		//填充模式
 		fill: Boolean,
 		//禁用状态
@@ -67,12 +65,12 @@ export default {
 	methods: {
 		updateValue(init, value) {
 			this.currentValue = value === this.checkedValue ? this.checkedValue : this.uncheckedValue
-			init || this.$nextTick(() => this.validate('change'))
+			if (init) return
+			this.$emit('change', this.currentValue)
+			if (this.name) this.$nextTick(() => this.validate('change'))
 		},
 		onChange() {
-			this.currentValue = this.checked ? this.uncheckedValue : this.checkedValue
-			this.$emit('change', this.currentValue)
-			this.$nextTick(() => this.validate('change'))
+			this.updateValue(false, this.currentValue)
 		}
 	}
 }
