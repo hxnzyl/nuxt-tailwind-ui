@@ -43,7 +43,7 @@
 						:readonly="readonly"
 					/>
 					<a v-if="clearable" v-show="valueNotEmpty" href="#clear" @click.stop.prevent="clear" class="text-gray-400 hover:text-opacity-50 px-3">
-						<i class="fe fe-close"></i>
+						<NSvg name="x"></NSvg>
 					</a>
 				</div>
 				<slot></slot>

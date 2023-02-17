@@ -21,9 +21,7 @@ export default function (queryData = {}, querying = false) {
 			pageSize = (pageSize && parseInt(pageSize, 10)) || 10
 			//自定义数据
 			let queryObject = { pageIndex, pageSize }
-			Object.keys(queryData).forEach(
-				(key) => (queryObject[key] = query[key] == null || query[key] === '' ? queryData[key] : normalizeString(query[key]))
-			)
+			for (let key in queryData) queryObject[key] = query[key] == null || query[key] === '' ? queryData[key] : normalizeString(query[key])
 			return { queryObject, querying }
 		},
 		computed: {

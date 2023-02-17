@@ -17,9 +17,9 @@ export default {
 		target: String,
 		src: String,
 		scale: Number,
-		imgClass: { type: String, default: 'w-full' },
 		title: String,
 		desc: String,
+		imgClass: { type: String, default: 'w-full' },
 		titleClass: { type: String, default: 'text-blue-500' },
 		descClass: { type: String, default: 'text-gray-400' }
 	}

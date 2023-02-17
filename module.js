@@ -1,7 +1,7 @@
 const { resolve } = require('path')
 
 module.exports = function nuxtTailwindUIModule(moduleOptions = {}) {
-	const { components, tailwindcss, build, tailwindui = {} } = this.options
+	const { components, tailwindcss, tailwindui = {} } = this.options
 	const options = Object.assign({}, moduleOptions, tailwindui)
 
 	// Add tailwindcss components dir
@@ -11,9 +11,15 @@ module.exports = function nuxtTailwindUIModule(moduleOptions = {}) {
 	components.dirs.push(resolve(__dirname, './components'))
 
 	// Add component alias
-	build.extend = (config) => {
+	this.extendBuild((config) => {
+		// Self alias
 		config.resolve.alias['@nuxt-tailwind-ui'] = resolve(__dirname, './')
-	}
+		// Add feather-icons loader
+		const svgRule = config.module.rules.find((rule) => rule.test && rule.test.test('.svg'))
+		// const featherIconsDir = resolve(__dirname, './node_modules/feather-icons/dist/icons')
+		if (svgRule) svgRule.test = /\.(png|jpe?g|gif|webp|avif)$/i
+		config.module.rules.push({ test: /\.svg$/i, use: [{ loader: 'svg-sprite-loader' }] })
+	})
 
 	// Add plugin
 	this.addPlugin({

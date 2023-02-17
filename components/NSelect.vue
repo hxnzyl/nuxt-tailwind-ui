@@ -18,7 +18,9 @@
 				<template v-if="multiple">
 					<div v-for="(opt, key) in currentOption" :key="key" class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5">
 						<span>{{ opt.label }}</span>
-						<a href="#remove" @click.stop.prevent="removeOption(opt, key)" class="hover:text-red-500"><i class="fe fe-close"></i></a>
+						<a href="#remove" @click.stop.prevent="removeOption(opt, key)" class="hover:text-red-500">
+							<NSvg name="x"></NSvg>
+						</a>
 					</div>
 					<span v-show="!currentOption.length" class="text-gray-400 select-none">{{ placeholder }}</span>
 				</template>
@@ -28,10 +30,10 @@
 				</template>
 			</div>
 			<a v-if="clearable" v-show="valueNotEmpty" href="#clear" @click.stop.prevent="clear" class="text-gray-400 hover:text-opacity-50 px-3">
-				<i class="fe fe-close"></i>
+				<NSvg name="x"></NSvg>
 			</a>
-			<a href="#arrow" @click.prevent="" class="text-gray-500">
-				<i class="fe fe-arrow-right transition direction-500" :class="{ 'rotate-90': currentVisible }"></i>
+			<a href="#chevron" @click.prevent="" class="text-gray-500">
+				<NSvg name="chevron-right" class="transition direction-500" :class="{ 'rotate-90': currentVisible }"></NSvg>
 			</a>
 			<div
 				v-show="currentVisible"
@@ -39,11 +41,8 @@
 				class="absolute z-10 w-full"
 				:class="{
 					'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
-					'top-1/2 -translate-y-2/4': position == 'left' || position == 'right',
 					'top-full pt-2': position == 'bottom',
-					'bottom-full pb-2': position == 'top',
-					'right-full pr-2': position == 'left',
-					'right-full pl-2': position == 'left'
+					'bottom-full pb-2': position == 'top'
 				}"
 			>
 				<slot name="options">
@@ -94,22 +93,11 @@
 			class="absolute z-20 text-gray-100"
 			:class="{
 				'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
-				'top-1/2 -translate-y-2/4': position == 'left' || position == 'right',
-				'top-full -mt-1.5': position == 'bottom',
-				'bottom-full -mb-1.5': position == 'top',
-				'right-full mr-1': position == 'left',
-				'left-full ml-1': position == 'right'
+				'top-full -mt-0.5': position == 'bottom',
+				'bottom-full -mb-0.5': position == 'top'
 			}"
 		>
-			<i
-				class="fe"
-				:class="{
-					'fe-drop-up': position == 'bottom',
-					'fe-drop-down': position == 'top',
-					'fe-drop-right': position == 'left',
-					'fe-drop-left': position == 'right'
-				}"
-			></i>
+			<NSvg :name="{ 'drop-up': position == 'bottom', 'drop-down': position == 'top' }"></NSvg>
 		</div>
 		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}

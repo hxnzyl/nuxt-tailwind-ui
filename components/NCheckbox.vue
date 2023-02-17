@@ -18,7 +18,7 @@
 			</div>
 			<div class="flex grow items-center gap-2">
 				<div class="flex items-center justify-center pt-px" :class="checkboxClass">
-					<i v-show="checked" class="fe fe-check"></i>
+					<NSvg v-show="checked" name="check"></NSvg>
 				</div>
 				<div class="flex items-center grow" :class="bodyClass">
 					<slot v-bind="{ disabled }"></slot>

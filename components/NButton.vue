@@ -16,9 +16,11 @@
 
 <script>
 import tailwindui from './tailwindui'
+import loading from '../mixins/loading'
 
 export default {
 	name: 'NButton',
+	mixins: [loading],
 	props: {
 		//按钮大小
 		size: { type: String, default: 'md' },
@@ -32,8 +34,6 @@ export default {
 		plain: Boolean,
 		//是否禁用
 		disabled: Boolean,
-		//是否加载中
-		loading: Boolean,
 		//按钮文本
 		text: String,
 		//链接按钮

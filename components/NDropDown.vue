@@ -4,7 +4,7 @@
 			<span>{{ label }}</span>
 		</slot>
 		<slot v-if="arrow && menus && menus.length" name="icons">
-			<i class="fe fe-arrow-down ml-2"></i>
+			<NSvg name="chevron-down" class="ml-2"></NSvg>
 		</slot>
 		<div
 			v-show="currentVisible"
@@ -57,21 +57,20 @@
 			:class="{
 				'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
 				'top-1/2 -translate-y-2/4': position == 'left' || position == 'right',
-				'top-full -mt-1.5': position == 'bottom',
-				'bottom-full -mb-1.5': position == 'top',
-				'right-full mr-1': position == 'left',
-				'left-full ml-1': position == 'right'
+				'top-full -mt-0.5': position == 'bottom',
+				'bottom-full -mb-0.5': position == 'top',
+				'right-full': position == 'left',
+				'left-full': position == 'right'
 			}"
 		>
-			<i
-				class="fe"
-				:class="{
-					'fe-drop-up': position == 'bottom',
-					'fe-drop-down': position == 'top',
-					'fe-drop-right': position == 'left',
-					'fe-drop-left': position == 'right'
+			<NSvg
+				:name="{
+					'drop-up': position == 'bottom',
+					'drop-down': position == 'top',
+					'drop-right': position == 'left',
+					'drop-left': position == 'right'
 				}"
-			></i>
+			></NSvg>
 		</div>
 	</div>
 </template>
