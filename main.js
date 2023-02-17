@@ -4,14 +4,9 @@ const featherIconsFiles = require.context('feather-icons/dist/icons', false, /\.
 // Extends icons svg
 const extendsIconsFiles = require.context('./icons', false, /\.svg$/)
 
-// Project svg
-const projectSvgFiles = require.context('@/assets/svg', false, /\.svg$/)
-
 const svgImport = (context) => context.keys().map(context)
-
 svgImport(featherIconsFiles)
 svgImport(extendsIconsFiles)
-svgImport(projectSvgFiles)
 
 const pluginFiles = require.context('./plugins', true, /\.js$/)
 const componentFiles = require.context('./components', true, /\.vue$/)
