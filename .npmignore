@@ -4,3 +4,7 @@ package-lock.json
 *.dev.js
 .eslintignore
 .eslintrc.js
+.env
+.nuxt
+pages
+layouts

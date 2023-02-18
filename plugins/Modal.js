@@ -10,10 +10,10 @@ function NModalPlugin() {
 	this.name = '$nModal'
 }
 
-function createNModal(plugin, component) {
+function createNModal(plugin, component, propsData) {
 	if (plugin.component) return plugin.component
 	const VueExtend = Vue.extend(NModalComponents[component])
-	plugin.component = new VueExtend().$mount()
+	plugin.component = new VueExtend({ propsData }).$mount()
 	plugin.component.$once('hide', () => {
 		if (plugin.component) {
 			document.body.removeChild(plugin.component.$el)
@@ -26,18 +26,18 @@ function createNModal(plugin, component) {
 }
 
 NModalPlugin.prototype = {
-	show(...args) {
-		createNModal(this, 'NModalNormal').show.apply(null, args)
+	show(...props) {
+		createNModal(this, 'NModalNormal', props).show()
 	},
 	hide() {
 		if (this.component) this.component.hide(), (this.component = null)
 	},
 	confirm() {},
-	success(...args) {
-		createNModal(this, 'NModalSuccess').show.apply(null, args)
+	success(...props) {
+		createNModal(this, 'NModalSuccess', props).show()
 	},
 	error(...args) {
-		createNModal(this, 'NModalError').show.apply(null, args)
+		createNModal(this, 'NModalError', props).show()
 	},
 	warn() {},
 	info() {}

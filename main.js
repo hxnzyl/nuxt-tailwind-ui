@@ -1,32 +1,39 @@
+//#region Require svg
 // feather icons svg
 const featherIconsFiles = require.context('feather-icons/dist/icons', false, /\.svg$/)
+featherIconsFiles.keys().map(featherIconsFiles)
 
 // Extends icons svg
-const extendsIconsFiles = require.context('./icons', false, /\.svg$/)
+const extendsIconsFiles = require.context('./assets/svg', false, /\.svg$/)
+extendsIconsFiles.keys().map(extendsIconsFiles)
+//#endregion Require svg
 
-const svgImport = (context) => context.keys().map(context)
-svgImport(featherIconsFiles)
-svgImport(extendsIconsFiles)
+//#region Require plugins
+const plugins = {}
 
 const pluginFiles = require.context('./plugins', true, /\.js$/)
-const componentFiles = require.context('./components', true, /\.vue$/)
-const aliasComponentsFiles = require.context('./aliasComponents', true, /\.js$/)
+pluginFiles.keys().forEach((path, plugin) => ((plugin = pluginFiles(path).default), (plugins[plugin.name] = plugin)))
+//#endregion Require plugins
 
-const injectPlugins = pluginFiles.keys().reduce((plugins, path) => plugins.concat(pluginFiles(path).default), [])
+//#region Require components
+const components = {}
 
-const exportComponents = {
+// ui components
+const componentsFiles = require.context('./components', true, /\.vue$/)
+componentsFiles.keys().forEach((path, component) => ((component = componentsFiles(path).default), (components[component.name] = component)))
+
+// alias components
+const aliasesFiles = require.context('./aliasComponents', true, /\.js$/)
+aliasesFiles.keys().forEach((path, component) => ((component = aliasesFiles(path).default), (components[component.name] = component)))
+//#endregion Require components
+
+export default {
+	// import { ComponentName } from 'nuxt-tailwind-ui'
+	...components,
+	// import NuxtTailwindUI from 'nuxt-tailwind-ui'
+	// Vue.use(NuxtTailwindUI)
 	install(Vue) {
-		injectPlugins.forEach((Plugin, plugin) => ((plugin = new Plugin()), (Vue.prototype[plugin.name] = plugin)))
-		Object.keys(exportComponents).forEach((name, index) => index && Vue.component(name, exportComponents[name]))
+		for (let name in components) Vue.component(name, components[name])
+		for (let name in plugins) Vue.prototype[name] = plugins[name]
 	}
 }
-
-aliasComponentsFiles
-	.keys()
-	.forEach((path, component) => ((component = aliasComponentsFiles(path).default), (exportComponents[component.name] = component)))
-
-componentFiles
-	.keys()
-	.forEach((path, component) => ((component = componentFiles(path).default), (exportComponents[component.name] = component)))
-
-export default exportComponents
