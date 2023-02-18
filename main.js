@@ -1,8 +1,4 @@
 //#region Require svg
-// feather icons svg
-const featherIconsFiles = require.context('feather-icons/dist/icons', false, /\.svg$/)
-featherIconsFiles.keys().map(featherIconsFiles)
-
 // Extends icons svg
 const extendsIconsFiles = require.context('./app/svg', false, /\.svg$/)
 extendsIconsFiles.keys().map(extendsIconsFiles)

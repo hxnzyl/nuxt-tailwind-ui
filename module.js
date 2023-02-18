@@ -16,7 +16,6 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 	const rootDir = resolve(__dirname, './')
 	const svgDir = resolve(__dirname, './app/svg')
 	const componentsDir = resolve(__dirname, './components')
-	const featherIconsDir = resolve(__dirname, './node_modules/feather-icons/dist/icons')
 
 	// Combine options
 	const moduleOptions = {
@@ -28,7 +27,11 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 	// Apply defaults
 	const options = defu(moduleOptions, {
 		svg: {
-			preload: [],
+			//开启预加载后,loader.include中的文件将被require
+			preload: true,
+			//开启预加载后,preloadFiles中的文件将被require
+			preloadFiles: [],
+			//svg加载器
 			loader: {
 				//Include Dirs
 				// include: null,
@@ -39,22 +42,28 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 	})
 
 	// Resolve svg include
-	const svgIncludes = (options.svg.loader.include || []).map((dir) => resolver.resolveAlias(dir))
-	if (svgIncludes && svgIncludes.length > 0) {
+	const svgIncludes = ['node_modules/feather-icons/dist/icons']
+		.concat(options.svg.loader.include || [])
+		.map((dir) => resolver.resolveAlias(dir))
+	if (options.svg.preload) {
 		this.nuxt.hook('builder:prepared', async (builder) => {
 			for (let i = 0, l = svgIncludes.length; i < l; i++) {
 				let svgs = await glob(svgIncludes[i] + '/**/*.svg')
 				if (svgs && svgs.length > 0) {
-					options.svg.preload = options.svg.preload.concat(
-						svgs.map((svg) => relativeTo(resolver.options.rootDir, svg).replace(/\\+/g, '/'))
+					options.svg.preloadFiles = options.svg.preloadFiles.concat(
+						svgs.map((svg) =>
+							relativeTo(resolver.options.rootDir, svg)
+								.replace(/\\+/g, '/')
+								// -> node_modules
+								.replace('./node_modules/', '')
+								// -> @
+								.replace('./', '../')
+						)
 					)
 				}
 			}
 		})
 	}
-
-	// Add component dir
-	// components.dirs.push(componentsDir)
 
 	// Add tailwindcss components dir
 	const componentsGlob = [componentsDir + '/**/*.{js,vue}', rootDir + '/utils/tailwindui.js']
@@ -80,7 +89,7 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 			use: [{ loader: 'svg-sprite-loader' }],
 			test: /\.svg$/i,
 			...options.svg.loader,
-			include: [svgDir, featherIconsDir].concat(svgIncludes)
+			include: svgIncludes.concat(svgDir)
 		})
 	})
 
