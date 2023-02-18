@@ -48,7 +48,7 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 	if (options.svg.preload) {
 		this.nuxt.hook('builder:prepared', async (builder) => {
 			for (let i = 0, l = svgIncludes.length; i < l; i++) {
-				let svgs = await glob(svgIncludes[i] + '/**/*.svg')
+				let svgs = await glob(svgIncludes[i].replace(/\\/g, '/') + '/**/*.svg')
 				if (svgs && svgs.length > 0) {
 					options.svg.preloadFiles = options.svg.preloadFiles.concat(
 						svgs.map((svg) =>
