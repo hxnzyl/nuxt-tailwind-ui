@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import tailwindui from './tailwindui'
+import tailwindui from '../utils/tailwindui'
 
 export default {
 	name: 'NSvg',
 	props: {
-		name: Object,
+		name: [Object, String],
 		size: { type: String, default: 'md' },
 		color: { type: String, default: 'current' }
 	},
@@ -23,7 +23,7 @@ export default {
 				case 'string':
 					return '#' + this.name
 				case 'object':
-					for (let key in this.name) if (this.name[key]) return '#' + key
+					for (let name in this.name) if (this.name[name]) return '#' + name
 					break
 			}
 		}

@@ -7,6 +7,6 @@
 </template>
 
 <script>
-import mixin from './NModalBase'
-export default { name: 'NModalSuccess', mixins: [mixin] }
+import modal from '../mixins/modal'
+export default { name: 'NModalSuccess', extends: modal }
 </script>

@@ -77,7 +77,7 @@
 
 <script>
 import visible from '../mixins/visible'
-import tailwindui from './tailwindui'
+import tailwindui from '../utils/tailwindui'
 
 export default {
 	name: 'NDropDown',

@@ -176,10 +176,56 @@ export default {
 	},
 	/**
 	 * 格子布局
+	 *
+	 * @param {Number|Boolean|String} scale
+	 * @returns {String}
 	 */
 	grid(grid) {
-		if (grid == 2) return 'grid grid-cols-2'
-		if (grid == 3) return 'grid grid-cols-3'
-		if (grid == 4) return 'grid grid-cols-4'
+		switch (typeof grid) {
+			case 'boolean':
+				return grid ? 'grid grid-cols-2' : ''
+			case 'number':
+				if (grid == 2) return 'grid grid-cols-2'
+				if (grid == 3) return 'grid grid-cols-3'
+				if (grid == 4) return 'grid grid-cols-4'
+				return ''
+			case 'string':
+				return grid
+		}
+		return ''
+	},
+	/**
+	 * 粘性布局
+	 *
+	 * @param {Boolean|String} scale
+	 * @returns {String}
+	 */
+	sticky(sticky) {
+		switch (typeof sticky) {
+			case 'boolean':
+				return sticky ? 'sticky z-50 top-0' : ''
+			case 'string':
+				return sticky
+		}
+		return ''
+	},
+	/**
+	 * 盒阴影
+	 *
+	 * @param {Boolean|String} scale
+	 * @returns {String}
+	 */
+	shadow(shadow) {
+		switch (typeof shadow) {
+			case 'boolean':
+				return shadow ? 'shadow' : ''
+			case 'string':
+				if (shadow == 'sm') return 'shadow-sm'
+				if (shadow == 'md') return 'shadow-md'
+				if (shadow == 'lg') return 'shadow-lg'
+				if (shadow == 'xl') return 'shadow-xl'
+				return shadow
+		}
+		return ''
 	}
 }

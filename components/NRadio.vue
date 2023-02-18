@@ -14,6 +14,6 @@
 </template>
 
 <script>
-import NCheckboxBase from './NCheckboxBase'
-export default { name: 'NRadio', extends: NCheckboxBase }
+import checkbox from '../mixins/checkbox'
+export default { name: 'NRadio', extends: checkbox }
 </script>

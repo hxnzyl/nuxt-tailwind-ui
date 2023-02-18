@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import tailwindui from './tailwindui'
+import tailwindui from '../utils/tailwindui'
 import loading from '../mixins/loading'
 
 export default {

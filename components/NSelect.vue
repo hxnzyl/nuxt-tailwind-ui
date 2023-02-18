@@ -106,14 +106,14 @@
 </template>
 
 <script>
-import NFormValidator from './NFormValidator'
+import form from '../mixins/form'
 import visible from '../mixins/visible'
 import clearable from '../mixins/clearable'
-import tailwindui from './tailwindui'
+import tailwindui from '../utils/tailwindui'
 
 export default {
 	name: 'NSelect',
-	mixins: [NFormValidator, visible, clearable],
+	mixins: [form, visible, clearable],
 	model: {
 		prop: 'value',
 		event: 'change'

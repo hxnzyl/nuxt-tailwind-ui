@@ -4,7 +4,7 @@ const featherIconsFiles = require.context('feather-icons/dist/icons', false, /\.
 featherIconsFiles.keys().map(featherIconsFiles)
 
 // Extends icons svg
-const extendsIconsFiles = require.context('./assets/svg', false, /\.svg$/)
+const extendsIconsFiles = require.context('./app/svg', false, /\.svg$/)
 extendsIconsFiles.keys().map(extendsIconsFiles)
 //#endregion Require svg
 
@@ -20,11 +20,15 @@ const components = {}
 
 // ui components
 const componentsFiles = require.context('./components', true, /\.vue$/)
-componentsFiles.keys().forEach((path, component) => ((component = componentsFiles(path).default), (components[component.name] = component)))
+componentsFiles
+	.keys()
+	.forEach((path, component) => ((component = componentsFiles(path).default), (components[component.name] = component)))
 
 // alias components
 const aliasesFiles = require.context('./aliasComponents', true, /\.js$/)
-aliasesFiles.keys().forEach((path, component) => ((component = aliasesFiles(path).default), (components[component.name] = component)))
+aliasesFiles
+	.keys()
+	.forEach((path, component) => ((component = aliasesFiles(path).default), (components[component.name] = component)))
 //#endregion Require components
 
 export default {

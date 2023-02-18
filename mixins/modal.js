@@ -1,4 +1,4 @@
-import visible from '../mixins/visible'
+import visible from './visible'
 
 export default {
 	mixins: [visible],

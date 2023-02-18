@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import tailwindui from './tailwindui'
+import tailwindui from '../utils/tailwindui'
 
 export default {
 	name: 'NImg',

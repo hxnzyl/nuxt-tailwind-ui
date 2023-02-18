@@ -1,8 +1,8 @@
-import NFormValidator from './NFormValidator'
-import tailwindui from './tailwindui'
+import form from './form'
+import tailwindui from '../utils/tailwindui'
 
 export default {
-	mixins: [NFormValidator],
+	mixins: [form],
 	model: {
 		prop: 'value',
 		event: 'change'

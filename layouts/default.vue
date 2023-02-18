@@ -1,21 +1,6 @@
 <template>
 	<div class="relative flex flex-col min-h-screen items-center bg-gray-50 subpixel-antialiased">
-		<div class="sticky z-50 top-0 flex items-center w-full px-10 py-4 transition duration-500 text-black bg-gray-100 shadow">
-			<nav class="flex flex-grow ml-4">
-				<div v-for="(menu, key) in navMenus" :key="key" class="px-8 relative">
-					<NLink v-if="!menu.children" :to="menu.to" class="hover:font-bold" :class="{ 'font-bold': $route.path === menu.to }">
-						{{ menu.label }}
-					</NLink>
-					<NDropDown v-else :menus="menu.children">
-						<template slot="label" slot-scope="{ isActived }">
-							<a href="#menu" @click.prevent="" class="hover:font-bold" :class="{ 'font-bold': isActived(menu) }">
-								{{ menu.label }}
-							</a>
-						</template>
-					</NDropDown>
-				</div>
-			</nav>
-		</div>
+		<NNav :menus="navMenus"></NNav>
 		<Nuxt ref="container" class="flex grow" />
 		<div class="flex flex-col w-full">
 			<div class="flex flex-row justify-between bg-gray-200 px-24 py-12">

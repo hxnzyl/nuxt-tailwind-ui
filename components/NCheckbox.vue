@@ -32,6 +32,6 @@
 </template>
 
 <script>
-import NCheckboxBase from './NCheckboxBase'
-export default { name: 'NCheckbox', extends: NCheckboxBase }
+import checkbox from '../mixins/checkbox'
+export default { name: 'NCheckbox', extends: checkbox }
 </script>

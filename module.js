@@ -1,12 +1,20 @@
-const { resolve } = require('path')
-const { defu } = require('defu')
+import { resolve } from 'path'
+import defu from 'defu'
+
+import Glob from 'glob'
+import pify from 'pify'
+
+import { relativeTo } from '@nuxt/utils'
+
+const glob = pify(Glob)
 
 module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
-	const { runtimeConfig, components, tailwindcss, tailwindui = {} } = this.options
+	const { runtimeConfig, tailwindcss, tailwindui = {} } = this.options
+	const { resolver } = this.nuxt
 
 	// Resolve dir
 	const rootDir = resolve(__dirname, './')
-	const svgDir = resolve(__dirname, './assets/svg')
+	const svgDir = resolve(__dirname, './app/svg')
 	const componentsDir = resolve(__dirname, './components')
 	const featherIconsDir = resolve(__dirname, './node_modules/feather-icons/dist/icons')
 
@@ -20,25 +28,43 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 	// Apply defaults
 	const options = defu(moduleOptions, {
 		svg: {
-			//Include Dirs
-			// include: null,
-			//Exclude Dirs
-			// exclude: null
+			preload: [],
+			loader: {
+				//Include Dirs
+				// include: null,
+				//Exclude Dirs
+				// exclude: null
+			}
 		}
 	})
 
+	// Resolve svg include
+	const svgIncludes = (options.svg.loader.include || []).map((dir) => resolver.resolveAlias(dir))
+	if (svgIncludes && svgIncludes.length > 0) {
+		this.nuxt.hook('builder:prepared', async (builder) => {
+			for (let i = 0, l = svgIncludes.length; i < l; i++) {
+				let svgs = await glob(svgIncludes[i] + '/**/*.svg')
+				if (svgs && svgs.length > 0) {
+					options.svg.preload = options.svg.preload.concat(
+						svgs.map((svg) => relativeTo(resolver.options.rootDir, svg).replace(/\\+/g, '/'))
+					)
+				}
+			}
+		})
+	}
+
 	// Add component dir
-	components.dirs.push(componentsDir)
+	// components.dirs.push(componentsDir)
 
 	// Add tailwindcss components dir
-	const componentsGlob = componentsDir + '/**/*.{js,vue}'
+	const componentsGlob = [componentsDir + '/**/*.{js,vue}', rootDir + '/utils/tailwindui.js']
 	if (tailwindcss) {
 		let purge = tailwindcss.config && tailwindcss.config.purge
 		tailwindcss.config.purge = (purge || []).concat(componentsGlob)
 	} else {
 		this.options.tailwindcss = {
 			config: {
-				purge: [componentsGlob]
+				purge: componentsGlob
 			}
 		}
 	}
@@ -53,8 +79,8 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 		config.module.rules.push({
 			use: [{ loader: 'svg-sprite-loader' }],
 			test: /\.svg$/i,
-			...options.svg,
-			include: [svgDir, featherIconsDir].concat(options.svg.include || [])
+			...options.svg.loader,
+			include: [svgDir, featherIconsDir].concat(svgIncludes)
 		})
 	})
 

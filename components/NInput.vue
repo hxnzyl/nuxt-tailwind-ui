@@ -56,13 +56,13 @@
 </template>
 
 <script>
-import NFormValidator from './NFormValidator'
-import tailwindui from './tailwindui'
+import form from '../mixins/form'
+import tailwindui from '../utils/tailwindui'
 import clearable from '../mixins/clearable'
 
 export default {
 	name: 'NInput',
-	mixins: [NFormValidator, clearable],
+	mixins: [form, clearable],
 	model: {
 		prop: 'value',
 		event: 'input'

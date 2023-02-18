@@ -38,8 +38,16 @@ export default {
 	// tailwindcss Defaults options
 	tailwindcss: {
 		config: {
-			purge: ['./components/**/*.{js,vue}', './layouts/**/*.vue', './pages/**/*.vue', './plugins/**/*.js', './nuxt.config.js'],
-			darkMode: 'class', // or 'media' or 'class'
+			purge: [
+				'./components/**/*.{js,vue}',
+				'./layouts/**/*.vue',
+				'./pages/**/*.vue',
+				'./plugins/**/*.js',
+				'./tailwindui.js',
+				'./nuxt.config.js'
+			],
+			// or 'media' or 'class'
+			// darkMode: 'class',
 			variants: {
 				extend: {}
 			},
@@ -56,10 +64,7 @@ export default {
 	},
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
-	components: {
-		//省略目录
-		dirs: ['./components']
-	},
+	components: {},
 
 	// Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
 	buildModules: [

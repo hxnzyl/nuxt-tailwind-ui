@@ -10,6 +10,6 @@
 </template>
 
 <script>
-import mixin from './NModalBase'
-export default { name: 'NModalError', mixins: [mixin] }
+import modal from '../mixins/modal'
+export default { name: 'NModalError', extends: modal }
 </script>
