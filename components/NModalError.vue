@@ -1,10 +1,10 @@
 <template>
 	<NModal v-model="currentVisible" v-bind="$props">
 		<div slot="body" class="flex gap-2 text-red-500">
-			<div class="text-lg">
-				<NSvg name="alert-triangle"></NSvg>
-			</div>
-			<p class="break-all">{{ currentMessage }}</p>
+			<NSvg name="alert-triangle" size="lg"></NSvg>
+			<p class="break-all text-base">
+				{{ currentMessage }}
+			</p>
 		</div>
 	</NModal>
 </template>

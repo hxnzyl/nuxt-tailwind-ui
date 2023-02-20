@@ -13,9 +13,9 @@ export default {
 		if (size == 'none' || size == 'custom') return ''
 		if (size == 'xs') return 'px-2 py-px text-xs'
 		if (size == 'sm') return 'px-3 py-1 text-sm'
-		if (size == 'md') return 'px-4 py-2 text-base'
-		if (size == 'lg') return 'px-8 py-2.5 text-lg'
-		if (size == 'xl') return 'px-12 py-3 text-xl'
+		if (size == 'md') return 'px-4 py-1.5 text-base'
+		if (size == 'lg') return 'px-8 py-2 text-lg'
+		if (size == 'xl') return 'px-12 py-2.5 text-xl'
 	},
 	/**
 	 * 多选框大小（checkbox,radio）

@@ -1,10 +1,10 @@
 <template>
-	<div ref="root" class="n-dropdown flex relative items-center" @mouseenter="show" @mouseleave="leave">
+	<div ref="root" class="n-dropdown flex gap-2 relative items-center" @mouseenter="show" @mouseleave="leave">
 		<slot name="label" v-bind="{ menu: currentMenu, index: currentIndex, isActived }">
 			<span>{{ label }}</span>
 		</slot>
 		<slot v-if="arrow && menus && menus.length" name="icons">
-			<NSvg name="chevron-down" class="ml-2"></NSvg>
+			<NSvg name="chevron-down"></NSvg>
 		</slot>
 		<div
 			v-show="currentVisible"
@@ -33,7 +33,9 @@
 							:to="menu.to"
 							:target="menu.target"
 							class="block px-4 py-2 text-sm min-w-max transition"
-							:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
+							:class="
+								isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
+							"
 						>
 							{{ menu.label }}
 						</NLink>
@@ -41,7 +43,9 @@
 							v-else
 							:key="key"
 							class="px-4 py-2 text-sm min-w-max transition"
-							:class="isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
+							:class="
+								isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
+							"
 							@click.stop="onChange(menu, key)"
 						>
 							{{ menu.label }}

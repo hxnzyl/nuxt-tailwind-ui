@@ -1,18 +1,14 @@
 import Vue from 'vue'
-import NModalNormal from '../components/NModal'
-import NModalError from '../components/NModalError'
-import NModalSuccess from '../components/NModalSuccess'
-
-const NModalComponents = { NModalNormal, NModalError, NModalSuccess }
+import NModal from '../components/NModal'
 
 function NModalPlugin() {
 	this.component = null
 	this.name = '$nModal'
 }
 
-function createNModal(plugin, component, propsData) {
+function createNModal(plugin, propsData) {
 	if (plugin.component) return plugin.component
-	const VueExtend = Vue.extend(NModalComponents[component])
+	const VueExtend = Vue.extend(NModal)
 	plugin.component = new VueExtend({ propsData }).$mount()
 	plugin.component.$once('hide', () => {
 		if (plugin.component) {
@@ -26,18 +22,18 @@ function createNModal(plugin, component, propsData) {
 }
 
 NModalPlugin.prototype = {
-	show(...props) {
-		createNModal(this, 'NModalNormal', props).show()
+	show(title, message) {
+		createNModal(this, { title, message }).show()
 	},
 	hide() {
 		if (this.component) this.component.hide(), (this.component = null)
 	},
 	confirm() {},
-	success(...props) {
-		createNModal(this, 'NModalSuccess', props).show()
+	success(title, message) {
+		createNModal(this, { title, message, icon: 'check-circle', bodyClass: 'gap-4 text-green-500' }).show()
 	},
-	error(...args) {
-		createNModal(this, 'NModalError', props).show()
+	error(title, message) {
+		createNModal(this, { title, message, icon: 'alert-triangle', bodyClass: 'gap-4 text-red-500' }).show()
 	},
 	warn() {},
 	info() {}

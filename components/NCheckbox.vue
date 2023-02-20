@@ -2,7 +2,7 @@
 	<div
 		class="n-checkbox flex items-center text-gray-500"
 		:class="{ 'text-opacity-50 pointer-events-none': disabled, 'flex-col': getDirection == 'col', relative: getDirection == 'row' }"
-		@click="onChange"
+		@click.stop="onChange"
 	>
 		<div class="flex w-full cursor-pointer" :class="{ 'flex-col gap-2': getDirection == 'col' }">
 			<div class="flex items-center" :class="{ 'justify-between': getDirection == 'col' }">

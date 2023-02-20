@@ -139,13 +139,13 @@ export default {
 			if (value !== this.currentValue) this.$emit('input', value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
-		onFocus(event) {
+		onFocus() {
 			this.$emit('focus', this.currentValue)
 			this.focusing = true
 			this.bluring = false
 			if (this.name) this.validate('focus')
 		},
-		onBlur(event) {
+		onBlur() {
 			this.$emit('blur', this.currentValue)
 			this.focusing = false
 			this.bluring = true

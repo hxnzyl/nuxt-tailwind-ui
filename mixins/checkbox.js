@@ -44,7 +44,9 @@ export default {
 			return [
 				tailwindui.checkboxSize(this.size),
 				this.fill && this.checked ? '' : 'border',
-				this.fill ? tailwindui.bgColor(this.invalidColor, this.disabled) : tailwindui.borderColor(this.invalidColor, this.disabled),
+				this.fill
+					? tailwindui.bgColor(this.invalidColor, this.disabled)
+					: tailwindui.borderColor(this.invalidColor, this.disabled),
 				tailwindui.textColor(this.invalidColor, this.disabled)
 			]
 		}
@@ -70,7 +72,9 @@ export default {
 			if (this.name) this.$nextTick(() => this.validate('change'))
 		},
 		onChange() {
-			this.updateValue(false, this.currentValue)
+			this.currentValue = this.checked ? this.uncheckedValue : this.checkedValue
+			this.$emit('change', this.currentValue)
+			if (this.name) this.$nextTick(() => this.validate('change'))
 		}
 	}
 }

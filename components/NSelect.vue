@@ -16,7 +16,11 @@
 		<div class="relative flex items-center grow" @click.stop="show" @mouseleave="leave" :class="selectClass">
 			<div class="flex flex-wrap grow gap-2">
 				<template v-if="multiple">
-					<div v-for="(opt, key) in currentOption" :key="key" class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5">
+					<div
+						v-for="(opt, key) in currentOption"
+						:key="key"
+						class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5"
+					>
 						<span>{{ opt.label }}</span>
 						<a href="#remove" @click.stop.prevent="removeOption(opt, key)" class="hover:text-red-500">
 							<NSvg name="x"></NSvg>
@@ -29,7 +33,13 @@
 					<span v-show="!currentOption.label" class="text-gray-400 select-none">{{ placeholder }}</span>
 				</template>
 			</div>
-			<a v-if="clearable" v-show="valueNotEmpty" href="#clear" @click.stop.prevent="clear" class="text-gray-400 hover:text-opacity-50 px-3">
+			<a
+				v-if="clearable"
+				v-show="valueNotEmpty"
+				href="#clear"
+				@click.stop.prevent="clear"
+				class="text-gray-400 hover:text-opacity-50 px-3"
+			>
 				<NSvg name="x"></NSvg>
 			</a>
 			<a href="#chevron" @click.prevent="" class="text-gray-500">
@@ -49,13 +59,20 @@
 					<!-- 多列 -->
 					<div v-if="Array.isArray(options[0])" class="flex flex-col rounded-md bg-white shadow-lg bg-gray-100">
 						<h6 class="px-4 pt-2 text-lg text-gray-900 font-medium">{{ text }}</h6>
-						<div v-if="options[0].length > 0" class="flex max-h-96 overflow-y-auto" :class="{ 'divide-y': multiple }" @mousewheel.stop="">
+						<div
+							v-if="options[0].length > 0"
+							class="flex max-h-96 overflow-y-auto"
+							:class="{ 'divide-y': multiple }"
+							@mousewheel.stop=""
+						>
 							<div v-for="(optionList, key1) in options" :key="key1" class="w-1/2 py-1.5">
 								<div
 									v-for="(option, key2) in optionList"
 									:key="key2"
 									class="px-6 py-2 text-sm min-w-max transition"
-									:class="isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
+									:class="
+										isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
+									"
 									@click.stop="onChange(option, key2)"
 								>
 									{{ option.label }}
@@ -76,7 +93,9 @@
 							v-for="(option, key) in options"
 							:key="key"
 							class="px-6 py-2 text-sm min-w-max transition"
-							:class="isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'"
+							:class="
+								isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
+							"
 							@click.stop="onChange(option, key)"
 						>
 							{{ option.label }}
@@ -178,24 +197,27 @@ export default {
 			if (this.multiple) {
 				if (typeof value === 'string') value = value.split(',')
 				else if (value == null) value = []
-				this.currentOption = this.options.filter(init && !value.length ? this.isActived : (option) => value.includes(option.value))
+				this.currentOption = this.options.filter(
+					init && !value.length ? this.isActived : (option) => value.includes(option.value)
+				)
 				this.currentValue = this.currentOption.map((opt) => opt.value)
+				init || this.$emit('change', this.propValueType === 'string' ? this.currentValue.join(',') : this.currentValue)
 			} else {
 				let index = this.options.findIndex(init && value == null ? this.isActived : (option) => option.value === value)
 				let option = this.options[index] || {}
 				this.currentIndex = index
 				this.currentOption = option
 				this.currentValue = option.value == null ? this.getDefaultValue() : option.value
+				init || this.$emit('change', this.currentValue)
 			}
-			init || this.$nextTick(() => this.validate('change'))
+			if (!init && this.name) this.$nextTick(() => this.validate('change'))
 		},
 		onChange(option, index) {
 			if (this.multiple) {
 				if ((index = this.currentValue.indexOf(option.value)) === -1) this.addOption(option)
 				else this.removeOption(option, index)
 				this.hide()
-				if (this.propValueType === 'string') this.$emit('change', this.currentValue.join(','))
-				else this.$emit('change', this.currentValue)
+				this.$emit('change', this.propValueType === 'string' ? this.currentValue.join(',') : this.currentValue)
 			} else {
 				this.currentIndex = index
 				this.currentOption = option
@@ -203,7 +225,7 @@ export default {
 				this.hide()
 				this.$emit('change', this.currentValue)
 			}
-			this.$nextTick(() => this.validate('change'))
+			if (this.name) this.$nextTick(() => this.validate('change'))
 		},
 		isActived(option, index) {
 			if (this.multiple) {

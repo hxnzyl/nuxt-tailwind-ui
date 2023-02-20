@@ -8,7 +8,7 @@ extendsIconsFiles.keys().map(extendsIconsFiles)
 const plugins = {}
 
 const pluginFiles = require.context('./plugins', true, /\.js$/)
-pluginFiles.keys().forEach((path, plugin) => ((plugin = pluginFiles(path).default), (plugins[plugin.name] = plugin)))
+pluginFiles.keys().forEach((path, plugin) => ((plugin = new (pluginFiles(path).default)()), (plugins[plugin.name] = plugin)))
 //#endregion Require plugins
 
 //#region Require components
@@ -16,15 +16,11 @@ const components = {}
 
 // ui components
 const componentsFiles = require.context('./components', true, /\.vue$/)
-componentsFiles
-	.keys()
-	.forEach((path, component) => ((component = componentsFiles(path).default), (components[component.name] = component)))
+componentsFiles.keys().forEach((path, component) => ((component = componentsFiles(path).default), (components[component.name] = component)))
 
 // alias components
 const aliasesFiles = require.context('./aliasComponents', true, /\.js$/)
-aliasesFiles
-	.keys()
-	.forEach((path, component) => ((component = aliasesFiles(path).default), (components[component.name] = component)))
+aliasesFiles.keys().forEach((path, component) => ((component = aliasesFiles(path).default), (components[component.name] = component)))
 //#endregion Require components
 
 export default {

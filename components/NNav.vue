@@ -1,5 +1,5 @@
 <template>
-	<div class="flex items-center gap-4 w-full px-10 py-4" :class="navClass">
+	<div class="flex items-center gap-4 w-full px-10 py-4 transtion duration-500" :class="navClass">
 		<slot name="left"></slot>
 		<nav class="flex flex-grow">
 			<div v-for="(menu, key) in menus" :key="key" class="px-8 relative">
@@ -35,7 +35,7 @@ export default {
 		//沉浸式
 		kiosk: Boolean,
 		//背景色
-		color: { type: String, default: 'gray' },
+		color: { type: String, default: 'white' },
 		//Boolean: class="sticky z-50 top-0"; String: class=${sticky}
 		sticky: { type: [Boolean, String], default: true },
 		//Boolean: class="shadow"; String: class=${shadow}
@@ -46,8 +46,7 @@ export default {
 			return [
 				tailwindui.sticky(this.sticky),
 				tailwindui.shadow(this.shadow),
-				this.kiosk ? 'bg-transparent text-white' : tailwindui.bgColor(this.color, true),
-				this.kiosk ? '' : 'bg-opacity-50'
+				this.kiosk ? 'bg-transparent text-white' : tailwindui.bgColor(this.color)
 			]
 		}
 	}

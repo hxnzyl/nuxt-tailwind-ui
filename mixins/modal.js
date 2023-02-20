@@ -5,8 +5,10 @@ export default {
 	props: {
 		title: String,
 		message: String,
-		showCancelButton: Boolean,
 		bodyClass: String,
+		showCancelButton: Boolean,
+		icon: String,
+		iconSize: { type: String, default: 'lg' },
 		showHeader: { type: Boolean, default: true },
 		showFooter: { type: Boolean, default: true },
 		clickMaskClose: { type: Boolean, default: true },
@@ -31,6 +33,8 @@ export default {
 			if (this.clickMaskClose) this.hide()
 		},
 		show(title, message) {
+			if (!title) title = this.title
+			if (!message) message = this.message
 			this.currentTitle = message ? title : ''
 			this.currentMessage = message || title || ''
 			visible.methods.show.call(this)
