@@ -57,7 +57,7 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 								// -> node_modules
 								.replace('./node_modules/', '')
 								// -> @
-								.replace('./', '../')
+								.replace('./', '@/')
 						)
 					)
 				}

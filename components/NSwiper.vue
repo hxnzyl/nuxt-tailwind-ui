@@ -8,7 +8,7 @@
 
 <script>
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
-import 'swiper/css/swiper.min.css'
+import 'swiper/swiper.scss'
 
 export default {
 	name: 'NSwiper',
