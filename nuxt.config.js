@@ -37,8 +37,11 @@ export default {
 
 	// tailwindcss Defaults options
 	tailwindcss: {
+		viewer: false,
+		// or 'media' or 'class'
+		// darkMode: 'class',
 		config: {
-			purge: [
+			content: [
 				'./components/**/*.{js,vue}',
 				'./layouts/**/*.vue',
 				'./pages/**/*.vue',
@@ -46,20 +49,15 @@ export default {
 				'./tailwindui.js',
 				'./nuxt.config.js'
 			],
-			// or 'media' or 'class'
-			// darkMode: 'class',
-			variants: {
-				extend: {}
-			},
-			plugins: [],
-			corePlugins: {
-				//@link https://www.tailwindcss.cn/docs/filter
-				filter: false,
-				//@link https://www.tailwindcss.cn/docs/screen-readers
-				accessibility: false,
-				//@link https://www.tailwindcss.cn/docs/backdrop-filter
-				backdropSepia: false
-			}
+			plugins: []
+		},
+		corePlugins: {
+			//@link https://www.tailwindcss.cn/docs/filter
+			filter: false,
+			//@link https://www.tailwindcss.cn/docs/screen-readers
+			accessibility: false,
+			//@link https://www.tailwindcss.cn/docs/backdrop-filter
+			backdropSepia: false
 		}
 	},
 
