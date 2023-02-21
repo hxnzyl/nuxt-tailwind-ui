@@ -1,17 +1,20 @@
 <template>
-	<form class="n-form appearance-none flex flex-col gap-6 relative" @submit.stop.prevent="onSubmit">
+	<form
+		class="n-form appearance-none flex flex-col gap-6 relative"
+		:class="{ 'cursor-not-allowed': disabled }"
+		@submit.stop.prevent="onSubmit"
+	>
 		<slot></slot>
-		<NMask v-show="disabled && !currentLoading" class="cursor-not-allowed"></NMask>
 		<NLoading v-show="currentLoading" size="lg" color="gray" mask></NLoading>
 	</form>
 </template>
 
 <script>
-import loading from '../mixins/loading'
+import asyncTask from '../mixins/asyncTask'
 
 export default {
 	name: 'NForm',
-	mixins: [loading],
+	mixins: [asyncTask],
 	model: {
 		prop: 'model',
 		event: 'input'
@@ -47,8 +50,11 @@ export default {
 	},
 	methods: {
 		async onSubmit() {
+			if (this.disabled) return
 			let [validate] = await this.validate()
-			if (validate) this.$emit('submit', this.model)
+			if (!validate) return
+			await this.executeAsyncTask('post', this.model)
+			this.$emit('submit', this.model)
 		},
 		validate() {
 			return new Promise((resolve, reject) => {

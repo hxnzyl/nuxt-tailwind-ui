@@ -1,7 +1,7 @@
 <template>
 	<div
-		class="n-checkbox flex items-center text-gray-500"
-		:class="{ 'text-opacity-50 pointer-events-none': disabled, 'flex-col': getDirection == 'col', relative: getDirection == 'row' }"
+		class="n-checkbox flex items-center"
+		:class="{ 'flex-col': getDirection == 'col', relative: getDirection == 'row' }"
 		@click.stop="onChange"
 	>
 		<div class="flex w-full cursor-pointer" :class="{ 'flex-col gap-2': getDirection == 'col' }">
@@ -20,8 +20,11 @@
 				<div class="flex items-center justify-center pt-px" :class="checkboxClass">
 					<NSvg v-show="checked" name="check"></NSvg>
 				</div>
-				<div class="flex items-center grow" :class="bodyClass">
-					<slot v-bind="{ disabled }"></slot>
+				<div
+					class="flex items-center grow"
+					:class="[bodyClass, getDisabled ? 'bg-opacity-50 text-gray-500 text-opacity-50' : '']"
+				>
+					<slot v-bind="{ disabled: getDisabled }"></slot>
 				</div>
 			</div>
 		</div>

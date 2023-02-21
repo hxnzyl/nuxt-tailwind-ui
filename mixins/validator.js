@@ -20,12 +20,24 @@ export default {
 		//校验规则
 		rules: Array,
 		//占位文本
-		placeholder: String
+		placeholder: String,
+		//默认自动填入，默认true
+		autocomplete: { type: Boolean, default: true }
 	},
 	computed: {
 		//错误信息默认使用占位符
 		invalidMessage() {
 			return (this.invalidField && this.invalidField.message) || this.placeholder
+		},
+		//优先使用表单禁用参数
+		getDisabled() {
+			return (this.NForm && this.NForm.disabled) || this.disabled
+		},
+		//优先使用表单自动填入参数
+		getAutocomplete() {
+			let formAutocomplete = this.NForm && this.NForm.autocomplete
+			let thatAutocomplete = typeof formAutocomplete === 'boolean' ? formAutocomplete : this.autocomplete
+			return thatAutocomplete ? '' : this.type === 'password' ? 'new-password' : 'off'
 		},
 		//用户未定义时，如果在表单中，使用表单的
 		getDirection() {
@@ -54,7 +66,9 @@ export default {
 			this.NForm.$emit(
 				'NForm.addField',
 				this,
-				this.NForm && this.required ? [{ required: true, message: this.placeholder }].concat(this.rules || []) : this.rules || []
+				this.NForm && this.required
+					? [{ required: true, message: this.placeholder }].concat(this.rules || [])
+					: this.rules || []
 			)
 		}
 	},

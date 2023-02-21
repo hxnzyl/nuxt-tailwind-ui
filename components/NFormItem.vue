@@ -28,11 +28,11 @@
 </template>
 
 <script>
-import form from '../mixins/form'
+import validator from '../mixins/validator'
 
 export default {
 	name: 'NFormItem',
-	mixins: [form],
+	mixins: [validator],
 	props: {
 		//绑定值
 		value: String,

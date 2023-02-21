@@ -13,7 +13,7 @@
 				{{ invalidMessage }}
 			</div>
 		</div>
-		<div class="relative flex items-center grow" @click.stop="show" @mouseleave="leave" :class="selectClass">
+		<div class="relative flex items-center grow group" @click.stop="show" @mouseleave="leave" :class="selectClass">
 			<div class="flex flex-wrap grow gap-2">
 				<template v-if="multiple">
 					<div
@@ -35,10 +35,10 @@
 			</div>
 			<a
 				v-if="clearable"
-				v-show="valueNotEmpty"
 				href="#clear"
 				@click.stop.prevent="clear"
-				class="text-gray-400 hover:text-opacity-50 px-3"
+				class="hidden hover:text-opacity-50 text-gray-400 px-2"
+				:class="{ 'group-hover:block': valueNotEmpty }"
 			>
 				<NSvg name="x"></NSvg>
 			</a>
@@ -56,36 +56,9 @@
 				}"
 			>
 				<slot name="options">
-					<!-- 多列 -->
-					<div v-if="Array.isArray(options[0])" class="flex flex-col rounded-md bg-white shadow-lg bg-gray-100">
-						<h6 class="px-4 pt-2 text-lg text-gray-900 font-medium">{{ text }}</h6>
-						<div
-							v-if="options[0].length > 0"
-							class="flex max-h-96 overflow-y-auto"
-							:class="{ 'divide-y': multiple }"
-							@mousewheel.stop=""
-						>
-							<div v-for="(optionList, key1) in options" :key="key1" class="w-1/2 py-1.5">
-								<div
-									v-for="(option, key2) in optionList"
-									:key="key2"
-									class="px-6 py-2 text-sm min-w-max transition"
-									:class="
-										isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
-									"
-									@click.stop="onChange(option, key2)"
-								>
-									{{ option.label }}
-								</div>
-							</div>
-						</div>
-						<!-- 多列无数据 -->
-						<div v-else class="py-1.5 text-sm text-gray-400 text-center">{{ optionsPlaceholder }}</div>
-					</div>
-					<!-- 单列 -->
 					<div
-						v-else-if="options.length > 0"
-						class="py-1.5 max-h-96 overflow-y-auto rounded-md bg-white shadow-lg bg-gray-100"
+						v-if="options.length > 0"
+						class="py-2 max-h-96 overflow-x-hidden overflow-y-auto rounded-md bg-gray-100 shadow-lg"
 						:class="{ 'divide-y': multiple }"
 						@mousewheel.stop=""
 					>
@@ -101,8 +74,7 @@
 							{{ option.label }}
 						</div>
 					</div>
-					<!-- 单列无数据 -->
-					<div v-else class="py-1.5 text-sm text-gray-400 text-center">{{ optionsPlaceholder }}</div>
+					<div v-else class="py-2 text-sm text-gray-400 text-center bg-gray-100">{{ optionsPlaceholder }}</div>
 				</slot>
 			</div>
 		</div>
@@ -125,14 +97,14 @@
 </template>
 
 <script>
-import form from '../mixins/form'
-import visible from '../mixins/visible'
+import validator from '../mixins/validator'
+import visitable from '../mixins/visitable'
 import clearable from '../mixins/clearable'
 import tailwindui from '../utils/tailwindui'
 
 export default {
 	name: 'NSelect',
-	mixins: [form, visible, clearable],
+	mixins: [validator, visitable, clearable],
 	model: {
 		prop: 'value',
 		event: 'change'
@@ -161,21 +133,21 @@ export default {
 	},
 	computed: {
 		invalidColor() {
-			if (this.disabled) return 'gray'
+			if (this.getDisabled) return 'gray'
 			if (this.invalidField) return 'red'
 			return this.color
 		},
 		selectClass() {
 			return [
 				this.bodyClass,
-				this.disabled ? 'bg-opacity-50 pointer-events-none' : 'cursor-default',
+				this.getDisabled ? 'bg-opacity-50 pointer-events-none' : 'cursor-default',
 				tailwindui.textBoxSize(this.size),
 				tailwindui.textColor(this.invalidColor),
 				this.rounded ? tailwindui.roundedSize(this.size) : '',
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidColor == 'gray') : '',
 				this.ring && this.currentVisible ? 'ring-1 ring-opacity-50' : '',
-				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor, this.disabled) : ''
+				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor, this.getDisabled) : ''
 			]
 		}
 	},
@@ -194,9 +166,9 @@ export default {
 	},
 	methods: {
 		//@overwrite visible.updateVisible
-        updateVisible(init, value) {
-            this.updateValue(init, value)
-        },
+		updateVisible(init, value) {
+			this.updateValue(init, value)
+		},
 		updateValue(init, value) {
 			if (this.multiple) {
 				if (typeof value === 'string') value = value.split(',')

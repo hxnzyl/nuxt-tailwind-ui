@@ -1,7 +1,11 @@
 <template>
 	<div
 		class="n-input flex"
-		:class="{ 'bg-opacity-50 pointer-events-none': disabled, 'flex-col': getDirection == 'col', relative: getDirection == 'row' }"
+		:class="{
+			'bg-opacity-50 pointer-events-none': getDisabled,
+			'flex-col': getDirection == 'col',
+			relative: getDirection == 'row'
+		}"
 	>
 		<div class="flex grow gap-2" :class="{ 'flex-col': getDirection == 'col' }">
 			<div
@@ -18,7 +22,7 @@
 				</div>
 			</div>
 			<div class="flex grow" :class="bodyClass">
-				<div class="flex items-center grow bg-white" :class="wrapperClass">
+				<div class="flex items-center grow bg-white group" :class="wrapperClass">
 					<textarea
 						v-if="type === 'textarea'"
 						ref="input"
@@ -27,8 +31,9 @@
 						@focus="onFocus"
 						@blur="onBlur"
 						:placeholder="placeholder"
-						:disabled="disabled"
 						:readonly="readonly"
+						:disabled="getDisabled"
+						:autocomplete="getAutocomplete"
 					/>
 					<input
 						v-else
@@ -37,12 +42,30 @@
 						@input="onInput"
 						@focus="onFocus"
 						@blur="onBlur"
-						:type="type"
+						:type="currentType"
 						:placeholder="placeholder"
-						:disabled="disabled"
+						:disabled="getDisabled"
 						:readonly="readonly"
+						:autocomplete="getAutocomplete"
 					/>
-					<a v-if="clearable" v-show="valueNotEmpty" href="#clear" @click.stop.prevent="clear" class="text-gray-400 hover:text-opacity-50 px-3">
+					<template v-if="showEyeIcon">
+						<a
+							href="#eye"
+							@click.stop.prevent="eye === 'click' && (currentType = currentType === 'text' ? 'password' : 'text')"
+							@mousedown.stop.prevent="eye === 'press' && (currentType = 'text')"
+							@mouseup.stop.prevent="eye === 'press' && (currentType = 'password')"
+							class="hidden group-hover:block group-hover:text-opacity-50 text-gray-400 px-2"
+						>
+							<NSvg :name="currentType === 'password' ? 'eye' : 'eye-off'"></NSvg>
+						</a>
+					</template>
+					<a
+						v-if="clearable"
+						href="#clear"
+						@click.stop.prevent="clear"
+						class="hidden hover:text-opacity-50 text-gray-400 px-2"
+						:class="{ 'group-hover:block': valueNotEmpty }"
+					>
 						<NSvg name="x"></NSvg>
 					</a>
 				</div>
@@ -56,13 +79,13 @@
 </template>
 
 <script>
-import form from '../mixins/form'
+import validator from '../mixins/validator'
 import tailwindui from '../utils/tailwindui'
 import clearable from '../mixins/clearable'
 
 export default {
 	name: 'NInput',
-	mixins: [form, clearable],
+	mixins: [validator, clearable],
 	model: {
 		prop: 'value',
 		event: 'input'
@@ -85,33 +108,45 @@ export default {
 		//禁用状态
 		disabled: Boolean,
 		//只读状态
-		readonly: Boolean
+		readonly: Boolean,
+		//type=password,click:点击查看密码原文,press:按住查看密码原文
+		eye: { type: String, default: 'click' }
 	},
 	computed: {
 		currentValue() {
 			return this.value == null ? '' : this.value + ''
 		},
 		invalidColor() {
-			if (this.disabled) return 'gray'
+			if (this.getDisabled) return 'gray'
 			if (this.invalidField) return 'red'
 			return this.color
 		},
 		nativeClass() {
-			return ['grow appearance-none focus:outline-none bg-transparent', tailwindui.textColor(this.color), tailwindui.textBoxSize(this.size)]
+			return [
+				'grow appearance-none focus:outline-none bg-transparent',
+				tailwindui.textColor(this.color),
+				tailwindui.textBoxSize(this.size)
+			]
 		},
 		wrapperClass() {
 			return [
 				this.ring && this.focusing ? 'ring-1 ring-opacity-50' : '',
-				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor, this.disabled) : '',
+				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor, this.getDisabled) : '',
 				this.border ? (this.$slots.default ? 'border-t border-b border-l' : 'border') : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidColor == 'gray') : '',
 				this.rounded ? (this.$slots.default ? tailwindui.roundedTBLSize(this.size) : tailwindui.roundedSize(this.size)) : '',
-				this.disabled ? 'bg-gray-200 bg-opacity-50' : '',
+				this.getDisabled ? 'bg-gray-200 bg-opacity-50' : '',
 				this.readonly ? 'cursor-default' : ''
 			]
+		},
+		showEyeIcon() {
+			return !!this.eye && this.type === 'password'
 		}
 	},
 	watch: {
+		type(newValue, oldValue) {
+			if (newValue !== oldValue) console.warn('nuxt-tailwind-ui: Cannot be modified dynamically input[type]')
+		},
 		currentValue(newValue, oldValue) {
 			if (newValue !== oldValue) this.updateValue(false, newValue)
 		}
@@ -119,7 +154,8 @@ export default {
 	data() {
 		return {
 			focusing: false,
-			bluring: false
+			bluring: false,
+			currentType: this.type
 		}
 	},
 	mounted() {

@@ -1,8 +1,8 @@
-import form from './form'
+import validator from './validator'
 import tailwindui from '../utils/tailwindui'
 
 export default {
-	mixins: [form],
+	mixins: [validator],
 	model: {
 		prop: 'value',
 		event: 'change'
@@ -35,19 +35,19 @@ export default {
 			return this.checked ? this.checkedColor : this.uncheckedColor
 		},
 		checkedClass() {
-			if (this.disabled) return 'gray'
-			if (this.invalidField) return 'red'
-			let color = !this.fill ? (this.checked ? this.checkedColor : this.uncheckedColor) : 'white'
-			return tailwindui.bgColor(color, this.disabled)
+			let color
+			if (this.getDisabled) color = 'gray'
+			else if (this.invalidField) color = 'red'
+			else color = !this.fill ? (this.checked ? this.checkedColor : this.uncheckedColor) : 'white'
+			return tailwindui.bgColor(color)
 		},
 		checkboxClass() {
 			return [
+				this.getDisabled ? 'bg-opacity-50 text-opacity-50' : '',
 				tailwindui.checkboxSize(this.size),
 				this.fill && this.checked ? '' : 'border',
-				this.fill
-					? tailwindui.bgColor(this.invalidColor, this.disabled)
-					: tailwindui.borderColor(this.invalidColor, this.disabled),
-				tailwindui.textColor(this.invalidColor, this.disabled)
+				this.fill ? tailwindui.bgColor(this.invalidColor) : tailwindui.borderColor(this.invalidColor),
+				tailwindui.textColor(this.invalidColor)
 			]
 		}
 	},
@@ -72,6 +72,7 @@ export default {
 			if (this.name) this.$nextTick(() => this.validate('change'))
 		},
 		onChange() {
+			if (this.getDisabled) return
 			this.currentValue = this.checked ? this.uncheckedValue : this.checkedValue
 			this.$emit('change', this.currentValue)
 			if (this.name) this.$nextTick(() => this.validate('change'))

@@ -1,14 +1,35 @@
 <template>
 	<div
-		class="n-radio flex items-center cursor-pointer gap-2"
-		:class="{ 'text-gray-500 text-opacity-50 pointer-events-none': disabled }"
+		class="n-radio flex items-center"
+		:class="{ 'flex-col': getDirection == 'col', relative: getDirection == 'row' }"
 		@click.stop="onChange"
 	>
-		<div class="flex items-center justify-center rounded-full" :class="checkboxClass">
-			<div v-show="checked" class="rounded-full w-1/2 h-1/2" :class="checkedClass"></div>
+		<div class="flex w-full cursor-pointer" :class="{ 'flex-col gap-2': getDirection == 'col' }">
+			<div class="flex items-center" :class="{ 'justify-between': getDirection == 'col' }">
+				<div v-if="label" class="text-base">
+					<span v-if="getRequired" class="text-red-500">*</span>
+					<slot name="label">
+						<span class="text-gray-500">{{ label }}</span>
+					</slot>
+				</div>
+				<div v-if="getDirection == 'col'" v-show="invalidField != null" class="text-red-500 text-xs">
+					{{ invalidMessage }}
+				</div>
+			</div>
+			<div class="flex grow items-center gap-2">
+				<div class="flex items-center justify-center rounded-full" :class="checkboxClass">
+					<div v-show="checked" class="rounded-full w-1/2 h-1/2" :class="checkedClass"></div>
+				</div>
+				<div
+					class="flex items-center grow"
+					:class="[bodyClass, getDisabled ? 'bg-opacity-50 text-gray-500 text-opacity-50' : '']"
+				>
+					<slot v-bind="{ disabled: getDisabled }"></slot>
+				</div>
+			</div>
 		</div>
-		<div class="flex grow items-center" :class="bodyClass">
-			<slot v-bind="{ disabled }"></slot>
+		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+			{{ invalidMessage }}
 		</div>
 	</div>
 </template>

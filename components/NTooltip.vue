@@ -44,6 +44,6 @@
 </template>
 
 <script>
-import visible from '../mixins/visible'
-export default { name: 'NTooltip', mixins: [visible] }
+import visitable from '../mixins/visitable'
+export default { name: 'NTooltip', extends: visitable }
 </script>

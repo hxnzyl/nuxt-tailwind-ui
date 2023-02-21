@@ -73,7 +73,11 @@
 								:style="`width:${layerThWidth[key2] || ''}px;${head.tdCssText || ''}`"
 								:rowspan="getRowspan(item, head)"
 							>
-								<NVFor v-if="head.key == 'action'" :value="getActions(item, head)" class="flex flex-col items-center justify-center gap-2">
+								<NVFor
+									v-if="head.key == 'action'"
+									:value="getActions(item, head)"
+									class="flex flex-col items-center justify-center gap-2"
+								>
 									<template slot="if" slot-scope="action">
 										<NButton v-bind="action"></NButton>
 									</template>
@@ -148,8 +152,14 @@ export default {
 			item._layerRowspan[head.key] = 1
 		},
 		getActions(item, head) {
-			return (this.actions || []).reduce((actions, action, props) => actions.concat((props = action(item, head, this)) || []), [])
+			return (this.actions || []).reduce(
+				(actions, action, props) => actions.concat((props = action(item, head, this)) || []),
+				[]
+			)
 		},
+        /**
+		 * 自定义渲染组件
+		 */
 		component(item, head) {
 			let { target, key, component } = head
 			//展示来自layerTarget的数据
@@ -161,11 +171,14 @@ export default {
 			//自定义组件参数处理
 			if (typeof component === 'function') {
 				if ((component = component(item[key], item, head)) && component.is) return component
-				console.warn(`NTable.heads[].${key}.component.is: invalid ${component}`)
+				console.warn('nuxt-tailwind-ui:', `NTable.heads[].${key}.component.is ${component} invalid`)
 			}
 			//默认处理
 			return { value: item[key] }
 		},
+		/**
+		 * 自定义格式方法
+		 */
 		formatter(item, head) {
 			let { target, key, dict, formatter } = head
 			//展示来自layerTarget的数据
@@ -179,7 +192,7 @@ export default {
 			//已集成的格式化类型
 			if (typeof formatter === 'string') {
 				if (Formatter[formatter]) return Formatter[formatter](item[key])
-				console.warn(`NTable.heads[].${key}.formatter: invalid ${formatter}`)
+				console.warn('nuxt-tailwind-ui:', `NTable.heads[].${key}.formatter ${formatter} invalid`)
 			}
 			//默认处理
 			return item[key]

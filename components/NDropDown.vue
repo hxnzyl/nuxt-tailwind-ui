@@ -80,12 +80,12 @@
 </template>
 
 <script>
-import visible from '../mixins/visible'
+import visitable from '../mixins/visitable'
 import tailwindui from '../utils/tailwindui'
 
 export default {
 	name: 'NDropDown',
-	mixins: [visible],
+	mixins: [visitable],
 	props: {
 		label: String,
 		active: Function,

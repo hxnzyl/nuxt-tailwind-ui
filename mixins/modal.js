@@ -1,7 +1,7 @@
-import visible from './visible'
+import visitable from './visitable'
 
 export default {
-	mixins: [visible],
+	mixins: [visitable],
 	props: {
 		title: String,
 		message: String,

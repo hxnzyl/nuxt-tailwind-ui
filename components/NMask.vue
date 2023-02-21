@@ -10,11 +10,11 @@
 </template>
 
 <script>
-import visible from '../mixins/visible'
+import visitable from '../mixins/visitable'
 
 export default {
 	name: 'NMask',
-	mixins: [visible],
+	mixins: [visitable],
 	props: {
 		fixed: Boolean,
 		clickMaskClose: { type: Boolean, default: true }

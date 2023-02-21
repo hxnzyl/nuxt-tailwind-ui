@@ -14,7 +14,7 @@
 			</div>
 			<div v-if="showFooter" class="flex items-center justify-end gap-3">
 				<slot name="footer">
-					<NButton v-show="showCancelButton" color="gray" @click="cancel">取消</NButton>
+					<NButton v-show="showCancelButton" color="gray" @click="cancel" plain>取消</NButton>
 					<NButton color="blue" @click="confirm">确定</NButton>
 				</slot>
 			</div>

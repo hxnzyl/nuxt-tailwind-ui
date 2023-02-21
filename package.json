@@ -1,6 +1,6 @@
 {
 	"name": "nuxt-tailwind-ui",
-	"version": "1.1.62",
+	"version": "1.1.7",
 	"description": "Nuxt JS&Tailwind CSS&Feather Icons UI Framework~",
 	"main": "dist/nuxt-tailwind-ui.umd.js",
 	"scripts": {
@@ -24,6 +24,7 @@
 		"async-validator": "^4.2.5",
 		"feather-icons": "^4.29.0",
 		"nuxt": "^2.15.8",
+		"nuxt-ali-oss": "^1.0.0",
 		"swiper": "^5.4.5",
 		"tailwindcss": "^3.2.4",
 		"vue": "2.7.10",
