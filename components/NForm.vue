@@ -1,6 +1,7 @@
 <template>
 	<form class="n-form appearance-none flex flex-col gap-6 relative" @submit.stop.prevent="onSubmit">
 		<slot></slot>
+		<NMask v-show="disabled && !currentLoading" class="cursor-not-allowed"></NMask>
 		<NLoading v-show="currentLoading" size="lg" color="gray" mask></NLoading>
 	</form>
 </template>
@@ -21,14 +22,16 @@ export default {
 		}
 	},
 	props: {
-        //检验对象
+		//检验对象
 		model: Object,
-        //校验规则
+		//校验规则
 		rules: Object,
 		//排版方向
 		direction: { type: String, default: 'col' },
 		//label类名
-		labelClass: String
+		labelClass: String,
+		//表单禁用
+		disabled: Boolean
 	},
 	data() {
 		return {

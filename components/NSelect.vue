@@ -193,6 +193,10 @@ export default {
 		}
 	},
 	methods: {
+		//@overwrite visible.updateVisible
+        updateVisible(init, value) {
+            this.updateValue(init, value)
+        },
 		updateValue(init, value) {
 			if (this.multiple) {
 				if (typeof value === 'string') value = value.split(',')

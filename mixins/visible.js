@@ -1,6 +1,10 @@
 import { getMouseElement } from '../utils/dom'
 
 export default {
+	model: {
+		prop: 'value',
+		event: 'toggle'
+	},
 	props: {
 		//是否显示
 		value: [Number, Boolean],
@@ -9,13 +13,9 @@ export default {
 		//显示位置
 		position: { type: String, default: 'bottom' }
 	},
-	model: {
-		prop: 'value',
-		event: 'toggle'
-	},
 	watch: {
 		value(newValue, oldValue) {
-			if (newValue != oldValue) this.updateValue(false, newValue)
+			if (newValue != oldValue) this.updateVisible(false, newValue)
 		}
 	},
 	data() {
@@ -24,10 +24,10 @@ export default {
 		}
 	},
 	mounted() {
-		this.updateValue(true, this.value)
+		this.updateVisible(true, this.value)
 	},
 	methods: {
-		updateValue(init, value) {
+		updateVisible(init, value) {
 			this.currentVisible = value + 0
 			if (init) this.visible || value ? this.show() : this.hide()
 			else value ? this.show() : this.hide()
@@ -52,8 +52,9 @@ export default {
 			if (this.visible || !this.currentVisible) return
 			let { root } = this.$refs
 			if (!root) return
+			let rootElement = root.$el || root
 			let mouseElement = getMouseElement(event)
-			if (!mouseElement || !root.contains(mouseElement)) this.hide()
+			if (!mouseElement || !rootElement.contains(mouseElement)) this.hide()
 		},
 		toggle() {
 			if (this.visible) return

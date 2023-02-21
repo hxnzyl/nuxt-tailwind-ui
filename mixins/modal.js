@@ -29,9 +29,7 @@ export default {
 		}
 	},
 	methods: {
-		onClickMask() {
-			if (this.clickMaskClose) this.hide()
-		},
+		//@overwrite visible.show
 		show(title, message) {
 			if (!title) title = this.title
 			if (!message) message = this.message
