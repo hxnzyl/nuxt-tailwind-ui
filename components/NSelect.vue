@@ -1,5 +1,5 @@
 <template>
-	<div ref="root" class="n-select flex relative gap-2" :class="{ 'flex-col': getDirection == 'col' }">
+	<div ref="root" class="n-select flex relative" :class="{ 'flex-col gap-2': getDirection == 'col' }">
 		<div
 			v-if="label || getDirection == 'col'"
 			class="flex items-center"

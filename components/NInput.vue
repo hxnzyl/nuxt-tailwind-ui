@@ -58,7 +58,7 @@
 						@click.stop.prevent="eye === 'click' && (currentType = currentType === 'text' ? 'password' : 'text')"
 						@mousedown.stop.prevent="eye === 'press' && (currentType = 'text')"
 						@mouseup.stop.prevent="eye === 'press' && (currentType = 'password')"
-						class="hidden group-hover:block group-hover:text-opacity-50 text-gray-400 pr-2"
+						class="hidden group-hover:block hover:text-opacity-50 text-gray-400 pr-2"
 					>
 						<NSvg :name="currentType === 'password' ? 'eye' : 'eye-off'"></NSvg>
 					</a>
