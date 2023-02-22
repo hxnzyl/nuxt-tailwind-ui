@@ -61,7 +61,7 @@ export default {
 		},
 		buttonClass() {
 			return [
-				'n-button flex items-center justify-center tranistion duration-200 appearance-none',
+				'n-button flex items-center justify-center tranistion appearance-none',
 				//按钮大小
 				tailwindui.buttonSize(this.size),
 				//圆角大小

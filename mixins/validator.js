@@ -22,7 +22,9 @@ export default {
 		//占位文本
 		placeholder: String,
 		//默认自动填入，默认true
-		autocomplete: { type: Boolean, default: true }
+		autocomplete: { type: Boolean, default: true },
+		//禁用状态
+		disabled: Boolean
 	},
 	computed: {
 		//错误信息默认使用占位符

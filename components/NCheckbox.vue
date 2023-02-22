@@ -1,6 +1,6 @@
 <template>
-	<div class="flex" :class="[`n-${type}`, getDirection == 'col' ? 'flex-col' : 'relative']">
-		<div class="flex flex-grow" :class="{ 'flex-col gap-2': getDirection == 'col' }">
+	<div class="flex" :class="[`n-${type}`, getDirection == 'col' ? 'flex-col' : 'relative items-center']">
+		<div class="flex flex-grow" :class="getDirection == 'col' ? 'flex-col gap-2' : 'items-center'">
 			<div
 				v-if="label || getDirection == 'col'"
 				class="flex items-center"
@@ -57,20 +57,18 @@ export default {
 		//选中颜色
 		checkedColor: { type: String, default: 'blue' },
 		//选中颜色
-		uncheckedColor: { type: String, default: 'none' },
+		uncheckedColor: { type: String, default: 'gray' },
 		//大小
 		size: { type: String, default: 'md' },
 		//填充模式
-		fill: Boolean,
-		//禁用状态
-		disabled: Boolean
+		fill: Boolean
 	},
 	computed: {
 		checked() {
 			return this.currentValue === this.checkedValue
 		},
 		invalidColor() {
-			if (this.disabled) return 'gray'
+			if (this.getDisabled) return 'gray'
 			if (this.invalidField) return 'red'
 			return this.checked ? this.checkedColor : this.uncheckedColor
 		},
@@ -86,12 +84,15 @@ export default {
 				tailwindui.checkboxSize(this.size),
 				this.fill && this.checked ? '' : 'border',
 				this.fill ? tailwindui.bgColor(this.invalidColor) : tailwindui.borderColor(this.invalidColor),
-				tailwindui.textColor(this.invalidColor)
+				this.getDisabled ? 'bg-opacity-50 border-opacity-50' : ''
 			]
 		},
 		checkboxClass() {
 			//不使用pointer-events-none，与cursor-not-allowed样式冲突
-			return [this.getDisabled ? 'bg-opacity-50 text-opacity-50 cursor-not-allowed' : 'cursor-pointer']
+			return [
+				tailwindui.textColor(this.invalidColor),
+				this.getDisabled ? 'text-opacity-50 cursor-not-allowed' : 'cursor-pointer'
+			]
 		}
 	},
 	watch: {

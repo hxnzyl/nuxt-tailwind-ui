@@ -180,12 +180,12 @@ export default {
 	 */
 	hoverScale(scale) {
 		if (!scale || scale == 1 || scale == 100) return ''
-		if (scale == 0.5 || scale == 50) return 'transition duration-200 hover:scale-50'
-		if (scale == 0.75 || scale == 75) return 'transition duration-200 hover:scale-75'
-		if (scale == 0.9 || scale == 90) return 'transition duration-200 hover:scale-90'
-		if (scale == 1.1 || scale == 110) return 'transition duration-200 hover:scale-110'
-		if (scale == 1.25 || scale == 125) return 'transition duration-200 hover:scale-125'
-		if (scale == 1.5 || scale == 150) return 'transition duration-200 hover:scale-150'
+		if (scale == 0.5 || scale == 50) return 'transition hover:scale-50'
+		if (scale == 0.75 || scale == 75) return 'transition hover:scale-75'
+		if (scale == 0.9 || scale == 90) return 'transition hover:scale-90'
+		if (scale == 1.1 || scale == 110) return 'transition hover:scale-110'
+		if (scale == 1.25 || scale == 125) return 'transition hover:scale-125'
+		if (scale == 1.5 || scale == 150) return 'transition hover:scale-150'
 	},
 	/**
 	 * 格子布局

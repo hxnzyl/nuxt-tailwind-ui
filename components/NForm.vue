@@ -1,8 +1,5 @@
 <template>
-	<form
-		class="n-form appearance-none flex flex-col gap-6 relative"
-		@submit.stop.prevent="onSubmit"
-	>
+	<form class="n-form appearance-none flex flex-col gap-6 relative" @submit.stop.prevent="onSubmit">
 		<slot></slot>
 		<NLoading v-show="currentLoading" size="lg" color="gray" mask></NLoading>
 	</form>
@@ -31,9 +28,7 @@ export default {
 		//排版方向
 		direction: { type: String, default: 'col' },
 		//label类名
-		labelClass: String,
-		//表单禁用
-		disabled: Boolean
+		labelClass: String
 	},
 	data() {
 		return {

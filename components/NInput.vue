@@ -101,8 +101,6 @@ export default {
 		border: { type: Boolean, default: true },
 		//是否有轮廓环
 		ring: { type: Boolean, default: true },
-		//禁用状态
-		disabled: Boolean,
 		//只读状态
 		readonly: Boolean,
 		//type=password,click:点击查看密码原文,press:按住查看密码原文

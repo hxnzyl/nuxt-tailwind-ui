@@ -1,5 +1,5 @@
 <template>
-	<div class="flex items-center gap-4 w-full px-10 py-4 transtion duration-200" :class="navClass">
+	<div class="flex items-center gap-4 w-full px-10 py-4 transtion" :class="navClass">
 		<slot name="left"></slot>
 		<nav class="flex flex-grow">
 			<div v-for="(menu, key) in menus" :key="key" class="px-8 relative">
