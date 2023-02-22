@@ -1,15 +1,15 @@
 <template>
-	<div ref="root" class="n-select flex relative" :class="{ 'flex-col gap-2': getDirection == 'col' }">
+	<div ref="root" class="n-select flex relative" :class="{ 'flex-col gap-2': formColDirection }">
 		<div
-			v-if="label || getDirection == 'col'"
+			v-if="label || formColDirection"
 			class="flex items-center"
-			:class="[getDirection == 'col' ? 'justify-between' : '', this.getLabelClass]"
+			:class="[formColDirection ? 'justify-between' : '', this.formLabelClass]"
 		>
 			<div v-if="label" class="text-base">
 				<span class="text-gray-500">{{ label }}</span>
-				<span v-if="getRequired" class="text-red-500">*</span>
+				<span v-if="formRequired" class="text-red-500">*</span>
 			</div>
-			<div v-if="getDirection == 'col'" v-show="invalidField != null" class="text-red-500 text-xs">
+			<div v-if="formColDirection" v-show="invalidField != null" class="text-red-500 text-xs">
 				{{ invalidMessage }}
 			</div>
 		</div>
@@ -42,27 +42,30 @@
 			>
 				<NSvg name="x"></NSvg>
 			</a>
-			<a href="#chevron" @click.prevent.stop="show" class="mr-2">
+			<a href="#chevron" @click.prevent.stop="show" class="text-gray-400 mr-2">
 				<NSvg name="chevron-right" class="transition direction-500" :class="{ 'rotate-90': currentVisible }"></NSvg>
 			</a>
 			<div v-show="currentVisible" @mouseenter="show" class="absolute z-10 w-full" :class="optionsClass">
 				<slot name="options">
-					<div
-						v-if="options.length > 0"
-						class="py-2 max-h-96 overflow-x-hidden overflow-y-auto rounded-md bg-gray-100 shadow-lg"
-						:class="{ 'divide-y': multiple }"
-						@mousewheel.stop=""
-					>
+					<div v-if="options.length > 0" class="py-2 bg-gray-100 rounded-md shadow-lg">
 						<div
-							v-for="(option, key) in options"
-							:key="key"
-							class="px-6 py-2 text-sm min-w-max transition"
-							:class="
-								isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
-							"
-							@click.stop="onChange(option, key)"
+							class="max-h-96 overflow-x-hidden overflow-y-auto"
+							:class="{ 'divide-y': multiple }"
+							@mousewheel.stop=""
 						>
-							{{ option.label }}
+							<div
+								v-for="(option, key) in options"
+								:key="key"
+								class="min-w-max px-6 py-2 text-sm transition"
+								:class="
+									isActived(option)
+										? 'text-white bg-blue-500 hover:bg-opacity-50'
+										: 'text-gray-500 hover:text-white hover:bg-blue-500'
+								"
+								@click.stop="onChange(option, key)"
+							>
+								{{ option.label }}
+							</div>
 						</div>
 					</div>
 					<div v-else class="py-2 text-sm text-gray-400 text-center bg-gray-100">{{ optionsPlaceholder }}</div>
@@ -81,7 +84,7 @@
 		>
 			<NSvg :name="{ 'drop-up': position == 'bottom', 'drop-down': position == 'top' }"></NSvg>
 		</div>
-		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+		<div v-if="formRowDirection" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
 		</div>
 	</div>
@@ -142,9 +145,9 @@ export default {
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
 				this.ring && this.currentVisible ? 'ring-1 ring-opacity-50' : '',
-				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor, this.getDisabled) : '',
+				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor) : '',
 				//禁用：无事件，禁用鼠标，不使用pointer-events-none，与cursor-not-allowed样式冲突
-				this.getDisabled ? 'bg-gray-200 bg-opacity-50 text-opacity-50 cursor-not-allowed' : 'bg-white'
+				this.formDisabled ? 'bg-gray-200 bg-opacity-50 text-opacity-50 cursor-not-allowed' : 'bg-white'
 			]
 		}
 	},

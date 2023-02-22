@@ -1,24 +1,24 @@
 <template>
-	<div class="n-form-item flex" :class="{ 'flex-col': getDirection == 'col', relative: getDirection == 'row' }">
-		<div class="flex flex-grow gap-2" :class="{ 'flex-col': getDirection == 'col' }">
+	<div class="n-form-item flex" :class="{ 'flex-col': formColDirection, relative: formRowDirection }">
+		<div class="flex flex-grow gap-2" :class="{ 'flex-col': formColDirection }">
 			<div
-				v-if="label || getDirection == 'col'"
+				v-if="label || formColDirection"
 				class="flex items-center"
-				:class="[getDirection == 'col' ? 'justify-between' : '', this.getLabelClass]"
+				:class="[formColDirection ? 'justify-between' : '', this.formLabelClass]"
 			>
 				<div v-if="label" class="text-base">
 					<span class="text-gray-500">{{ label }}</span>
-					<span v-if="getRequired" class="text-red-500">*</span>
+					<span v-if="formRequired" class="text-red-500">*</span>
 				</div>
-				<div v-if="getDirection == 'col'" v-show="invalidField != null" class="text-red-500 text-xs">
+				<div v-if="formColDirection" v-show="invalidField != null" class="text-red-500 text-xs">
 					{{ invalidMessage }}
 				</div>
 			</div>
-			<div class="flex flex-grow" :class="[bodyClass, getDisabled ? 'bg-opacity-50 text-opacity-50 cursor-not-allowed' : '']">
-				<slot v-bind="{ disabled: getDisabled }" :class="{ 'pointer-events-none': getDisabled }"></slot>
+			<div class="flex flex-grow" :class="[bodyClass, formDisabled ? 'bg-opacity-50 text-opacity-50 cursor-not-allowed' : '']">
+				<slot v-bind="{ disabled: formDisabled }" :class="{ 'pointer-events-none': formDisabled }"></slot>
 			</div>
 		</div>
-		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+		<div v-if="formRowDirection" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
 		</div>
 	</div>

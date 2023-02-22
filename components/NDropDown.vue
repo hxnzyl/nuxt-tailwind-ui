@@ -17,40 +17,42 @@
 				'top-full pt-2': position == 'bottom',
 				'bottom-full pb-2': position == 'top',
 				'right-full pr-2': position == 'left',
-				'right-full pl-2': position == 'left'
+				'left-full pl-2': position == 'right'
 			}"
 		>
 			<slot name="menus" v-bind="{ isActived, menus, onChange }">
-				<div
-					class="py-1.5 max-h-96 overflow-x-hidden overflow-y-auto rounded-md bg-white shadow-lg min-w-max"
-					:class="menusClass"
-					@mousewheel.stop=""
-				>
-					<template v-for="(menu, key) in menus">
-						<NLink
-							v-if="menu.to"
-							:key="key"
-							:to="menu.to"
-							:target="menu.target"
-							class="block px-4 py-2 text-sm min-w-max transition"
-							:class="
-								isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
-							"
-						>
-							{{ menu.label }}
-						</NLink>
-						<div
-							v-else
-							:key="key"
-							class="px-4 py-2 text-sm min-w-max transition"
-							:class="
-								isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
-							"
-							@click.stop="onChange(menu, key)"
-						>
-							{{ menu.label }}
-						</div>
-					</template>
+				<div class="py-2 bg-white rounded-md shadow-lg">
+					<div class="min-w-max max-h-96 overflow-x-hidden overflow-y-auto" :class="menusClass" @mousewheel.stop="">
+						<template v-for="(menu, key) in menus">
+							<NLink
+								v-if="menu.to"
+								:key="key"
+								:to="menu.to"
+								:target="menu.target"
+								class="block px-4 py-2 text-sm min-w-max transition"
+								:class="
+									isActived(menu)
+										? 'text-white bg-blue-500 hover:bg-opacity-50'
+										: 'text-gray-500 hover:text-white hover:bg-blue-500'
+								"
+							>
+								{{ menu.label }}
+							</NLink>
+							<div
+								v-else
+								:key="key"
+								class="px-4 py-2 text-sm min-w-max transition"
+								:class="
+									isActived(menu)
+										? 'text-white bg-blue-500 hover:bg-opacity-50'
+										: 'text-gray-500 hover:text-white hover:bg-blue-500'
+								"
+								@click.stop="onChange(menu, key)"
+							>
+								{{ menu.label }}
+							</div>
+						</template>
+					</div>
 				</div>
 			</slot>
 		</div>

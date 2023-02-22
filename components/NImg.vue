@@ -16,8 +16,8 @@ export default {
 	name: 'NImg',
 	props: {
 		to: String,
-		target: String,
 		src: String,
+		target: String,
 		scale: { type: Number, default: 125 },
 		imgClass: { type: String, default: 'w-full' }
 	},

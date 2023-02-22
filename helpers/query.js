@@ -5,7 +5,7 @@ import { normalizeString } from '../utils/string'
  * 查询辅助
  *
  * @param {Object} queryData {'查询名': '默认查询值'}
- * @param {Object} queryData {'查询名': '默认查询值'}
+ * @param {Boolean} querying 查询中
  * @returns
  */
 export default function (queryData = {}, querying = false) {
@@ -21,7 +21,8 @@ export default function (queryData = {}, querying = false) {
 			pageSize = (pageSize && parseInt(pageSize, 10)) || 10
 			//自定义数据
 			let queryObject = { pageIndex, pageSize }
-			for (let key in queryData) queryObject[key] = query[key] == null || query[key] === '' ? queryData[key] : normalizeString(query[key])
+			for (let key in queryData)
+				queryObject[key] = query[key] == null || query[key] === '' ? queryData[key] : normalizeString(query[key])
 			return { queryObject, querying }
 		},
 		computed: {

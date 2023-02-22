@@ -5,7 +5,7 @@
 			<span>{{ text }}</span>
 		</slot>
 	</NLink>
-	<button v-else type="button" :disabled="getDisabled" :class="buttonClass" @click="onClick">
+	<button v-else type="button" :disabled="formDisabled" :class="buttonClass" @click="onClick">
 		<NLoading v-show="currentLoading" :size="size" class="mr-2"></NLoading>
 		<input v-if="upload" ref="file" type="file" class="hidden" @change="onChange" :accept="accept" :multiple="multiple" />
 		<slot>
@@ -56,7 +56,7 @@ export default {
 	},
 	computed: {
 		//优先使用表单禁用参数
-		getDisabled() {
+		formDisabled() {
 			return (this.NForm && this.NForm.disabled) || this.disabled
 		},
 		buttonClass() {
@@ -74,9 +74,9 @@ export default {
 				//空心：按钮字体颜色；非空心：按钮背景颜色
 				this.plain ? tailwindui.textColor(this.color) : tailwindui.bgColor(this.color),
 				//禁用：无事件，禁用鼠标，不使用pointer-events-none，与cursor-not-allowed样式冲突
-				this.getDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
+				this.formDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
 				//禁用：空心->字体透明，边框透明。非空心->背景透明；非禁用：空心hover->字体透明，边框透明。非空心hover->背景透明
-				this.getDisabled
+				this.formDisabled
 					? this.plain
 						? 'text-opacity-50 border-opacity-50'
 						: 'bg-opacity-50'
@@ -93,7 +93,7 @@ export default {
 			this.onClick(event)
 		},
 		onClick(event) {
-			if (this.currentLoading || this.getDisabled) return
+			if (this.currentLoading || this.formDisabled) return
 			if (this.upload) this.$refs.file.click() //上传按钮
 			this.$emit('click', event)
 		},

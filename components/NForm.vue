@@ -11,10 +11,6 @@ import asyncTask from '../mixins/asyncTask'
 export default {
 	name: 'NForm',
 	mixins: [asyncTask],
-	model: {
-		prop: 'model',
-		event: 'input'
-	},
 	provide() {
 		return {
 			NForm: this
@@ -25,12 +21,12 @@ export default {
 		model: Object,
 		//校验规则
 		rules: Object,
-		//排版方向
-		direction: { type: String, default: 'col' },
 		//label类名
 		labelClass: String,
 		//禁用状态
-		disabled: Boolean
+		disabled: Boolean,
+		//排版方向
+		direction: { type: String, default: 'col' }
 	},
 	data() {
 		return {
@@ -46,7 +42,7 @@ export default {
 	},
 	methods: {
 		async onSubmit() {
-			if (this.getDisabled) return
+			if (this.formDisabled) return
 			let [validate] = await this.validate()
 			if (!validate) return
 			await this.executeAsyncTask('post', this.model)
@@ -54,8 +50,8 @@ export default {
 		},
 		validate() {
 			return new Promise((resolve, reject) => {
-				if (!this.model) reject(false)
-				else if (!this.fields.length) resolve(true)
+				if (!this.model) reject([false, new Error('Invalid Model')])
+				else if (!this.fields.length) resolve([true])
 				else this._validteStart(resolve)
 			})
 		},
@@ -65,8 +61,11 @@ export default {
 			if (this.fields.findIndex((f) => f.name === name) === -1) this.fields.push(field)
 			if (rules && rules.length) this.validateRules[name] = (this.validateRules[name] || []).concat(rules)
 		},
-		removeField(field, index) {
-			field && field.name && (index = this.fields.findIndex((f) => f.name === field.name)) && this.fields.splice(index, 1)
+		removeField(field) {
+			let name = field && field.name
+			if (!name) return
+			let index = this.fields.findIndex((f) => f.name === name)
+			if (index !== -1) this.fields.splice(index, 1)
 		},
 		async _validteStart(resolve) {
 			this.invalidFields = {}
@@ -77,6 +76,7 @@ export default {
 			let field = this.validateFields.shift()
 			if (!field) return resolve([Object.keys(this.invalidFields).length === 0, this.invalidFields])
 			let [validate, invalidFields] = await field.validate()
+			
 			if (!validate && field.validateStatus !== 'abort') Object.assign(this.invalidFields, invalidFields)
 			this._validteRun(resolve)
 		}

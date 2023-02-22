@@ -1,22 +1,22 @@
 <template>
-	<div class="n-input flex" :class="getDirection == 'col' ? 'flex-col' : 'relative'">
-		<div class="flex flex-grow" :class="{ 'flex-col gap-2': getDirection == 'col' }">
+	<div class="n-input flex" :class="formColDirection ? 'flex-col' : 'relative'">
+		<div class="flex flex-grow" :class="{ 'flex-col gap-2': formColDirection }">
 			<div
-				v-if="label || getDirection == 'col'"
+				v-if="label || formColDirection"
 				class="flex items-center"
-				:class="[getDirection == 'col' ? 'justify-between' : '', this.getLabelClass]"
+				:class="[formColDirection ? 'justify-between' : '', this.formLabelClass]"
 			>
 				<div v-if="label" class="text-base">
 					<slot name="label">
 						<span class="text-gray-500">{{ label }}</span>
 					</slot>
-					<span v-if="getRequired" class="text-red-500">*</span>
+					<span v-if="formRequired" class="text-red-500">*</span>
 				</div>
-				<div v-if="getDirection == 'col'" v-show="invalidField != null" class="text-red-500 text-xs">
+				<div v-if="formColDirection" v-show="invalidField != null" class="text-red-500 text-xs">
 					{{ invalidMessage }}
 				</div>
 			</div>
-			<div class="flex flex-grow" :class="{ 'cursor-not-allowed': getDisabled }">
+			<div class="flex flex-grow" :class="{ 'cursor-not-allowed': formDisabled }">
 				<div class="flex items-center flex-grow group" :class="inputClass">
 					<textarea
 						v-if="type === 'textarea'"
@@ -27,8 +27,8 @@
 						@blur="onBlur"
 						:placeholder="placeholder"
 						:readonly="readonly"
-						:disabled="getDisabled"
-						:autocomplete="getAutocomplete"
+						:disabled="formDisabled"
+						:autocomplete="formAutoComplete"
 					/>
 					<input
 						v-else
@@ -40,8 +40,8 @@
 						:type="currentType"
 						:placeholder="placeholder"
 						:readonly="readonly"
-						:disabled="getDisabled"
-						:autocomplete="getAutocomplete"
+						:disabled="formDisabled"
+						:autocomplete="formAutoComplete"
 					/>
 					<a
 						v-if="clearable"
@@ -68,7 +68,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+		<div v-if="formRowDirection" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
 		</div>
 	</div>
@@ -107,14 +107,14 @@ export default {
 		eye: { type: String, default: 'click' }
 	},
 	computed: {
+		invalidColor() {
+			return this.invalidField ? 'red' : this.color
+		},
 		currentValue() {
 			return this.value == null ? '' : this.value + ''
 		},
 		showEyeIcon() {
 			return !!this.eye && this.type === 'password'
-		},
-		invalidColor() {
-			return this.invalidField ? 'red' : this.color
 		},
 		defaultClass() {
 			return [this.bodyClass, this.rounded ? tailwindui.roundedTBRSize(this.size) : '']
@@ -129,12 +129,16 @@ export default {
 		inputClass() {
 			return [
 				this.ring && this.focusing ? 'ring-1 ring-opacity-50' : '',
-				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor, this.getDisabled) : '',
+				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor) : '',
 				this.border ? (this.$slots.default ? 'border-t border-b border-l' : 'border') : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
-				this.rounded ? (this.$slots.default ? tailwindui.roundedTBLSize(this.size) : tailwindui.roundedSize(this.size)) : '',
-				this.getDisabled ? 'bg-gray-200 bg-opacity-50' : 'bg-white',
-				this.getDisabled ? 'pointer-events-none' : this.readonly ? 'cursor-default' : ''
+				this.rounded
+					? this.$slots.default
+						? tailwindui.roundedTBLSize(this.size)
+						: tailwindui.roundedSize(this.size)
+					: '',
+				this.formDisabled ? 'bg-gray-200 bg-opacity-50' : 'bg-white',
+				this.formDisabled ? 'pointer-events-none' : this.readonly ? 'cursor-default' : ''
 			]
 		}
 	},
@@ -168,7 +172,7 @@ export default {
 		onInput() {
 			let { input } = this.$refs
 			if (!input || input.disabled || input.value === this.currentValue) return
-			this.$emit('input', value)
+			this.$emit('input', input.value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
 		onFocus() {

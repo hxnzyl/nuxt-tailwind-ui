@@ -12,10 +12,10 @@
 				'top-full pt-2': position == 'bottom',
 				'bottom-full pb-2': position == 'top',
 				'right-full pr-2': position == 'left',
-				'right-full pl-2': position == 'left'
+				'left-full pl-2': position == 'right'
 			}"
 		>
-			<div class="rounded-md bg-white shadow-lg min-w-max">
+			<div class="bg-white rounded-md shadow-lg min-w-max">
 				<slot name="content"></slot>
 			</div>
 		</div>

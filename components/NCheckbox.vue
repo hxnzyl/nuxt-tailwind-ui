@@ -1,18 +1,18 @@
 <template>
-	<div class="flex" :class="[`n-${type}`, getDirection == 'col' ? 'flex-col' : 'relative items-center']">
-		<div class="flex flex-grow" :class="getDirection == 'col' ? 'flex-col gap-2' : 'items-center'">
+	<div class="flex" :class="[`n-${type}`, formColDirection ? 'flex-col' : 'relative items-center']">
+		<div class="flex flex-grow" :class="formColDirection ? 'flex-col gap-2' : 'items-center'">
 			<div
-				v-if="label || getDirection == 'col'"
+				v-if="label || formColDirection"
 				class="flex items-center"
-				:class="[getDirection == 'col' ? 'justify-between' : '', this.getLabelClass]"
+				:class="[formColDirection ? 'justify-between' : '', this.formLabelClass]"
 			>
 				<div v-if="label" class="text-base">
 					<slot name="label">
 						<span class="text-gray-500">{{ label }}</span>
 					</slot>
-					<span v-if="getRequired" class="text-red-500">*</span>
+					<span v-if="formRequired" class="text-red-500">*</span>
 				</div>
-				<div v-if="getDirection == 'col'" v-show="invalidField != null" class="text-red-500 text-xs">
+				<div v-if="formColDirection" v-show="invalidField != null" class="text-red-500 text-xs">
 					{{ invalidMessage }}
 				</div>
 			</div>
@@ -24,11 +24,11 @@
 					<div v-show="checked" class="rounded-full w-1/2 h-1/2" :class="checkedClass"></div>
 				</div>
 				<div class="flex items-center flex-grow" :class="bodyClass">
-					<slot v-bind="{ checked, disabled: getDisabled }"></slot>
+					<slot v-bind="{ checked, disabled: formDisabled }"></slot>
 				</div>
 			</div>
 		</div>
-		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+		<div v-if="formRowDirection" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
 		</div>
 	</div>
@@ -68,30 +68,30 @@ export default {
 			return this.currentValue === this.checkedValue
 		},
 		invalidColor() {
-			if (this.getDisabled) return 'gray'
+			if (this.formDisabled) return 'gray'
 			if (this.invalidField) return 'red'
 			return this.checked ? this.checkedColor : this.uncheckedColor
 		},
 		checkedClass() {
 			let color
-			if (this.getDisabled) color = 'gray'
+			if (this.formDisabled) color = 'gray'
 			else if (this.invalidField) color = 'red'
 			else color = !this.fill ? (this.checked ? this.checkedColor : this.uncheckedColor) : 'white'
 			return tailwindui.bgColor(color)
 		},
 		nativeClass() {
 			return [
-				tailwindui.checkboxSize(this.size),
+				tailwindui.iconSize(this.size),
 				this.fill && this.checked ? '' : 'border',
 				this.fill ? tailwindui.bgColor(this.invalidColor) : tailwindui.borderColor(this.invalidColor),
-				this.getDisabled ? 'bg-opacity-50 border-opacity-50' : ''
+				this.formDisabled ? 'bg-opacity-50 border-opacity-50' : ''
 			]
 		},
 		checkboxClass() {
 			//不使用pointer-events-none，与cursor-not-allowed样式冲突
 			return [
 				tailwindui.textColor(this.invalidColor),
-				this.getDisabled ? 'text-opacity-50 cursor-not-allowed' : 'cursor-pointer'
+				this.formDisabled ? 'text-opacity-50 cursor-not-allowed' : 'cursor-pointer'
 			]
 		}
 	},
@@ -110,14 +110,14 @@ export default {
 	},
 	methods: {
 		updateValue(init, value) {
-			if (this.getDisabled) return
+			if (this.formDisabled) return
 			this.currentValue = value === this.checkedValue ? this.checkedValue : this.uncheckedValue
 			if (init) return
 			this.$emit('change', this.currentValue)
 			if (this.name) this.$nextTick(() => this.validate('change'))
 		},
 		onChange() {
-			if (this.getDisabled) return
+			if (this.formDisabled) return
 			this.currentValue = this.checked ? this.uncheckedValue : this.checkedValue
 			this.$emit('change', this.currentValue)
 			if (this.name) this.$nextTick(() => this.validate('change'))

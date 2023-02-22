@@ -33,19 +33,19 @@ export default {
 			else value ? this.show() : this.hide()
 		},
 		show() {
-			if (this.visible || this.getDisabled) return
+			if (this.visible || this.formDisabled) return
 			this.currentVisible++
 			this.$emit('toggle', true)
 			this.$emit('show')
 		},
 		hide() {
-			if (this.visible || this.getDisabled) return
+			if (this.visible || this.formDisabled) return
 			this.currentVisible = 0
 			this.$emit('toggle', false)
 			this.$emit('hide')
 		},
 		leave(event) {
-			if (this.visible || !this.currentVisible || this.getDisabled) return
+			if (this.visible || !this.currentVisible || this.formDisabled) return
 			let { root } = this.$refs
 			if (!root) return
 			let rootElement = root.$el || root

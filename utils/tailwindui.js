@@ -18,21 +18,7 @@ export default {
 		if (size == 'xl') return 'px-12 py-2.5 text-xl'
 	},
 	/**
-	 * 多选框大小（checkbox,radio）
-	 *
-	 * @param {String} size
-	 * @returns {String}
-	 */
-	checkboxSize(size) {
-		if (size == 'none' || size == 'custom') return ''
-		if (size == 'xs') return 'w-2 h-2 text-xs'
-		if (size == 'sm') return 'w-3 h-3 text-sm'
-		if (size == 'md') return 'w-4 h-4 text-md'
-		if (size == 'lg') return 'w-5 h-5 text-lg'
-		if (size == 'xl') return 'w-6 h-6 text-xl'
-	},
-	/**
-	 * 图标大小（icon）
+	 * 图标大小（icon,checkbox,radio）
 	 *
 	 * @param {String} size
 	 * @returns {String}
@@ -42,8 +28,8 @@ export default {
 		if (size == 'xs') return 'w-2 h-2 text-xs'
 		if (size == 'sm') return 'w-3 h-3 text-sm'
 		if (size == 'md') return 'w-4 h-4 text-md'
-		if (size == 'lg') return 'w-8 h-8 text-lg'
-		if (size == 'xl') return 'w-12 h-12 text-xl'
+		if (size == 'lg') return 'w-5 h-5 text-lg'
+		if (size == 'xl') return 'w-6 h-6 text-xl'
 	},
 	/**
 	 * 文本框大小（input,textarea,select）

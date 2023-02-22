@@ -9,59 +9,62 @@ export default {
 		name: String,
 		//字段显示名
 		label: String,
+		//校验规则
+		rules: Array,
 		//label类名
 		labelClass: String,
 		//body类名
 		bodyClass: String,
-		//是否必填
-		required: Boolean,
 		//排版方向，默认row
 		direction: String,
-		//校验规则
-		rules: Array,
 		//占位文本
 		placeholder: String,
-		//默认自动填入，默认true
-		autocomplete: { type: Boolean, default: true },
+		//是否必填
+		required: Boolean,
 		//禁用状态
-		disabled: Boolean
+		disabled: Boolean,
+		//默认自动填入，默认true
+		autocomplete: { type: Boolean, default: true }
 	},
 	computed: {
 		//错误信息默认使用占位符
 		invalidMessage() {
-			return (this.invalidField && this.invalidField.message) || this.placeholder
+			return this.invalidField ? this.invalidField.message || this.placeholder : ''
 		},
 		//优先使用表单禁用参数
-		getDisabled() {
+		formDisabled() {
 			return (this.NForm && this.NForm.disabled) || this.disabled
 		},
-		//优先使用表单自动填入参数
-		getAutocomplete() {
-			let formAutocomplete = this.NForm && this.NForm.autocomplete
-			let thatAutocomplete = typeof formAutocomplete === 'boolean' ? formAutocomplete : this.autocomplete
-			return thatAutocomplete ? '' : this.type === 'password' ? 'new-password' : 'off'
-		},
-		//用户未定义时，如果在表单中，使用表单的
-		getDirection() {
-			return this.direction || (this.NForm && this.NForm.direction) || ''
-		},
-		//用户未定义时，如果在表单中，使用表单的
-		getLabelClass() {
-			return this.labelClass || (this.NForm && this.NForm.labelClass) || ''
-		},
 		//校验规则中未定义时不必填
-		getRequired() {
+		formRequired() {
 			let validateRules = this.name && this.NForm && this.NForm.validateRules
 			if (!validateRules) return false
 			if (this.required) return true
 			let rules = validateRules[this.name]
 			return rules && rules.length && rules.some((rule) => rule.required)
+		},
+		//优先使用表单自动填入参数
+		formAutoComplete() {
+			let formAutocomplete = this.NForm && this.NForm.autocomplete
+			let thatAutocomplete = typeof formAutocomplete === 'boolean' ? formAutocomplete : this.autocomplete
+			return thatAutocomplete ? '' : this.type === 'password' ? 'new-password' : 'off'
+		},
+		//用户未定义时，如果在表单中，使用表单的
+		formColDirection() {
+			return (this.direction || (this.NForm && this.NForm.direction)) === 'col'
+		},
+		formRowDirection() {
+			return (this.direction || (this.NForm && this.NForm.direction)) === 'row'
+		},
+		//用户未定义时，如果在表单中，使用表单的
+		formLabelClass() {
+			return this.labelClass || (this.NForm && this.NForm.labelClass) || ''
 		}
 	},
 	data() {
 		return {
-			//ing：验证中，abort：验证中断，ok：验证成功，no：验证失败
-			validateStatus: 'ing',
+			//ing:验证中; abort:验证中断; ok:验证成功; no验证失败
+			validateStatus: '',
 			invalidField: null
 		}
 	},
@@ -79,7 +82,7 @@ export default {
 	methods: {
 		validate(trigger) {
 			return new Promise((resolve) => {
-				if (this.getDisabled || this.validateStatus === 'ing')
+				if (this.formDisabled || this.validateStatus === 'ing')
 					return (this.validateStatus = 'abort'), resolve([false, new Error('Abort')])
 				this.validateStatus = 'ing'
 				let rules = this.getRules(trigger)
