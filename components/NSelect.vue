@@ -1,10 +1,5 @@
 <template>
-	<div
-		ref="root"
-		class="n-select flex relative"
-		:class="{ 'flex-col gap-2': formColDirection }"
-		@mouseleave.stop="leave"
-	>
+	<div ref="root" class="n-select flex relative" :class="{ 'flex-col gap-2': formColDirection }" @mouseleave="leave">
 		<div
 			v-if="label || formColDirection"
 			class="flex items-center"
@@ -18,12 +13,7 @@
 				{{ invalidMessage }}
 			</div>
 		</div>
-		<div
-			class="relative flex items-center flex-grow group"
-			@click.stop="show"
-			@mouseleave.stop="leave"
-			:class="selectClass"
-		>
+		<div class="relative flex items-center flex-grow group" @click.stop="show" @mouseleave="leave" :class="selectClass">
 			<div class="flex flex-wrap flex-grow gap-2" :class="nativeClass">
 				<template v-if="multiple">
 					<div
@@ -58,7 +48,7 @@
 			<div
 				v-show="currentVisible"
 				@mouseenter.stop="show"
-				@mouseleave.stop="leave"
+				@mouseleave="leave"
 				class="absolute z-10 w-full"
 				:class="optionsClass"
 			>

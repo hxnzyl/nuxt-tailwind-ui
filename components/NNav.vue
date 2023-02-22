@@ -5,7 +5,12 @@
 			<div v-for="(menu, key) in menus" :key="key" class="px-8 relative">
 				<NDropDown v-if="menu.children && menu.children.length > 0" :menus="menu.children">
 					<template slot="label" slot-scope="{ isActived }">
-						<NLink v-if="menu.to" :to="menu.to" class="hover:font-bold" :class="{ 'font-bold': $route.path === menu.to }">
+						<NLink
+							v-if="menu.to"
+							:to="menu.to"
+							class="hover:font-bold"
+							:class="{ 'font-bold': $route.path === menu.to }"
+						>
 							{{ menu.label }}
 						</NLink>
 						<a v-else href="#menu" @click.prevent="" class="hover:font-bold" :class="{ 'font-bold': isActived(menu) }">
@@ -13,7 +18,12 @@
 						</a>
 					</template>
 				</NDropDown>
-				<NLink v-else-if="menu.to" :to="menu.to" class="hover:font-bold" :class="{ 'font-bold': $route.path === menu.to }">
+				<NLink
+					v-else-if="menu.to"
+					:to="menu.to"
+					class="hover:font-bold"
+					:class="{ 'font-bold': $route.path === menu.to }"
+				>
 					{{ menu.label }}
 				</NLink>
 				<a v-else href="#menu" @click.prevent="">
@@ -45,7 +55,7 @@ export default {
 		navClass() {
 			return [
 				tailwindui.sticky(this.sticky),
-				tailwindui.shadow(this.shadow),
+				this.kiosk ? '' : tailwindui.shadow(this.shadow),
 				this.kiosk ? 'bg-transparent text-white' : tailwindui.bgColor(this.color)
 			]
 		}

@@ -1,5 +1,5 @@
 <template>
-	<div ref="root" class="n-dropdown flex gap-2 relative items-center" @mouseenter.stop="show" @mouseleave.stop="leave">
+	<div ref="root" class="n-dropdown flex gap-2 relative items-center" @mouseenter.stop="show" @mouseleave="leave">
 		<slot name="label" v-bind="{ menu: currentMenu, index: currentIndex, isActived }">
 			<span>{{ label }}</span>
 		</slot>
@@ -9,7 +9,7 @@
 		<div
 			v-show="currentVisible"
 			@mouseenter.stop="show"
-			@mouseleave.stop="leave"
+			@mouseleave="leave"
 			class="absolute z-10"
 			:class="{
 				'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
