@@ -1,7 +1,6 @@
 <template>
 	<form
 		class="n-form appearance-none flex flex-col gap-6 relative"
-		:class="{ 'cursor-not-allowed': disabled }"
 		@submit.stop.prevent="onSubmit"
 	>
 		<slot></slot>

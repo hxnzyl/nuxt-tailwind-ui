@@ -29,7 +29,7 @@ export default {
 	props: {
 		//按钮大小
 		size: { type: String, default: 'md' },
-		//按钮颜色
+		//空心：按钮字体颜色；非空心：按钮背景颜色
 		color: { type: String, default: 'blue' },
 		//是否有圆角
 		rounded: { type: Boolean, default: true },
@@ -61,19 +61,30 @@ export default {
 		},
 		buttonClass() {
 			return [
-				'n-button flex items-center justify-center tranistion duration-500 appearance-none',
-				this.getDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
+				'n-button flex items-center justify-center tranistion duration-200 appearance-none',
+				//按钮大小
 				tailwindui.buttonSize(this.size),
+				//圆角大小
 				this.rounded ? tailwindui.roundedSize(this.size) : '',
+				//按钮边框
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.color) : '',
-				this.border ? (this.getDisabled ? 'border-opacity-50' : 'hover:border-opacity-50') : '',
-				this.plain ? 'bg-white' : '',
+				//空心：默认背景白色；非空心：背景颜色非白色设置字体为白色
+				this.plain ? 'bg-white' : this.color == 'white' ? '' : 'text-white',
+				//空心：按钮字体颜色；非空心：按钮背景颜色
 				this.plain ? tailwindui.textColor(this.color) : tailwindui.bgColor(this.color),
-				this.plain ? '' : this.color == 'white' ? '' : 'text-white',
-				this.plain ? (this.getDisabled ? 'text-opacity-50' : 'hover:text-opacity-50') : '',
-				!this.plain ? (this.getDisabled ? 'bg-opacity-50' : 'hover:bg-opacity-50') : '',
-				this.color == 'black' && !this.plain && !this.getDisabled ? 'hover:bg-gray-500' : ''
+				//禁用：无事件，禁用鼠标，不使用pointer-events-none，与cursor-not-allowed样式冲突
+				this.getDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
+				//禁用：空心->字体透明，边框透明。非空心->背景透明；非禁用：空心hover->字体透明，边框透明。非空心hover->背景透明
+				this.getDisabled
+					? this.plain
+						? 'text-opacity-50 border-opacity-50'
+						: 'bg-opacity-50'
+					: this.plain
+					? 'hover:text-opacity-50 hover:border-opacity-50'
+					: 'hover:bg-opacity-50',
+				//非空心下黑色按钮的hover效果优化
+				!this.plain && this.color == 'black' ? 'hover:bg-gray-500' : ''
 			]
 		}
 	},

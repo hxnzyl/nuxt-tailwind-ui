@@ -1,5 +1,5 @@
 <template>
-	<div ref="root" class="n-select flex relative gap-2" :class="{ 'flex-col': getDirection == 'col' }" @mouseleave="leave">
+	<div ref="root" class="n-select flex relative gap-2" :class="{ 'flex-col': getDirection == 'col' }">
 		<div
 			v-if="label || getDirection == 'col'"
 			class="flex items-center"
@@ -13,8 +13,8 @@
 				{{ invalidMessage }}
 			</div>
 		</div>
-		<div class="relative flex items-center grow group" @click.stop="show" @mouseleave="leave" :class="selectClass">
-			<div class="flex flex-wrap grow gap-2">
+		<div class="relative flex items-center flex-grow group" @click.stop="show" @mouseleave="leave" :class="selectClass">
+			<div class="flex flex-wrap flex-grow gap-2" :class="nativeClass">
 				<template v-if="multiple">
 					<div
 						v-for="(opt, key) in currentOption"
@@ -37,24 +37,15 @@
 				v-if="clearable"
 				href="#clear"
 				@click.stop.prevent="clear"
-				class="hidden hover:text-opacity-50 text-gray-400 px-2"
+				class="hidden hover:text-opacity-50 text-gray-400 mr-2"
 				:class="{ 'group-hover:block': valueNotEmpty }"
 			>
 				<NSvg name="x"></NSvg>
 			</a>
-			<a href="#chevron" @click.prevent="" class="text-gray-500">
+			<a href="#chevron" @click.prevent="" class="text-gray-500 mr-2">
 				<NSvg name="chevron-right" class="transition direction-500" :class="{ 'rotate-90': currentVisible }"></NSvg>
 			</a>
-			<div
-				v-show="currentVisible"
-				@mouseenter="show"
-				class="absolute z-10 w-full"
-				:class="{
-					'left-1/2 -translate-x-2/4': position == 'bottom' || position == 'top',
-					'top-full pt-2': position == 'bottom',
-					'bottom-full pb-2': position == 'top'
-				}"
-			>
+			<div v-show="currentVisible" @mouseenter="show" class="absolute z-10 w-full" :class="optionsClass">
 				<slot name="options">
 					<div
 						v-if="options.length > 0"
@@ -133,21 +124,30 @@ export default {
 	},
 	computed: {
 		invalidColor() {
-			if (this.getDisabled) return 'gray'
-			if (this.invalidField) return 'red'
-			return this.color
+			return this.invalidField ? 'red' : this.color
+		},
+		optionsClass() {
+			return [
+				this.bodyClass,
+				this.position == 'bottom' || this.position == 'top' ? 'left-1/2 -translate-x-2/4' : '',
+				this.position == 'bottom' ? 'top-full pt-2' : this.position == 'top' ? 'bottom-full pb-2' : ''
+			]
+		},
+		nativeClass() {
+			return [
+				this.getDisabled ? 'pointer-events-none' : '',
+				tailwindui.textColor(this.invalidColor),
+				tailwindui.textBoxSize(this.size)
+			]
 		},
 		selectClass() {
 			return [
-				this.bodyClass,
-				this.getDisabled ? 'bg-opacity-50 pointer-events-none' : 'cursor-default',
-				tailwindui.textBoxSize(this.size),
-				tailwindui.textColor(this.invalidColor),
 				this.rounded ? tailwindui.roundedSize(this.size) : '',
 				this.border ? 'border' : '',
-				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidColor == 'gray') : '',
+				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
 				this.ring && this.currentVisible ? 'ring-1 ring-opacity-50' : '',
-				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor, this.getDisabled) : ''
+				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor, this.getDisabled) : '',
+				this.getDisabled ? 'bg-gray-200 bg-opacity-50 text-opacity-50 cursor-not-allowed' : 'bg-white'
 			]
 		}
 	},

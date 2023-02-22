@@ -3,7 +3,7 @@
 		class="n-form-item flex"
 		:class="{ 'bg-opacity-50 pointer-events-none': disabled, 'flex-col': getDirection == 'col', relative: getDirection == 'row' }"
 	>
-		<div class="flex grow gap-2" :class="{ 'flex-col': getDirection == 'col' }">
+		<div class="flex flex-grow gap-2" :class="{ 'flex-col': getDirection == 'col' }">
 			<div
 				v-if="label || getDirection == 'col'"
 				class="flex items-center"
@@ -17,7 +17,7 @@
 					{{ invalidMessage }}
 				</div>
 			</div>
-			<div class="flex grow" :class="bodyClass">
+			<div class="flex flex-grow" :class="bodyClass">
 				<slot></slot>
 			</div>
 		</div>

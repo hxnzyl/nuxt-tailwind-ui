@@ -19,7 +19,7 @@
 				<div v-else class="p-4 cursor-pointer" @click.stop="onChange(tab, key)">{{ tab.label }}</div>
 			</div>
 		</div>
-		<div class="flex bg-white" :class="[bodyClass, direction == 'row' ? 'w-4/5' : 'flex-col grow']">
+		<div class="flex bg-white" :class="[bodyClass, direction == 'row' ? 'w-4/5' : 'flex-col flex-grow']">
 			<slot v-bind="{ index: currentIndex, tab: currentTab, value: currentValue }"></slot>
 		</div>
 		<NLoading v-show="currentLoading" size="lg" color="gray" mask></NLoading>

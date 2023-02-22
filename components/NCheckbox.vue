@@ -1,32 +1,29 @@
 <template>
-	<div
-		class="flex items-center"
-		:class="[`n-${type}`, getDirection == 'col' ? 'flex-col' : 'relative']"
-		@click.stop="onChange"
-	>
-		<div class="flex w-full cursor-pointer" :class="{ 'flex-col gap-2': getDirection == 'col' }">
-			<div class="flex items-center" :class="{ 'justify-between': getDirection == 'col' }">
+	<div class="flex" :class="[`n-${type}`, getDirection == 'col' ? 'flex-col' : 'relative']">
+		<div class="flex flex-grow" :class="{ 'flex-col gap-2': getDirection == 'col' }">
+			<div
+				v-if="label || getDirection == 'col'"
+				class="flex items-center"
+				:class="[getDirection == 'col' ? 'justify-between' : '', this.getLabelClass]"
+			>
 				<div v-if="label" class="text-base">
-					<span v-if="getRequired" class="text-red-500">*</span>
 					<slot name="label">
 						<span class="text-gray-500">{{ label }}</span>
 					</slot>
+					<span v-if="getRequired" class="text-red-500">*</span>
 				</div>
 				<div v-if="getDirection == 'col'" v-show="invalidField != null" class="text-red-500 text-xs">
 					{{ invalidMessage }}
 				</div>
 			</div>
-			<div class="flex grow items-center gap-2">
-				<div v-if="type == 'checkbox'" class="flex items-center justify-center" :class="checkboxClass">
+			<div class="flex items-center flex-grow gap-2" :class="checkboxClass" @click.stop="onChange">
+				<div v-if="type == 'checkbox'" class="flex items-center justify-center" :class="nativeClass">
 					<NSvg v-show="checked" name="check"></NSvg>
 				</div>
-				<div v-else class="flex items-center justify-center rounded-full" :class="checkboxClass">
+				<div v-else class="flex items-center justify-center rounded-full" :class="nativeClass">
 					<div v-show="checked" class="rounded-full w-1/2 h-1/2" :class="checkedClass"></div>
 				</div>
-				<div
-					class="flex items-center grow"
-					:class="[bodyClass, getDisabled ? 'bg-opacity-50 text-gray-500 text-opacity-50' : '']"
-				>
+				<div class="flex items-center flex-grow" :class="bodyClass">
 					<slot v-bind="{ checked, disabled: getDisabled }"></slot>
 				</div>
 			</div>
@@ -84,14 +81,17 @@ export default {
 			else color = !this.fill ? (this.checked ? this.checkedColor : this.uncheckedColor) : 'white'
 			return tailwindui.bgColor(color)
 		},
-		checkboxClass() {
+		nativeClass() {
 			return [
-				this.getDisabled ? 'bg-opacity-50 text-opacity-50' : '',
 				tailwindui.checkboxSize(this.size),
 				this.fill && this.checked ? '' : 'border',
 				this.fill ? tailwindui.bgColor(this.invalidColor) : tailwindui.borderColor(this.invalidColor),
 				tailwindui.textColor(this.invalidColor)
 			]
+		},
+		checkboxClass() {
+			//不使用pointer-events-none，与cursor-not-allowed样式冲突
+			return [this.getDisabled ? 'bg-opacity-50 text-opacity-50 cursor-not-allowed' : 'cursor-pointer']
 		}
 	},
 	watch: {

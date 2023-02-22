@@ -1,28 +1,23 @@
 <template>
-	<div
-		class="n-input flex"
-		:class="{
-			'bg-opacity-50 pointer-events-none': getDisabled,
-			'flex-col': getDirection == 'col',
-			relative: getDirection == 'row'
-		}"
-	>
-		<div class="flex grow gap-2" :class="{ 'flex-col': getDirection == 'col' }">
+	<div class="n-input flex" :class="getDirection == 'col' ? 'flex-col' : 'relative'">
+		<div class="flex flex-grow" :class="{ 'flex-col gap-2': getDirection == 'col' }">
 			<div
 				v-if="label || getDirection == 'col'"
 				class="flex items-center"
 				:class="[getDirection == 'col' ? 'justify-between' : '', this.getLabelClass]"
 			>
 				<div v-if="label" class="text-base">
-					<span class="text-gray-500">{{ label }}</span>
+					<slot name="label">
+						<span class="text-gray-500">{{ label }}</span>
+					</slot>
 					<span v-if="getRequired" class="text-red-500">*</span>
 				</div>
 				<div v-if="getDirection == 'col'" v-show="invalidField != null" class="text-red-500 text-xs">
 					{{ invalidMessage }}
 				</div>
 			</div>
-			<div class="flex grow" :class="bodyClass">
-				<div class="flex items-center grow bg-white group" :class="wrapperClass">
+			<div class="flex flex-grow" :class="{ 'cursor-not-allowed': getDisabled }">
+				<div class="flex items-center flex-grow group" :class="inputClass">
 					<textarea
 						v-if="type === 'textarea'"
 						ref="input"
@@ -44,32 +39,33 @@
 						@blur="onBlur"
 						:type="currentType"
 						:placeholder="placeholder"
-						:disabled="getDisabled"
 						:readonly="readonly"
+						:disabled="getDisabled"
 						:autocomplete="getAutocomplete"
 					/>
-					<template v-if="showEyeIcon">
-						<a
-							href="#eye"
-							@click.stop.prevent="eye === 'click' && (currentType = currentType === 'text' ? 'password' : 'text')"
-							@mousedown.stop.prevent="eye === 'press' && (currentType = 'text')"
-							@mouseup.stop.prevent="eye === 'press' && (currentType = 'password')"
-							class="hidden group-hover:block group-hover:text-opacity-50 text-gray-400 px-2"
-						>
-							<NSvg :name="currentType === 'password' ? 'eye' : 'eye-off'"></NSvg>
-						</a>
-					</template>
 					<a
 						v-if="clearable"
 						href="#clear"
 						@click.stop.prevent="clear"
-						class="hidden hover:text-opacity-50 text-gray-400 px-2"
+						class="hidden hover:text-opacity-50 text-gray-400 pr-2"
 						:class="{ 'group-hover:block': valueNotEmpty }"
 					>
 						<NSvg name="x"></NSvg>
 					</a>
+					<a
+						v-if="showEyeIcon"
+						href="#eye"
+						@click.stop.prevent="eye === 'click' && (currentType = currentType === 'text' ? 'password' : 'text')"
+						@mousedown.stop.prevent="eye === 'press' && (currentType = 'text')"
+						@mouseup.stop.prevent="eye === 'press' && (currentType = 'password')"
+						class="hidden group-hover:block group-hover:text-opacity-50 text-gray-400 pr-2"
+					>
+						<NSvg :name="currentType === 'password' ? 'eye' : 'eye-off'"></NSvg>
+					</a>
 				</div>
-				<slot></slot>
+				<div v-if="$slots.default" class="flex" :class="defaultClass">
+					<slot></slot>
+				</div>
 			</div>
 		</div>
 		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
@@ -79,8 +75,8 @@
 </template>
 
 <script>
-import validator from '../mixins/validator'
 import tailwindui from '../utils/tailwindui'
+import validator from '../mixins/validator'
 import clearable from '../mixins/clearable'
 
 export default {
@@ -116,31 +112,32 @@ export default {
 		currentValue() {
 			return this.value == null ? '' : this.value + ''
 		},
+		showEyeIcon() {
+			return !!this.eye && this.type === 'password'
+		},
 		invalidColor() {
-			if (this.getDisabled) return 'gray'
-			if (this.invalidField) return 'red'
-			return this.color
+			return this.invalidField ? 'red' : this.color
+		},
+		defaultClass() {
+			return [this.bodyClass, this.rounded ? tailwindui.roundedTBRSize(this.size) : '']
 		},
 		nativeClass() {
 			return [
-				'grow appearance-none focus:outline-none bg-transparent',
+				'flex-grow appearance-none focus:outline-none bg-transparent',
 				tailwindui.textColor(this.color),
 				tailwindui.textBoxSize(this.size)
 			]
 		},
-		wrapperClass() {
+		inputClass() {
 			return [
 				this.ring && this.focusing ? 'ring-1 ring-opacity-50' : '',
 				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor, this.getDisabled) : '',
 				this.border ? (this.$slots.default ? 'border-t border-b border-l' : 'border') : '',
-				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidColor == 'gray') : '',
+				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
 				this.rounded ? (this.$slots.default ? tailwindui.roundedTBLSize(this.size) : tailwindui.roundedSize(this.size)) : '',
-				this.getDisabled ? 'bg-gray-200 bg-opacity-50' : '',
-				this.readonly ? 'cursor-default' : ''
+				this.getDisabled ? 'bg-gray-200 bg-opacity-50' : 'bg-white',
+				this.getDisabled ? 'pointer-events-none' : this.readonly ? 'cursor-default' : ''
 			]
-		},
-		showEyeIcon() {
-			return !!this.eye && this.type === 'password'
 		}
 	},
 	watch: {
