@@ -1,5 +1,10 @@
 <template>
-	<div ref="root" class="n-select flex relative" :class="{ 'flex-col gap-2': formColDirection }">
+	<div
+		ref="root"
+		class="n-select flex relative"
+		:class="{ 'flex-col gap-2': formColDirection }"
+		@mouseleave.stop="leave"
+	>
 		<div
 			v-if="label || formColDirection"
 			class="flex items-center"
@@ -13,7 +18,12 @@
 				{{ invalidMessage }}
 			</div>
 		</div>
-		<div class="relative flex items-center flex-grow group" @click.stop="show" @mouseleave="leave" :class="selectClass">
+		<div
+			class="relative flex items-center flex-grow group"
+			@click.stop="show"
+			@mouseleave.stop="leave"
+			:class="selectClass"
+		>
 			<div class="flex flex-wrap flex-grow gap-2" :class="nativeClass">
 				<template v-if="multiple">
 					<div
@@ -45,7 +55,13 @@
 			<a href="#chevron" @click.prevent.stop="show" class="text-gray-400 mr-2">
 				<NSvg name="chevron-right" class="transition direction-500" :class="{ 'rotate-90': currentVisible }"></NSvg>
 			</a>
-			<div v-show="currentVisible" @mouseenter="show" class="absolute z-10 w-full" :class="optionsClass">
+			<div
+				v-show="currentVisible"
+				@mouseenter.stop="show"
+				@mouseleave.stop="leave"
+				class="absolute z-10 w-full"
+				:class="optionsClass"
+			>
 				<slot name="options">
 					<div v-if="options.length > 0" class="py-2 bg-gray-100 rounded-md shadow-lg">
 						<div
