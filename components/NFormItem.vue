@@ -1,8 +1,5 @@
 <template>
-	<div
-		class="n-form-item flex"
-		:class="{ 'bg-opacity-50 pointer-events-none': disabled, 'flex-col': getDirection == 'col', relative: getDirection == 'row' }"
-	>
+	<div class="n-form-item flex" :class="{ 'flex-col': getDirection == 'col', relative: getDirection == 'row' }">
 		<div class="flex flex-grow gap-2" :class="{ 'flex-col': getDirection == 'col' }">
 			<div
 				v-if="label || getDirection == 'col'"
@@ -17,8 +14,8 @@
 					{{ invalidMessage }}
 				</div>
 			</div>
-			<div class="flex flex-grow" :class="bodyClass">
-				<slot></slot>
+			<div class="flex flex-grow" :class="[bodyClass, getDisabled ? 'bg-opacity-50 text-opacity-50 cursor-not-allowed' : '']">
+				<slot v-bind="{ disabled: getDisabled }" :class="{ 'pointer-events-none': getDisabled }"></slot>
 			</div>
 		</div>
 		<div v-if="getDirection == 'row'" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">

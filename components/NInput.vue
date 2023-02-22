@@ -159,29 +159,33 @@ export default {
 	methods: {
 		updateValue(init, value) {
 			let { input } = this.$refs
-			if (!input || input.value === value) return
+			if (!input || input.disabled || input.value === value) return
 			input.value = value
 			if (init) return
 			this.$emit('input', value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
-		onInput(event) {
-			let { value } = event.target
-			if (value === this.currentValue) return
+		onInput() {
+			let { input } = this.$refs
+			if (!input || input.disabled || input.value === this.currentValue) return
 			this.$emit('input', value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
-		onFocus(event) {
+		onFocus() {
+			let { input } = this.$refs
+			if (!input || input.disabled) return
 			this.focusing = true
 			this.bluring = false
-			this.$emit('focus', event)
-			if (this.name && event.target.value !== this.currentValue) this.validate('focus')
+			this.$emit('focus')
+			if (this.name && input.value !== this.currentValue) this.validate('focus')
 		},
-		onBlur(event) {
+		onBlur() {
+			let { input } = this.$refs
+			if (!input || input.disabled) return
 			this.focusing = false
 			this.bluring = true
-			this.$emit('blur', event)
-			if (this.name && event.target.value !== this.currentValue) this.validate('blur')
+			this.$emit('blur')
+			if (this.name && input.value !== this.currentValue) this.validate('blur')
 		}
 	}
 }

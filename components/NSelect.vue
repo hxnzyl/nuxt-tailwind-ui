@@ -42,7 +42,7 @@
 			>
 				<NSvg name="x"></NSvg>
 			</a>
-			<a href="#chevron" @click.prevent="" class="text-gray-500 mr-2">
+			<a href="#chevron" @click.prevent.stop="show" class="mr-2">
 				<NSvg name="chevron-right" class="transition direction-500" :class="{ 'rotate-90': currentVisible }"></NSvg>
 			</a>
 			<div v-show="currentVisible" @mouseenter="show" class="absolute z-10 w-full" :class="optionsClass">
@@ -134,11 +134,7 @@ export default {
 			]
 		},
 		nativeClass() {
-			return [
-				this.getDisabled ? 'pointer-events-none' : '',
-				tailwindui.textColor(this.invalidColor),
-				tailwindui.textBoxSize(this.size)
-			]
+			return [tailwindui.textColor(this.invalidColor), tailwindui.textBoxSize(this.size)]
 		},
 		selectClass() {
 			return [
@@ -147,6 +143,7 @@ export default {
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
 				this.ring && this.currentVisible ? 'ring-1 ring-opacity-50' : '',
 				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor, this.getDisabled) : '',
+				//禁用：无事件，禁用鼠标，不使用pointer-events-none，与cursor-not-allowed样式冲突
 				this.getDisabled ? 'bg-gray-200 bg-opacity-50 text-opacity-50 cursor-not-allowed' : 'bg-white'
 			]
 		}

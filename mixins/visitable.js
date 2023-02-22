@@ -33,19 +33,19 @@ export default {
 			else value ? this.show() : this.hide()
 		},
 		show() {
-			if (this.visible) return
+			if (this.visible || this.getDisabled) return
 			this.currentVisible++
 			this.$emit('toggle', true)
 			this.$emit('show')
 		},
 		hide() {
-			if (this.visible) return
+			if (this.visible || this.getDisabled) return
 			this.currentVisible = 0
 			this.$emit('toggle', false)
 			this.$emit('hide')
 		},
 		leave(event) {
-			if (this.visible || !this.currentVisible) return
+			if (this.visible || !this.currentVisible || this.getDisabled) return
 			let { root } = this.$refs
 			if (!root) return
 			let rootElement = root.$el || root
@@ -53,7 +53,6 @@ export default {
 			if (!mouseElement || !rootElement.contains(mouseElement)) this.hide()
 		},
 		toggle() {
-			if (this.visible) return
 			if (this.currentVisible) this.hide()
 			else this.show()
 		}

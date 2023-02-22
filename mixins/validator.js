@@ -79,7 +79,8 @@ export default {
 	methods: {
 		validate(trigger) {
 			return new Promise((resolve) => {
-				if (this.validateStatus === 'ing') return (this.validateStatus = 'abort'), resolve([false])
+				if (this.getDisabled || this.validateStatus === 'ing')
+					return (this.validateStatus = 'abort'), resolve([false, new Error('Abort')])
 				this.validateStatus = 'ing'
 				let rules = this.getRules(trigger)
 				if (!rules.length) return this.validateOk(resolve)

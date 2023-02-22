@@ -110,6 +110,7 @@ export default {
 	},
 	methods: {
 		updateValue(init, value) {
+			if (this.getDisabled) return
 			this.currentValue = value === this.checkedValue ? this.checkedValue : this.uncheckedValue
 			if (init) return
 			this.$emit('change', this.currentValue)

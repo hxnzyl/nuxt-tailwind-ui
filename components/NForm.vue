@@ -46,7 +46,7 @@ export default {
 	},
 	methods: {
 		async onSubmit() {
-			if (this.disabled) return
+			if (this.getDisabled) return
 			let [validate] = await this.validate()
 			if (!validate) return
 			await this.executeAsyncTask('post', this.model)
