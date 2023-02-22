@@ -60,6 +60,8 @@ export default {
 	},
 	data() {
 		return {
+			//ing：验证中，abort：验证中断，ok：验证成功，no：验证失败
+			validateStatus: 'ing',
 			invalidField: null
 		}
 	},
@@ -77,6 +79,8 @@ export default {
 	methods: {
 		validate(trigger) {
 			return new Promise((resolve) => {
+				if (this.validateStatus === 'ing') return (this.validateStatus = 'abort'), resolve([false])
+				this.validateStatus = 'ing'
 				let rules = this.getRules(trigger)
 				if (!rules.length) return this.validateOk(resolve)
 				const validator = new AsyncValidator({ [this.name]: rules })
@@ -89,11 +93,13 @@ export default {
 		validateOk(resolve) {
 			if (this.NForm) this.NForm.$emit('validate', true, this.name, this.currentValue)
 			this.invalidField = null
+			this.validateStatus = 'ok'
 			resolve([true])
 		},
 		validateNo(resolve, errors) {
 			if (this.NForm) this.NForm.$emit('validate', false, this.name, this.currentValue)
 			this.invalidField = errors[0]
+			this.validateStatus = 'no'
 			resolve([false, errors[0]])
 		},
 		getRules(trigger) {

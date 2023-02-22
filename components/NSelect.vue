@@ -153,12 +153,11 @@ export default {
 	},
 	watch: {
 		options(newValue, oldValue) {
-			if (newValue !== oldValue) this.updateValue(false, newValue)
+			if (newValue !== oldValue) this.updateValue(false, this.currentValue)
 		}
 	},
 	data() {
 		return {
-			hideTimer: null,
 			currentIndex: this.multiple ? null : -1,
 			currentOption: this.multiple ? [] : {},
 			currentValue: this.multiple ? [] : null
@@ -170,38 +169,44 @@ export default {
 			this.updateValue(init, value)
 		},
 		updateValue(init, value) {
+			let currentValue
 			if (this.multiple) {
 				if (typeof value === 'string') value = value.split(',')
 				else if (value == null) value = []
 				this.currentOption = this.options.filter(
 					init && !value.length ? this.isActived : (option) => value.includes(option.value)
 				)
-				this.currentValue = this.currentOption.map((opt) => opt.value)
-				init || this.$emit('change', this.propValueType === 'string' ? this.currentValue.join(',') : this.currentValue)
+				currentValue = this.currentOption.map((opt) => opt.value)
+				if (this.propValueType === 'string') currentValue = currentValue.join(',')
 			} else {
 				let index = this.options.findIndex(init && value == null ? this.isActived : (option) => option.value === value)
 				let option = this.options[index] || {}
 				this.currentIndex = index
 				this.currentOption = option
-				this.currentValue = option.value == null ? this.getDefaultValue() : option.value
-				init || this.$emit('change', this.currentValue)
+				currentValue = option.value == null ? this.getDefaultValue() : option.value
 			}
-			if (!init && this.name) this.$nextTick(() => this.validate('change'))
+			if (this.currentValue === currentValue) return
+			this.currentValue = currentValue
+			if (init) return
+			this.$emit('change', currentValue)
+			if (this.name) this.validate('change')
 		},
 		onChange(option, index) {
+			this.hide()
+			let currentValue
 			if (this.multiple) {
 				if ((index = this.currentValue.indexOf(option.value)) === -1) this.addOption(option)
 				else this.removeOption(option, index)
-				this.hide()
-				this.$emit('change', this.propValueType === 'string' ? this.currentValue.join(',') : this.currentValue)
+				currentValue = this.propValueType === 'string' ? this.currentValue.join(',') : this.currentValue
 			} else {
 				this.currentIndex = index
 				this.currentOption = option
-				this.currentValue = option.value == null ? this.getDefaultValue() : option.value
-				this.hide()
-				this.$emit('change', this.currentValue)
+				currentValue = option.value == null ? this.getDefaultValue() : option.value
+				if (this.currentValue === currentValue) return
+				this.currentValue = currentValue
 			}
-			if (this.name) this.$nextTick(() => this.validate('change'))
+			this.$emit('change', currentValue)
+			if (this.name) this.validate('change')
 		},
 		isActived(option, index) {
 			if (this.multiple) {

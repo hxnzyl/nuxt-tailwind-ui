@@ -29,15 +29,25 @@ export default {
 	name: 'NModal',
 	mixins: [visitable],
 	props: {
+		//标题
 		title: String,
+		//消息
 		message: String,
+		//slot-body类名
 		bodyClass: String,
-		showCancelButton: Boolean,
+		//内容icon
 		icon: String,
+		//内容icon大小
 		iconSize: { type: String, default: 'lg' },
+		//是否显示头部，默认显示
 		showHeader: { type: Boolean, default: true },
+		//是否显示底部，默认显示
 		showFooter: { type: Boolean, default: true },
+		//是否显示取消按钮，默认不显示
+		showCancelButton: Boolean,
+		//点击遮罩层是否关闭窗口，默认关闭
 		clickMaskClose: { type: Boolean, default: true },
+		//点击确认按钮是否关闭窗口，默认关闭
 		clickConfirmClose: { type: Boolean, default: true }
 	},
 	data() {
@@ -64,12 +74,12 @@ export default {
 			visitable.methods.show.call(this)
 		},
 		confirm() {
-			if (this.clickConfirmClose) this.hide()
 			this.$emit('confirm')
+			if (this.clickConfirmClose) this.hide()
 		},
 		cancel() {
-			this.hide()
 			this.$emit('cancel')
+			this.hide()
 		}
 	}
 }

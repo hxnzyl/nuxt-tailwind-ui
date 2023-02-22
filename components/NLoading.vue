@@ -1,8 +1,12 @@
 <template>
-	<NMask v-if="mask" class="n-loading" visible>
-		<NSvg class="animate-spin relative z-20" name="loading" :size="size" :color="color"></NSvg>
+	<NMask v-if="mask" visible>
+		<div class="n-loading animate-spin relative z-20">
+			<NSvg name="loading" :size="size" :color="color"></NSvg>
+		</div>
 	</NMask>
-	<NSvg v-else class="animate-spin" name="loading" :size="size" :color="color"></NSvg>
+	<div v-else class="n-loading animate-spin">
+		<NSvg name="loading" :size="size" :color="color"></NSvg>
+	</div>
 </template>
 
 <script>

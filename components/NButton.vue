@@ -93,7 +93,7 @@ export default {
 			this.onClick(event)
 		},
 		onClick(event) {
-			if (this.getDisabled) return
+			if (this.currentLoading || this.getDisabled) return
 			if (this.upload) this.$refs.file.click() //上传按钮
 			this.$emit('click', event)
 		},

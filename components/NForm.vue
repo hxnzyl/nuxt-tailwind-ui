@@ -28,7 +28,9 @@ export default {
 		//排版方向
 		direction: { type: String, default: 'col' },
 		//label类名
-		labelClass: String
+		labelClass: String,
+		//禁用状态
+		disabled: Boolean
 	},
 	data() {
 		return {
@@ -75,7 +77,7 @@ export default {
 			let field = this.validateFields.shift()
 			if (!field) return resolve([Object.keys(this.invalidFields).length === 0, this.invalidFields])
 			let [validate, invalidFields] = await field.validate()
-			if (!validate) Object.assign(this.invalidFields, invalidFields)
+			if (!validate && field.validateStatus !== 'abort') Object.assign(this.invalidFields, invalidFields)
 			this._validteRun(resolve)
 		}
 	}

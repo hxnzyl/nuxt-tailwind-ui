@@ -167,20 +167,21 @@ export default {
 		},
 		onInput(event) {
 			let { value } = event.target
-			if (value !== this.currentValue) this.$emit('input', value)
+			if (value === this.currentValue) return
+			this.$emit('input', value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
-		onFocus() {
-			this.$emit('focus', this.currentValue)
+		onFocus(event) {
 			this.focusing = true
 			this.bluring = false
-			if (this.name) this.validate('focus')
+			this.$emit('focus', event)
+			if (this.name && event.target.value !== this.currentValue) this.validate('focus')
 		},
-		onBlur() {
-			this.$emit('blur', this.currentValue)
+		onBlur(event) {
 			this.focusing = false
 			this.bluring = true
-			if (this.name) this.validate('blur')
+			this.$emit('blur', event)
+			if (this.name && event.target.value !== this.currentValue) this.validate('blur')
 		}
 	}
 }

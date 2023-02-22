@@ -15,7 +15,7 @@ export default {
 	},
 	watch: {
 		value(newValue, oldValue) {
-			if (newValue != oldValue) this.updateVisible(false, newValue)
+			if (newValue !== oldValue) this.updateVisible(false, newValue)
 		}
 	},
 	data() {
@@ -37,16 +37,12 @@ export default {
 			this.currentVisible++
 			this.$emit('toggle', true)
 			this.$emit('show')
-			//如果是表单相关组件引入时显示视为focus
-			if (this.NForm) this.validate('focus')
 		},
 		hide() {
 			if (this.visible) return
 			this.currentVisible = 0
 			this.$emit('toggle', false)
 			this.$emit('hide')
-			//如果是表单相关组件引入时隐藏视为blur
-			if (this.NForm) this.validate('blur')
 		},
 		leave(event) {
 			if (this.visible || !this.currentVisible) return
