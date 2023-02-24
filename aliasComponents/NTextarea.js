@@ -4,9 +4,7 @@ export default {
 	name: 'NTextarea',
 	extends: NInput,
 	props: {
-		type: {
-			type: String,
-			default: 'textarea'
-		}
+		//@overwrite输入框类型:textarea
+		type: { type: String, default: 'textarea' }
 	}
 }

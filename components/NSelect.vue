@@ -54,19 +54,13 @@
 			>
 				<slot name="options">
 					<div v-if="options.length > 0" class="py-2 bg-gray-100 rounded-md shadow-lg">
-						<div
-							class="max-h-96 overflow-x-hidden overflow-y-auto"
-							:class="{ 'divide-y': multiple }"
-							@mousewheel.stop=""
-						>
+						<div class="max-h-96 overflow-x-hidden overflow-y-auto" :class="{ 'divide-y': multiple }" @mousewheel.stop="">
 							<div
 								v-for="(option, key) in options"
 								:key="key"
 								class="min-w-max px-6 py-2 text-sm transition"
 								:class="
-									isActived(option)
-										? 'text-white bg-blue-500 hover:bg-opacity-50'
-										: 'text-gray-500 hover:text-white hover:bg-blue-500'
+									isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
 								"
 								@click.stop="onChange(option, key)"
 							>
@@ -191,7 +185,8 @@ export default {
 				this.currentOption = option
 				currentValue = option.value == null ? this.getDefaultValue() : option.value
 			}
-			if (this.currentValue === currentValue) return
+			//非二态切换可能没change
+			if (!init && currentValue === this.currentValue) return
 			this.currentValue = currentValue
 			if (init) return
 			this.$emit('change', currentValue)
@@ -208,7 +203,7 @@ export default {
 				this.currentIndex = index
 				this.currentOption = option
 				currentValue = option.value == null ? this.getDefaultValue() : option.value
-				if (this.currentValue === currentValue) return
+				if (currentValue === this.currentValue) return
 				this.currentValue = currentValue
 			}
 			this.$emit('change', currentValue)

@@ -93,7 +93,7 @@ export default {
 		color: { type: String, default: 'gray' },
 		//大小
 		size: { type: String, default: 'md' },
-		//输入框类型
+		//@overwrite输入框类型
 		type: { type: String, default: 'text' },
 		//是否有圆角
 		rounded: { type: Boolean, default: true },
@@ -132,11 +132,7 @@ export default {
 				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor) : '',
 				this.border ? (this.$slots.default ? 'border-t border-b border-l' : 'border') : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
-				this.rounded
-					? this.$slots.default
-						? tailwindui.roundedTBLSize(this.size)
-						: tailwindui.roundedSize(this.size)
-					: '',
+				this.rounded ? (this.$slots.default ? tailwindui.roundedTBLSize(this.size) : tailwindui.roundedSize(this.size)) : '',
 				this.formDisabled ? 'bg-gray-200 bg-opacity-50' : 'bg-white',
 				this.formDisabled ? 'pointer-events-none' : this.readonly ? 'cursor-default' : ''
 			]
@@ -163,7 +159,8 @@ export default {
 	methods: {
 		updateValue(init, value) {
 			let { input } = this.$refs
-			if (!input || input.disabled || input.value === value) return
+			//非二态切换可能没change
+			if (!input || input.disabled || (!init && input.value === value)) return
 			input.value = value
 			if (init) return
 			this.$emit('input', value)

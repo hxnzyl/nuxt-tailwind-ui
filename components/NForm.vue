@@ -6,16 +6,12 @@
 </template>
 
 <script>
+import fields from '../mixins/fields'
 import asyncTask from '../mixins/asyncTask'
 
 export default {
 	name: 'NForm',
-	mixins: [asyncTask],
-	provide() {
-		return {
-			NForm: this
-		}
-	},
+	mixins: [fields('NForm', 'name'), asyncTask],
 	props: {
 		//检验对象
 		model: Object,
@@ -30,15 +26,10 @@ export default {
 	},
 	data() {
 		return {
-			fields: [],
 			invalidFields: {},
 			validateFields: [],
 			validateRules: this.rules ? { ...this.rules } : {}
 		}
-	},
-	created() {
-		this.$on('NForm.addField', this.addField)
-		this.$on('NForm.removeField', this.removeField)
 	},
 	methods: {
 		async onSubmit() {
@@ -55,18 +46,6 @@ export default {
 				else this._validteStart(resolve)
 			})
 		},
-		addField(field, rules) {
-			let name = field && field.name
-			if (!name) return
-			if (this.fields.findIndex((f) => f.name === name) === -1) this.fields.push(field)
-			if (rules && rules.length) this.validateRules[name] = (this.validateRules[name] || []).concat(rules)
-		},
-		removeField(field) {
-			let name = field && field.name
-			if (!name) return
-			let index = this.fields.findIndex((f) => f.name === name)
-			if (index !== -1) this.fields.splice(index, 1)
-		},
 		async _validteStart(resolve) {
 			this.invalidFields = {}
 			this.validateFields = this.fields.slice(0)
@@ -76,7 +55,7 @@ export default {
 			let field = this.validateFields.shift()
 			if (!field) return resolve([Object.keys(this.invalidFields).length === 0, this.invalidFields])
 			let [validate, invalidFields] = await field.validate()
-			
+
 			if (!validate && field.validateStatus !== 'abort') Object.assign(this.invalidFields, invalidFields)
 			this._validteRun(resolve)
 		}

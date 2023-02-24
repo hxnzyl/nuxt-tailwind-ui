@@ -1,9 +1,8 @@
 import AsyncValidator from 'async-validator'
+import field from './field'
 
 export default {
-	inject: {
-		NForm: { value: 'NForm', default: null }
-	},
+	mixins: [field('NForm')],
 	props: {
 		//字段名称
 		name: String,
@@ -70,13 +69,12 @@ export default {
 	},
 	mounted() {
 		if (this.name) {
-			this.NForm.$emit(
-				'NForm.addField',
-				this,
-				this.NForm && this.required
-					? [{ required: true, message: this.placeholder }].concat(this.rules || [])
-					: this.rules || []
-			)
+			let rules = this.rules ? this.rules.slice(0) : []
+			if (this.NForm && this.required) rules.push({ required: true, message: this.placeholder })
+			if (!rules.length) return
+			let _rules = this.NForm.validateRules
+			if (_rules[this.name]) _rules[this.name].push(...rules)
+			else _rules[this.name] = rules
 		}
 	},
 	methods: {

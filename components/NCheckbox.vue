@@ -21,7 +21,7 @@
 					<NSvg v-show="checked" name="check"></NSvg>
 				</div>
 				<div v-else class="flex items-center justify-center rounded-full" :class="nativeClass">
-					<div v-show="checked" class="rounded-full w-1/2 h-1/2" :class="checkedClass"></div>
+					<div v-show="checked" class="rounded-full w-1/2 h-1/2" :class="radioClass"></div>
 				</div>
 				<div class="flex items-center flex-grow" :class="bodyClass">
 					<slot v-bind="{ checked, disabled: formDisabled }"></slot>
@@ -37,10 +37,12 @@
 <script>
 import validator from '../mixins/validator'
 import tailwindui from '../utils/tailwindui'
+import field from '../mixins/field'
 
 export default {
 	name: 'NCheckbox',
-	mixins: [validator],
+	//field放第1位，radio继承时会替换
+	mixins: [field('NCheckboxGroup'), validator],
 	model: {
 		prop: 'value',
 		event: 'change'
@@ -48,7 +50,7 @@ export default {
 	props: {
 		//多选框值
 		value: [Boolean, String, Number],
-		//类型:checkbox,radio
+		//@overwrite类型:checkbox,radio
 		type: { type: String, default: 'checkbox' },
 		//选中值
 		checkedValue: { type: [String, Number], default: 1 },
@@ -67,23 +69,27 @@ export default {
 		checked() {
 			return this.currentValue === this.checkedValue
 		},
+		unchecked() {
+			return this.currentValue === this.uncheckedValue
+		},
+		radioClass() {
+			let color
+			if (this.formDisabled) color = 'gray'
+			else if (this.invalidField) color = 'red'
+			else color = this.fill ? 'white' : this.checkedColor
+			return tailwindui.bgColor(color)
+		},
 		invalidColor() {
 			if (this.formDisabled) return 'gray'
 			if (this.invalidField) return 'red'
 			return this.checked ? this.checkedColor : this.uncheckedColor
 		},
-		checkedClass() {
-			let color
-			if (this.formDisabled) color = 'gray'
-			else if (this.invalidField) color = 'red'
-			else color = !this.fill ? (this.checked ? this.checkedColor : this.uncheckedColor) : 'white'
-			return tailwindui.bgColor(color)
-		},
 		nativeClass() {
 			return [
 				tailwindui.iconSize(this.size),
-				this.fill && this.checked ? '' : 'border',
-				this.fill ? tailwindui.bgColor(this.invalidColor) : tailwindui.borderColor(this.invalidColor),
+				this.fill ? tailwindui.bgColor(this.invalidColor) : '',
+				this.type == 'radio' || !(this.fill && this.checked) ? 'border' : '',
+				this.type == 'radio' || !this.fill ? tailwindui.borderColor(this.invalidColor) : '',
 				this.formDisabled ? 'bg-opacity-50 border-opacity-50' : ''
 			]
 		},
@@ -111,16 +117,29 @@ export default {
 	methods: {
 		updateValue(init, value) {
 			if (this.formDisabled) return
+			if (!init && value === this.currentValue) return
 			this.currentValue = value === this.checkedValue ? this.checkedValue : this.uncheckedValue
 			if (init) return
 			this.$emit('change', this.currentValue)
-			if (this.name) this.$nextTick(() => this.validate('change'))
+			if (this.NForm) this.validate('change')
+		},
+		setChecked() {
+			if (this.formDisabled) return
+			this.currentValue = this.checkedValue
+		},
+		setUnchecked() {
+			if (this.formDisabled) return
+			this.currentValue = this.uncheckedValue
 		},
 		onChange() {
-			if (this.formDisabled) return
+			//radio没二态切换
+			if (this.formDisabled || (this.type === 'radio' && this.checked)) return
+			//checkbox二态切换必定change
 			this.currentValue = this.checked ? this.uncheckedValue : this.checkedValue
 			this.$emit('change', this.currentValue)
-			if (this.name) this.$nextTick(() => this.validate('change'))
+			let group = this.$options.name + 'Group'
+			if (this[group]) this[group].onChange(this.currentValue)
+			if (this.NForm) this.validate('change')
 		}
 	}
 }
