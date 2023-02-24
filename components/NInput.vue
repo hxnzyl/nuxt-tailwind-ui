@@ -117,7 +117,15 @@ export default {
 			return !!this.eye && this.type === 'password'
 		},
 		defaultClass() {
-			return [this.bodyClass, this.rounded ? tailwindui.roundedTBRSize(this.size) : '']
+			return [
+				this.bodyClass,
+				this.ring && this.focusing ? 'ring-1 ring-opacity-50' : '',
+				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor) : '',
+				this.border ? 'border' : '',
+				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
+				this.rounded ? tailwindui.roundedTBRSize(this.size) : '',
+				this.formDisabled ? 'bg-opacity-50' : ''
+			]
 		},
 		nativeClass() {
 			return [
@@ -191,3 +199,10 @@ export default {
 	}
 }
 </script>
+
+<style>
+/**解决开启autocomplete后，文本框有内容后的背景色 */
+input:-webkit-autofill {
+	box-shadow: 0 0 0 1000px #fff inset !important;
+}
+</style>
