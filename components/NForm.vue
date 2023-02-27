@@ -22,12 +22,16 @@ export default {
 		//禁用状态
 		disabled: Boolean,
 		//排版方向
-		direction: { type: String, default: 'col' }
+		direction: { type: String, default: 'col' },
+		//自动聚焦，默认true
+		autoFocus: { type: Boolean, default: true }
 	},
 	data() {
 		return {
-			invalidFields: {},
+			invalidRules: {},
+			invalidFields: [],
 			validateFields: [],
+			//解耦
 			validateRules: this.rules ? { ...this.rules } : {}
 		}
 	},
@@ -41,23 +45,35 @@ export default {
 		},
 		validate() {
 			return new Promise((resolve, reject) => {
-				if (!this.model) reject([false, new Error('Invalid Model')])
-				else if (!this.fields.length) resolve([true])
+				if (!this.model) reject([false, new Error('Invalid Model'), []])
+				else if (!this.fields.length) resolve([true, {}, []])
 				else this._validteStart(resolve)
 			})
 		},
 		async _validteStart(resolve) {
-			this.invalidFields = {}
+			this.invalidRules = {}
+			this.invalidFields = []
 			this.validateFields = this.fields.slice(0)
 			await this._validteRun(resolve)
 		},
 		async _validteRun(resolve) {
 			let field = this.validateFields.shift()
-			if (!field) return resolve([Object.keys(this.invalidFields).length === 0, this.invalidFields])
-			let [validate, invalidFields] = await field.validate()
-
-			if (!validate && field.validateStatus !== 'abort') Object.assign(this.invalidFields, invalidFields)
-			this._validteRun(resolve)
+			if (field) {
+				//Validate Running
+				let [validate, invalidRules] = await field.validate()
+				if (!validate && field.validateStatus !== 'abort')
+					this.invalidFields.push(field), Object.assign(this.invalidRules, invalidRules)
+				this._validteRun(resolve)
+			} else {
+				//Validate Finish
+				let validate = Object.keys(this.invalidRules).length === 0
+				resolve([validate, this.invalidRules, this.invalidFields])
+				//Auto focus
+				if (this.autoFocus && !validate) {
+					let firstInvalidField = this.invalidFields[0]
+					if (firstInvalidField && firstInvalidField.focus) this.$nextTick(() => firstInvalidField.focus())
+				}
+			}
 		}
 	}
 }

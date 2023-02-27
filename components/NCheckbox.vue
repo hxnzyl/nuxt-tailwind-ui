@@ -12,7 +12,7 @@
 					</slot>
 					<span v-if="formRequired" class="text-red-500">*</span>
 				</div>
-				<div v-if="formColDirection" v-show="invalidField != null" class="text-red-500 text-xs">
+				<div v-if="formColDirection" v-show="invalidRule != null" class="text-red-500 text-xs">
 					{{ invalidMessage }}
 				</div>
 			</div>
@@ -28,7 +28,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="formRowDirection" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+		<div v-if="formRowDirection" v-show="invalidRule != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
 		</div>
 	</div>
@@ -75,13 +75,13 @@ export default {
 		radioClass() {
 			let color
 			if (this.formDisabled) color = 'gray'
-			else if (this.invalidField) color = 'red'
+			else if (this.invalidRule) color = 'red'
 			else color = this.fill ? 'white' : this.checkedColor
 			return tailwindui.bgColor(color)
 		},
 		invalidColor() {
 			if (this.formDisabled) return 'gray'
-			if (this.invalidField) return 'red'
+			if (this.invalidRule) return 'red'
 			return this.checked ? this.checkedColor : this.uncheckedColor
 		},
 		nativeClass() {

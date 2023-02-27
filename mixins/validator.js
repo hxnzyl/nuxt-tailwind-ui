@@ -23,12 +23,12 @@ export default {
 		//禁用状态
 		disabled: Boolean,
 		//默认自动填入，默认true
-		autocomplete: { type: Boolean, default: true }
+		autoComplete: { type: Boolean, default: true }
 	},
 	computed: {
 		//错误信息默认使用占位符
 		invalidMessage() {
-			return this.invalidField ? this.invalidField.message || this.placeholder : ''
+			return this.invalidRule ? this.invalidRule.message || this.placeholder : ''
 		},
 		//优先使用表单禁用参数
 		formDisabled() {
@@ -44,8 +44,8 @@ export default {
 		},
 		//优先使用表单自动填入参数
 		formAutoComplete() {
-			let formAutocomplete = this.NForm && this.NForm.autocomplete
-			let thatAutocomplete = typeof formAutocomplete === 'boolean' ? formAutocomplete : this.autocomplete
+			let formAutocomplete = this.NForm && this.NForm.autoComplete
+			let thatAutocomplete = typeof formAutocomplete === 'boolean' ? formAutocomplete : this.autoComplete
 			return thatAutocomplete ? '' : this.type === 'password' ? 'new-password' : 'off'
 		},
 		//用户未定义时，如果在表单中，使用表单的
@@ -64,7 +64,7 @@ export default {
 		return {
 			//ing:验证中; abort:验证中断; ok:验证成功; no验证失败
 			validateStatus: '',
-			invalidField: null
+			invalidRule: null
 		}
 	},
 	mounted() {
@@ -94,13 +94,13 @@ export default {
 		},
 		validateOk(resolve) {
 			if (this.NForm) this.NForm.$emit('validate', true, this.name, this.currentValue)
-			this.invalidField = null
+			this.invalidRule = null
 			this.validateStatus = 'ok'
 			resolve([true])
 		},
 		validateNo(resolve, errors) {
 			if (this.NForm) this.NForm.$emit('validate', false, this.name, this.currentValue)
-			this.invalidField = errors[0]
+			this.invalidRule = errors[0]
 			this.validateStatus = 'no'
 			resolve([false, errors[0]])
 		},

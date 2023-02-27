@@ -12,7 +12,7 @@
 					</slot>
 					<span v-if="formRequired" class="text-red-500">*</span>
 				</div>
-				<div v-if="formColDirection" v-show="invalidField != null" class="text-red-500 text-xs">
+				<div v-if="formColDirection" v-show="invalidRule != null" class="text-red-500 text-xs">
 					{{ invalidMessage }}
 				</div>
 			</div>
@@ -68,7 +68,7 @@
 				</div>
 			</div>
 		</div>
-		<div v-if="formRowDirection" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+		<div v-if="formRowDirection" v-show="invalidRule != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
 		</div>
 	</div>
@@ -108,7 +108,7 @@ export default {
 	},
 	computed: {
 		invalidColor() {
-			return this.invalidField ? 'red' : this.color
+			return this.invalidRule ? 'red' : this.color
 		},
 		currentValue() {
 			return this.value == null ? '' : this.value + ''
@@ -122,7 +122,7 @@ export default {
 				this.ring && this.focusing ? 'ring-1 ring-opacity-50' : '',
 				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor) : '',
 				this.border ? 'border' : '',
-				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
+				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidRule == null) : '',
 				this.rounded ? tailwindui.roundedTBRSize(this.size) : '',
 				this.formDisabled ? 'bg-opacity-50' : ''
 			]
@@ -139,7 +139,7 @@ export default {
 				this.ring && this.focusing ? 'ring-1 ring-opacity-50' : '',
 				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor) : '',
 				this.border ? (this.$slots.default ? 'border-t border-b border-l' : 'border') : '',
-				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
+				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidRule == null) : '',
 				this.rounded ? (this.$slots.default ? tailwindui.roundedTBLSize(this.size) : tailwindui.roundedSize(this.size)) : '',
 				this.formDisabled ? 'bg-gray-200 bg-opacity-50' : 'bg-white',
 				this.formDisabled ? 'pointer-events-none' : this.readonly ? 'cursor-default' : ''
@@ -195,6 +195,14 @@ export default {
 			this.bluring = true
 			this.$emit('blur')
 			if (this.name && input.value !== this.currentValue) this.validate('blur')
+		},
+		focus() {
+			let { input } = this.$refs
+			if (input && !input.disabled) input.focus()
+		},
+		blur() {
+			let { input } = this.$refs
+			if (input && !input.disabled) input.blur()
 		}
 	}
 }

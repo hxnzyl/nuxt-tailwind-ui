@@ -10,7 +10,7 @@
 					<span class="text-gray-500">{{ label }}</span>
 					<span v-if="formRequired" class="text-red-500">*</span>
 				</div>
-				<div v-if="formColDirection" v-show="invalidField != null" class="text-red-500 text-xs">
+				<div v-if="formColDirection" v-show="invalidRule != null" class="text-red-500 text-xs">
 					{{ invalidMessage }}
 				</div>
 			</div>
@@ -18,7 +18,7 @@
 				<slot v-bind="{ disabled: formDisabled }" :class="{ 'pointer-events-none': formDisabled }"></slot>
 			</div>
 		</div>
-		<div v-if="formRowDirection" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+		<div v-if="formRowDirection" v-show="invalidRule != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
 		</div>
 	</div>

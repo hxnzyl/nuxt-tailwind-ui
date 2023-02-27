@@ -7,13 +7,15 @@ export default {
 	},
 	data() {
 		let propValueType = typeof this.value
-		if (propValueType === 'object') propValueType = this.value !== null ? (Array.isArray(this.value) ? 'array' : 'object') : 'null'
+		if (propValueType === 'object')
+			propValueType = this.value !== null ? (Array.isArray(this.value) ? 'array' : 'object') : 'null'
 		//如果是未定义类型时，默认为字符串类型（其它视情况扩展）
 		else if (propValueType === 'undefined') propValueType = 'string'
 		return { propValueType }
 	},
 	computed: {
 		valueNotEmpty() {
+			if (this.formDisabled) return false
 			if (this.propValueType === 'string') return this.currentValue !== ''
 			if (this.propValueType === 'number') return this.currentValue != null
 			if (this.propValueType === 'array') return this.currentValue.length > 0

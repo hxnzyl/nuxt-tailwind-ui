@@ -9,7 +9,7 @@
 				<span class="text-gray-500">{{ label }}</span>
 				<span v-if="formRequired" class="text-red-500">*</span>
 			</div>
-			<div v-if="formColDirection" v-show="invalidField != null" class="text-red-500 text-xs">
+			<div v-if="formColDirection" v-show="invalidRule != null" class="text-red-500 text-xs">
 				{{ invalidMessage }}
 			</div>
 		</div>
@@ -43,7 +43,11 @@
 				<NSvg name="x"></NSvg>
 			</a>
 			<a href="#chevron" @click.prevent.stop="show" class="text-gray-400 mr-2">
-				<NSvg name="chevron-right" class="transition direction-500" :class="{ 'rotate-90': currentVisible }"></NSvg>
+				<NSvg
+					name="chevron-right"
+					class="transition direction-500"
+					:class="{ 'rotate-90': currentVisible, 'cursor-not-allowed': formDisabled }"
+				></NSvg>
 			</a>
 			<div
 				v-show="currentVisible"
@@ -84,7 +88,7 @@
 		>
 			<NSvg :name="{ 'drop-up': position == 'bottom', 'drop-down': position == 'top' }"></NSvg>
 		</div>
-		<div v-if="formRowDirection" v-show="invalidField != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
+		<div v-if="formRowDirection" v-show="invalidRule != null" class="absolute -bottom-4 h-4 text-red-500 text-xs">
 			{{ invalidMessage }}
 		</div>
 	</div>
@@ -127,7 +131,7 @@ export default {
 	},
 	computed: {
 		invalidColor() {
-			return this.invalidField ? 'red' : this.color
+			return this.invalidRule ? 'red' : this.color
 		},
 		optionsClass() {
 			return [
@@ -143,7 +147,7 @@ export default {
 			return [
 				this.rounded ? tailwindui.roundedSize(this.size) : '',
 				this.border ? 'border' : '',
-				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidField == null) : '',
+				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidRule == null) : '',
 				this.ring && this.currentVisible ? 'ring-1 ring-opacity-50' : '',
 				this.ring && this.currentVisible ? tailwindui.ringColor(this.invalidColor) : '',
 				//禁用：无事件，禁用鼠标，不使用pointer-events-none，与cursor-not-allowed样式冲突
