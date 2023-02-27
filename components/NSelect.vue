@@ -19,7 +19,7 @@
 					<div
 						v-for="(opt, key) in currentOption"
 						:key="key"
-						class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2 py-0.5"
+						class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2"
 					>
 						<span>{{ opt.label }}</span>
 						<a href="#remove" @click.stop.prevent="removeOption(opt, key)" class="hover:text-red-500">
@@ -169,7 +169,7 @@ export default {
 			this.updateValue(init, value)
 		},
 		updateValue(init, value) {
-			let currentValue
+			let currentValue = null
 			if (this.multiple) {
 				if (typeof value === 'string') value = value.split(',')
 				else if (value == null) value = []
@@ -177,6 +177,8 @@ export default {
 					init && !value.length ? this.isActived : (option) => value.includes(option.value)
 				)
 				currentValue = this.currentOption.map((opt) => opt.value)
+				if (currentValue === this.currentValue) return
+				this.currentValue = currentValue
 				if (this.propValueType === 'string') currentValue = currentValue.join(',')
 			} else {
 				let index = this.options.findIndex(init && value == null ? this.isActived : (option) => option.value === value)
@@ -184,21 +186,22 @@ export default {
 				this.currentIndex = index
 				this.currentOption = option
 				currentValue = option.value == null ? this.getDefaultValue() : option.value
+				if (!init && currentValue === this.currentValue) return
+				this.currentValue = currentValue
 			}
 			//非二态切换可能没change
-			if (!init && currentValue === this.currentValue) return
-			this.currentValue = currentValue
 			if (init) return
 			this.$emit('change', currentValue)
 			if (this.name) this.validate('change')
 		},
 		onChange(option, index) {
+			let currentValue = null
 			this.hide()
-			let currentValue
 			if (this.multiple) {
+				//add OR remove必定change
 				if ((index = this.currentValue.indexOf(option.value)) === -1) this.addOption(option)
 				else this.removeOption(option, index)
-				currentValue = this.propValueType === 'string' ? this.currentValue.join(',') : this.currentValue
+				if (this.propValueType === 'string') currentValue = this.currentValue.join(',')
 			} else {
 				this.currentIndex = index
 				this.currentOption = option

@@ -16,7 +16,6 @@ export default function (name, key) {
 		},
 		methods: {
 			addField(field) {
-				console.log('###addField', key, field[key])
 				let fieldName = field && field[key]
 				if (!fieldName) return
 				if (this.fields.findIndex((f) => f[key] === fieldName) === -1) this.fields.push(field)

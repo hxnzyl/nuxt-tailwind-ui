@@ -1,6 +1,6 @@
 {
 	"name": "nuxt-tailwind-ui",
-	"version": "1.1.91",
+	"version": "1.1.92",
 	"description": "Nuxt JS&Tailwind CSS&Feather Icons UI Framework~",
 	"main": "dist/nuxt-tailwind-ui.umd.js",
 	"scripts": {
