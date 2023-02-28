@@ -11,7 +11,7 @@
 					<div v-if="icon" class="pt-1">
 						<NSvg :name="icon" :size="iconSize"></NSvg>
 					</div>
-					<p class="flex-grow flex-wrap">{{ currentMessage }}</p>
+					<p class="break-all">{{ currentMessage }}</p>
 				</slot>
 			</div>
 			<div v-if="showFooter" class="flex items-center justify-end gap-3">
