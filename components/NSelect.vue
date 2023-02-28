@@ -20,6 +20,7 @@
 						v-for="(opt, key) in currentOption"
 						:key="key"
 						class="flex items-center gap-1 text-sm text-white bg-blue-500 rounded-md px-2"
+						:class="{ 'bg-opacity-50': formDisabled }"
 					>
 						<span>{{ opt.label }}</span>
 						<a href="#remove" @click.stop.prevent="removeOption(opt, key)" class="hover:text-red-500">
@@ -141,7 +142,11 @@ export default {
 			]
 		},
 		nativeClass() {
-			return [tailwindui.textColor(this.invalidColor), tailwindui.textBoxSize(this.size)]
+			return [
+				tailwindui.textColor(this.invalidColor),
+				tailwindui.textBoxSize(this.size),
+				this.formDisabled ? 'pointer-events-none' : ''
+			]
 		},
 		selectClass() {
 			return [
