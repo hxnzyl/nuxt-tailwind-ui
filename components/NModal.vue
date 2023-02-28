@@ -8,8 +8,10 @@
 			</div>
 			<div class="flex font-medium" :class="bodyClass">
 				<slot name="body">
-					<NSvg :name="icon" :size="iconSize"></NSvg>
-					<p class="break-all">{{ currentMessage }}</p>
+					<div v-if="icon" class="pt-1">
+						<NSvg :name="icon" :size="iconSize"></NSvg>
+					</div>
+					<p class="flex-grow flex-wrap">{{ currentMessage }}</p>
 				</slot>
 			</div>
 			<div v-if="showFooter" class="flex items-center justify-end gap-3">
