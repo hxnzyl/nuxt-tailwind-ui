@@ -31,9 +31,7 @@
 								:target="menu.target"
 								class="block px-4 py-2 text-sm min-w-max transition"
 								:class="
-									isActived(menu)
-										? 'text-white bg-blue-500 hover:bg-opacity-50'
-										: 'text-gray-500 hover:text-white hover:bg-blue-500'
+									isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
 								"
 							>
 								{{ menu.label }}
@@ -43,9 +41,7 @@
 								:key="key"
 								class="px-4 py-2 text-sm min-w-max transition"
 								:class="
-									isActived(menu)
-										? 'text-white bg-blue-500 hover:bg-opacity-50'
-										: 'text-gray-500 hover:text-white hover:bg-blue-500'
+									isActived(menu) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
 								"
 								@click.stop="onChange(menu, key)"
 							>
@@ -117,7 +113,8 @@ export default {
 			//子级选中则父级选中
 			if (Array.isArray(menu.children)) return menu.children.findIndex(this.isActived) !== -1
 			//链接菜单
-			if (menu.to && this.$route) return this.$route.path === menu.to
+			if (typeof menu.to === 'string' && this.$route)
+				return menu.to.replace(/^\/+|\/+$/g, '') === this.$route.path.replace(/^\/+|\/+$/g, '')
 			//默认选中判断
 			if (!this.active) return !!this.currentMenu && menu.label == this.currentMenu.label
 			//自定义选中判断

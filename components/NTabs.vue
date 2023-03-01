@@ -15,7 +15,9 @@
 				]"
 			>
 				<NLink v-if="tab.to" :to="tab.to" :target="tab.target" class="block p-4">{{ tab.label }}</NLink>
-				<a v-else-if="queryName" :href="`?${queryName}=${tab.value}`" @click.prevent="onChange(tab, key)" class="block p-4">{{ tab.label }}</a>
+				<a v-else-if="queryName" :href="`?${queryName}=${tab.value}`" @click.prevent="onChange(tab, key)" class="block p-4">{{
+					tab.label
+				}}</a>
 				<div v-else class="p-4 cursor-pointer" @click.stop="onChange(tab, key)">{{ tab.label }}</div>
 			</div>
 		</div>
@@ -83,7 +85,8 @@ export default {
 		},
 		isActived(tab, index) {
 			if (tab.children && tab.children.length > 0 && tab.children.some(this.isActived)) return true
-			if (typeof tab.to === 'string' && this.$route) return tab.to == this.$route.path
+			if (typeof tab.to === 'string' && this.$route)
+				return tab.to.replace(/^\/+|\/+$/g, '') == this.$route.path.replace(/^\/+|\/+$/g, '')
 			if (this.currentValue != null) return tab.value == this.currentValue
 			if (this.currentTab != null) return tab.label == this.currentTab.label
 			if (typeof this.active === 'function') return this.active(tab, index)
