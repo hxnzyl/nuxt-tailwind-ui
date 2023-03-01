@@ -64,7 +64,13 @@ export default {
 					//get赋值到内部,successFlag->值标记
 					else if (method === 'get') response = data[successFlag]
 					//post提交后刷新,successFlag->成功标记
-					else if (method === 'post') (response = data), this.$nModal.success(successMsg), await this.$nuxt.refresh()
+					else if (method === 'post') {
+						response = data
+						//重定向链接。比如：登录成功后跳转
+						if (successMsg && successMsg.includes('/')) this.$router.push(successMsg)
+						//成功提示并重新拉取数据
+						else successMsg && this.$nModal.success(successMsg), await this.$nuxt.refresh()
+					}
 					break
 				//阿里云上传,params=file object,response->boolean
 				case 'alioss':
