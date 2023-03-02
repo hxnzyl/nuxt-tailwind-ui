@@ -168,9 +168,10 @@ export default {
 		updateValue(init, value) {
 			let { input } = this.$refs
 			//非二态切换可能没change
-			if (!input || input.disabled || (!init && input.value === value)) return
+			if (!input || (!init && input.value === value)) return
+			//初始化如果禁用需要给值
 			input.value = value
-			if (init) return
+			if (init || input.disabled) return
 			this.$emit('input', value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},

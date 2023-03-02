@@ -1,10 +1,10 @@
 <template>
-	<NLink v-if="to" :class="buttonClass" :to="to" :target="target">
+	<a v-if="to" :class="buttonClass" :href="to" :target="target">
 		<NLoading v-show="currentLoading" :size="size" class="mr-2"></NLoading>
 		<slot>
 			<span>{{ text }}</span>
 		</slot>
-	</NLink>
+	</a>
 	<button v-else type="button" :disabled="formDisabled" :class="buttonClass" @click="onClick">
 		<NLoading v-show="currentLoading" :size="size" class="mr-2"></NLoading>
 		<input v-if="upload" ref="file" type="file" class="hidden" @change="onChange" :accept="accept" :multiple="multiple" />

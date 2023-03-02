@@ -1,5 +1,9 @@
 <template>
-	<form class="n-form appearance-none flex flex-col gap-6 relative" @submit.stop.prevent="onSubmit">
+	<form
+		class="n-form appearance-none flex flex-col gap-6 relative"
+		@submit.stop.prevent="onSubmit"
+		:autocomplete="autoComplete ? 'on' : 'off'"
+	>
 		<slot></slot>
 		<NLoading v-show="currentLoading" size="lg" color="gray" mask></NLoading>
 	</form>
@@ -21,6 +25,8 @@ export default {
 		labelClass: String,
 		//禁用状态
 		disabled: Boolean,
+		//默认自动填入
+		autoComplete: Boolean,
 		//排版方向
 		direction: { type: String, default: 'col' },
 		//自动聚焦，默认true

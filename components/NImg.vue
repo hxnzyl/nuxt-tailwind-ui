@@ -1,9 +1,9 @@
 <template>
-	<NLink v-if="to" :to="to" :target="target" class="n-img overflow-hidden rounded-md">
+	<a v-if="to" :href="to" :target="target" class="n-img overflow-hidden rounded-md">
 		<img v-if="lazy" :lazy-src="src" :class="nativeClass" />
 		<img v-else :src="src" :class="nativeClass" />
 		<slot></slot>
-	</NLink>
+	</a>
 	<div v-else class="n-img overflow-hidden rounded-md">
 		<img v-if="lazy" :lazy-src="src" :class="nativeClass" />
 		<img v-else :src="src" :class="nativeClass" />

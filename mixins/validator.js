@@ -23,7 +23,7 @@ export default {
 		//禁用状态
 		disabled: Boolean,
 		//默认自动填入，默认true
-		autoComplete: { type: Boolean, default: true }
+		autoComplete: Boolean
 	},
 	computed: {
 		//错误信息默认使用占位符

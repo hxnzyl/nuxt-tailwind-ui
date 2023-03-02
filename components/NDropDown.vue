@@ -24,10 +24,10 @@
 				<div class="py-2 bg-white rounded-md shadow-lg">
 					<div class="min-w-max max-h-96 overflow-x-hidden overflow-y-auto" :class="menusClass" @mousewheel.stop="">
 						<template v-for="(menu, key) in menus">
-							<NLink
+							<a
 								v-if="menu.to"
 								:key="key"
-								:to="menu.to"
+								:href="menu.to"
 								:target="menu.target"
 								class="block px-4 py-2 text-sm min-w-max transition"
 								:class="
@@ -35,7 +35,7 @@
 								"
 							>
 								{{ menu.label }}
-							</NLink>
+							</a>
 							<div
 								v-else
 								:key="key"

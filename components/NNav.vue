@@ -5,27 +5,29 @@
 			<div v-for="(menu, key) in menus" :key="key" class="px-8 relative">
 				<NDropDown v-if="menu.children && menu.children.length > 0" :menus="menu.children">
 					<template slot="label" slot-scope="{ isActived }">
-						<NLink
+						<a
 							v-if="menu.to"
-							:to="menu.to"
+							:href="menu.to"
+							:target="menu.target"
 							class="hover:font-bold"
 							:class="{ 'font-bold': $route.path === menu.to }"
 						>
 							{{ menu.label }}
-						</NLink>
+						</a>
 						<a v-else href="#menu" @click.prevent="" class="hover:font-bold" :class="{ 'font-bold': isActived(menu) }">
 							{{ menu.label }}
 						</a>
 					</template>
 				</NDropDown>
-				<NLink
+				<a
 					v-else-if="menu.to"
-					:to="menu.to"
+					:href="menu.to"
+					:target="menu.target"
 					class="hover:font-bold"
-					:class="{ 'font-bold': $route.path === menu.to }"
+					:class="{ 'font-bold': $route && $route.path.replace(/^\/+|\/+$/g, '') === menu.to.replace(/^\/+|\/+$/g, '') }"
 				>
 					{{ menu.label }}
-				</NLink>
+				</a>
 				<a v-else href="#menu" @click.prevent="">
 					{{ menu.label }}
 				</a>
