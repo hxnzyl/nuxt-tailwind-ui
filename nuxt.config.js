@@ -1,6 +1,6 @@
 //nuxt默认配置
 const dotenv = require('dotenv')
-// const { resolve } = require('path')
+const { resolve } = require('path')
 const nuxtEnv = dotenv.config({ path: `.env.${process.env.MODE}` }).parsed
 
 export default {
@@ -42,11 +42,13 @@ export default {
 		// darkMode: 'class',
 		config: {
 			content: [
+				'./components/**/*.vue',
 				'./aliasComponents/**/*.js',
 				'./layouts/**/*.vue',
 				'./pages/**/*.vue',
 				'./plugins/**/*.js',
-				'./nuxt.config.js'
+				'./nuxt.config.js',
+				'./utils/tailwindui.js'
 			],
 			plugins: []
 		},
@@ -67,9 +69,7 @@ export default {
 	buildModules: [
 		//https://go.nuxtjs.dev/tailwindcss
 		//'nuxt' of 'this' issue: @link https://github.com/nuxt/framework/issues/9115
-		'@nuxtjs/tailwindcss',
-		//nuxt-tailwind-ui
-		'./module'
+		'@nuxtjs/tailwindcss'
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
@@ -77,6 +77,16 @@ export default {
 
 	// Build Configuration: https://go.nuxtjs.dev/config-build
 	build: {
+		extend(config) {
+			// Add feather-icons loader
+			const svgRule = config.module.rules.find((rule) => rule.test && rule.test.test('.svg'))
+			if (svgRule) svgRule.test = /\.(png|jpe?g|gif|webp|avif)$/i
+			config.module.rules.push({
+				use: [{ loader: 'svg-sprite-loader' }],
+				test: /\.svg$/i,
+				include: [resolve(__dirname, './node_modules/feather-icons/dist/icons'), resolve(__dirname, './app/svg')]
+			})
+		},
 		postcss: {
 			plugins: {
 				'postcss-import': {}, //预处理器, @link https://www.tailwindcss.cn/docs/using-with-preprocessors

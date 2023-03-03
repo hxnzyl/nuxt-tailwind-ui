@@ -35,6 +35,18 @@
 </template>
 
 <script>
+//#region Require svg
+
+// Extends icons svg
+const extendsIconsFiles = require.context('../app/svg', false, /\.svg$/)
+extendsIconsFiles.keys().map(extendsIconsFiles)
+
+// Feather icons svg
+const featherIconsFiles = require.context('feather-icons/dist/icons', false, /\.svg$/)
+featherIconsFiles.keys().map(featherIconsFiles)
+
+//#endregion Require svg
+
 export default {
 	scrollToTop: true,
 	provide() {

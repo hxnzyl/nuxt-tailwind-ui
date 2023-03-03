@@ -29,32 +29,33 @@ export default {
 	methods: {
 		updateVisible(init, value) {
 			this.currentVisible = value + 0
-			if (init) this.visible || value ? this.show() : this.hide()
-			else value ? this.show() : this.hide()
+			return (init && this.visible) || value ? this.show() : this.hide()
 		},
 		show() {
-			if (this.visible || this.formDisabled) return
+			if (this.visible || this.formDisabled) return false
 			this.currentVisible++
 			this.$emit('toggle', true)
 			this.$emit('show')
+			return true
 		},
 		hide() {
-			if (this.visible || this.formDisabled) return
+			if (this.visible || this.formDisabled) return false
 			this.currentVisible = 0
 			this.$emit('toggle', false)
 			this.$emit('hide')
+			return true
 		},
 		leave(event) {
-			if (this.visible || !this.currentVisible || this.formDisabled) return
+			if (this.visible || !this.currentVisible || this.formDisabled) return false
 			let { root } = this.$refs
 			if (!root) return
 			let rootElement = root.$el || root
 			let mouseElement = getMouseElement(event)
 			if (!mouseElement || !rootElement.contains(mouseElement)) this.hide()
+			return true
 		},
 		toggle() {
-			if (this.currentVisible) this.hide()
-			else this.show()
+			return this.currentVisible ? this.hide() : this.show()
 		}
 	}
 }

@@ -24,12 +24,9 @@ export default {
 	},
 	methods: {
 		onClickMask() {
-			if (!this.visible && this.clickMaskClose) {
-				this.hide()
-				if (this.NModal) {
-					this.NModal.$emit('toggle', [false])
-					this.NModal.$emit('hide')
-				}
+			if (this.clickMaskClose && this.hide() && this.NModal) {
+				this.NModal.$emit('toggle', [false])
+				this.NModal.$emit('hide')
 			}
 		}
 	}

@@ -55,7 +55,9 @@
 					<a
 						v-if="showEyeIcon"
 						href="#eye"
-						@click.stop.prevent="eye === 'click' && (currentType = currentType === 'text' ? 'password' : 'text')"
+						@click.stop.prevent="
+							;(eye === true || eye === 'click') && (currentType = currentType === 'text' ? 'password' : 'text')
+						"
 						@mousedown.stop.prevent="eye === 'press' && (currentType = 'text')"
 						@mouseup.stop.prevent="eye === 'press' && (currentType = 'password')"
 						class="hidden group-hover:block hover:text-opacity-50 text-gray-400 pr-2"
@@ -104,7 +106,7 @@ export default {
 		//只读状态
 		readonly: Boolean,
 		//type=password,click:点击查看密码原文,press:按住查看密码原文
-		eye: { type: String, default: 'click' }
+		eye: { type: [Boolean, String], default: 'click' }
 	},
 	computed: {
 		invalidColor() {
@@ -140,7 +142,11 @@ export default {
 				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor) : '',
 				this.border ? (this.$slots.default ? 'border-t border-b border-l' : 'border') : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidRule == null) : '',
-				this.rounded ? (this.$slots.default ? tailwindui.roundedTBLSize(this.size) : tailwindui.roundedSize(this.size)) : '',
+				this.rounded
+					? this.$slots.default
+						? tailwindui.roundedTBLSize(this.size)
+						: tailwindui.roundedSize(this.size)
+					: '',
 				this.formDisabled ? 'bg-gray-200 bg-opacity-50' : 'bg-white',
 				this.formDisabled ? 'pointer-events-none' : this.readonly ? 'cursor-default' : ''
 			]
