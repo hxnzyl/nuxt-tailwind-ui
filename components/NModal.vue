@@ -52,6 +52,11 @@ export default {
 		//点击确认按钮是否关闭窗口，默认关闭
 		clickConfirmClose: { type: Boolean, default: true }
 	},
+	provide() {
+		return {
+			NModal: this
+		}
+	},
 	data() {
 		return {
 			currentTitle: this.title || '',
