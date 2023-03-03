@@ -42,11 +42,10 @@ export default {
 		// darkMode: 'class',
 		config: {
 			content: [
-				'./components/**/*.{js,vue}',
+				'./aliasComponents/**/*.js',
 				'./layouts/**/*.vue',
 				'./pages/**/*.vue',
 				'./plugins/**/*.js',
-				'./tailwindui.js',
 				'./nuxt.config.js'
 			],
 			plugins: []
@@ -70,7 +69,7 @@ export default {
 		//'nuxt' of 'this' issue: @link https://github.com/nuxt/framework/issues/9115
 		'@nuxtjs/tailwindcss',
 		//nuxt-tailwind-ui
-		'~module'
+		'./module'
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules

@@ -1,5 +1,5 @@
 <template>
-	<div>Nuxt Tainwind UI~</div>
+	<div></div>
 </template>
 
 <script>
