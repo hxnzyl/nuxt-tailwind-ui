@@ -10,12 +10,11 @@
 </template>
 
 <script>
-import emitter from '../mixins/emitter'
 import visitable from '../mixins/visitable'
 
 export default {
 	name: 'NMask',
-	mixins: [emitter, visitable],
+	mixins: [visitable],
 	inject: {
 		NModal: { value: 'NModal', default: null }
 	},
@@ -25,11 +24,11 @@ export default {
 	},
 	methods: {
 		onClickMask() {
-			if (this.clickMaskClose) {
+			if (!this.visible && this.clickMaskClose) {
 				this.hide()
 				if (this.NModal) {
-					this.dispatch('NModal', 'toggle', [false])
-					this.dispatch('NModal', 'hide')
+					this.NModal.$emit('toggle', [false])
+					this.NModal.$emit('hide')
 				}
 			}
 		}
