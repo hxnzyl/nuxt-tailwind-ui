@@ -33,10 +33,10 @@ export default {
 			else if (value) this.show()
 			else this.hide()
 		},
-		show() {
+		async show() {
 			if (this.visible || this.currentVisible || this.formDisabled) return false
 			this.currentVisible = true
-			if (this.animateEnter) this.animate(this.animateEnter)
+			if (this.animateEnter) await this.animate(this.animateEnter)
 			this.$emit('toggle', true)
 			this.$emit('show')
 			return true
