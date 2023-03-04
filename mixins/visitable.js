@@ -7,7 +7,7 @@ export default {
 	},
 	props: {
 		//是否显示
-		value: [Number, Boolean],
+		value: Boolean,
 		//是否一直显示
 		visible: Boolean,
 		//显示位置
@@ -20,7 +20,7 @@ export default {
 	},
 	data() {
 		return {
-			currentVisible: 0
+			currentVisible: false
 		}
 	},
 	mounted() {
@@ -28,19 +28,23 @@ export default {
 	},
 	methods: {
 		updateVisible(init, value) {
-			this.currentVisible = value + 0
-			return (init && this.visible) || value ? this.show() : this.hide()
+			if (!init && Boolean(value) === this.currentVisible) return
+			if (init) this.visible && this.show()
+			else if (value) this.show()
+			else this.hide()
 		},
 		show() {
-			if (this.visible || this.formDisabled) return false
-			this.currentVisible++
+			if (this.visible || this.currentVisible || this.formDisabled) return false
+			this.currentVisible = true
+			if (this.animateEnter) this.animate(this.animateEnter)
 			this.$emit('toggle', true)
 			this.$emit('show')
 			return true
 		},
-		hide() {
-			if (this.visible || this.formDisabled) return false
-			this.currentVisible = 0
+		async hide() {
+			if (this.visible || !this.currentVisible || this.formDisabled) return false
+			if (this.animateLeave) await this.animate(this.animateLeave)
+			this.currentVisible = false
 			this.$emit('toggle', false)
 			this.$emit('hide')
 			return true

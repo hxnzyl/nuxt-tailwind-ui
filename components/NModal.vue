@@ -1,6 +1,6 @@
 <template>
-	<NMask ref="root" v-model="currentVisible" :click-mask-close="clickMaskClose" fixed>
-		<div class="flex flex-col gap-3 relative z-40 bg-white w-96 p-3 rounded-md shadow-md text-gray-500">
+	<NMask v-model="currentVisible" :click-mask-close="clickMaskClose" fixed>
+		<div ref="root" class="flex flex-col gap-3 relative z-40 bg-white w-96 p-3 rounded-md shadow-md text-gray-500">
 			<div v-if="showHeader" class="flex text-base font-semibold">
 				<slot name="header">
 					{{ currentTitle }}
@@ -26,10 +26,11 @@
 
 <script>
 import visitable from '../mixins/visitable'
+import animate from '../mixins/animate'
 
 export default {
 	name: 'NModal',
-	mixins: [visitable],
+	mixins: [animate, visitable],
 	props: {
 		//标题
 		title: String,
@@ -74,11 +75,10 @@ export default {
 	methods: {
 		//@overwrite visitable.show
 		show(title, message) {
-			if (!title) title = this.title
-			if (!message) message = this.message
-			this.currentTitle = message ? title : ''
-			this.currentMessage = message || title || ''
-			visitable.methods.show.call(this)
+			if (!message) message = title
+			this.currentTitle = title || this.title
+			this.currentMessage = message || this.message
+			return visitable.methods.show.call(this)
 		},
 		confirm() {
 			this.$emit('confirm')

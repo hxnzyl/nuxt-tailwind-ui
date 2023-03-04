@@ -24,9 +24,11 @@ export default {
 	},
 	methods: {
 		onClickMask() {
-			if (this.clickMaskClose && this.hide() && this.NModal) {
-				this.NModal.$emit('toggle', [false])
-				this.NModal.$emit('hide')
+			if (this.clickMaskClose) {
+				if (this.NModal) this.NModal.hide()
+				else this.hide()
+			} else {
+				if (this.NModal) this.NModal.animate('headShake')
 			}
 		}
 	}
