@@ -1,7 +1,5 @@
 <template>
-	<NForm :model="formModel">
-		<NInput type="password"></NInput>
-	</NForm>
+	<NForm :model="formModel"></NForm>
 </template>
 
 <script>

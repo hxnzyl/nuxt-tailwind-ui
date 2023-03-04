@@ -21,6 +21,7 @@
 	},
 	"homepage": "https://github.com/hxnzyl/nuxt-tailwind-ui#readme",
 	"dependencies": {
+		"animate.css": "^4.1.1",
 		"async-validator": "^4.2.5",
 		"feather-icons": "^4.29.0",
 		"nuxt": "^2.15.8",

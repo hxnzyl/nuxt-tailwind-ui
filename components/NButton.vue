@@ -1,15 +1,26 @@
 <template>
 	<a v-if="to" :class="buttonClass" :href="to" :target="target">
-		<NLoading v-show="currentLoading" :size="size" class="mr-2"></NLoading>
+		<NLoading v-if="currentLoading" :size="size"></NLoading>
+		<NSvg v-if="icon" v-show="!currentLoading" :name="icon" :size="size"></NSvg>
 		<slot>
-			<span>{{ text }}</span>
+			<span v-if="text">{{ text }}</span>
 		</slot>
 	</a>
 	<button v-else type="button" :disabled="formDisabled" :class="buttonClass" @click="onClick">
-		<NLoading v-show="currentLoading" :size="size" class="mr-2"></NLoading>
-		<input v-if="upload" ref="file" type="file" class="hidden" @change="onChange" :accept="accept" :multiple="multiple" />
+		<NLoading v-if="currentLoading" :size="size"></NLoading>
+		<NSvg v-if="icon" v-show="!currentLoading" :name="icon" :size="size"></NSvg>
+		<input
+			v-if="upload"
+			ref="file"
+			type="file"
+			class="hidden"
+			@change="onChange"
+			:accept="accept"
+			:multiple="multiple"
+		/>
 		<slot>
-			<span>{{ text }}</span>
+			<span v-if="text">{{ text }}</span>
+			<span v-else class="invisible w-0 -ml-2">-</span>
 		</slot>
 	</button>
 </template>
@@ -24,15 +35,19 @@ export default {
 	mixins: [asyncTask],
 	model: {
 		prop: 'value',
-		event: 'uploaded'
+		event: 'change'
 	},
 	props: {
 		//按钮大小
 		size: { type: String, default: 'md' },
 		//空心：按钮字体颜色；非空心：按钮背景颜色
 		color: { type: String, default: 'blue' },
-		//是否有圆角
+		//是否有圆角，大小同size
 		rounded: { type: Boolean, default: true },
+		//点击水波纹
+		ripple: { type: Boolean, default: true },
+		//图标，大小同size
+		icon: String,
 		//是否有边框
 		border: Boolean,
 		//是否空心
@@ -45,10 +60,10 @@ export default {
 		to: String,
 		//a[traget]
 		target: String,
-		//上传文件
-		value: String,
 		//上传按钮
 		upload: Boolean,
+		//上传文件
+		value: [Array, FileList, String, File],
 		//上传文件类型
 		accept: { type: String, default: '*' },
 		//是否可以多选
@@ -61,7 +76,7 @@ export default {
 		},
 		buttonClass() {
 			return [
-				'n-button flex items-center justify-center tranistion appearance-none',
+				'n-button h-max relative overflow-hidden flex items-center justify-center gap-2 tranistion appearance-none',
 				//按钮大小
 				tailwindui.buttonSize(this.size),
 				//圆角大小
@@ -73,6 +88,8 @@ export default {
 				this.plain ? 'bg-white' : this.color == 'white' ? '' : 'text-white',
 				//空心：按钮字体颜色；非空心：按钮背景颜色
 				this.plain ? tailwindui.textColor(this.color) : tailwindui.bgColor(this.color),
+				//点击水波纹
+				this.ripple ? 'ripple' : '',
 				//禁用：无事件，禁用鼠标，不使用pointer-events-none，与cursor-not-allowed样式冲突
 				this.formDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
 				//禁用：空心->字体透明，边框透明。非空心->背景透明；非禁用：空心hover->字体透明，边框透明。非空心hover->背景透明
@@ -106,13 +123,39 @@ export default {
 				if (!upload) return this.$emit('change', files)
 				let urls = []
 				for (let i = 0; i < l; i++) urls.push(await this.executeAsyncTask('upload', files[i]))
-				this.$emit('uploaded', urls)
+				this.$emit('change', urls)
 			} else {
 				if (!upload) return this.$emit('change', files[0])
 				let url = await this.executeAsyncTask('upload', files[0])
-				this.$emit('uploaded', url)
+				this.$emit('change', url)
 			}
 		}
 	}
 }
 </script>
+
+<style lang="scss">
+.n-button {
+	&.ripple:not(.cursor-not-allowed):after {
+		content: '';
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		background-image: radial-gradient(circle, #fff 10%, transparent 10%);
+		background-repeat: no-repeat;
+		background-position: 50%;
+		transform: scale(10, 10);
+		transition: transform 0.3s, opacity 0.5s;
+		opacity: 0;
+	}
+	&.ripple:not(.cursor-not-allowed):active:after {
+		transform: scale(0, 0);
+		transition: 0s;
+		opacity: 0.3;
+	}
+}
+</style>

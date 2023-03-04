@@ -13,7 +13,7 @@ const glob = pify(Glob)
 const meta = require('./package.json')
 
 module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
-	const { runtimeConfig, tailwindcss, tailwindui = {} } = this.options
+	const { runtimeConfig, css, tailwindcss, tailwindui = {} } = this.options
 	const { resolver } = this.nuxt
 
 	// Resolve dir
@@ -44,6 +44,9 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 			}
 		}
 	})
+
+	// Add Global Css
+	css.push(resolver.resolveAlias('node_modules/animate.css'))
 
 	// Resolve svg include
 	const svgIncludes = ['node_modules/feather-icons/dist/icons']
