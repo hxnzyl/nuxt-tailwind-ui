@@ -42,10 +42,12 @@ export default {
 		size: { type: String, default: 'md' },
 		//空心：按钮字体颜色；非空心：按钮背景颜色
 		color: { type: String, default: 'blue' },
-		//是否有圆角，大小同size
-		rounded: { type: Boolean, default: true },
 		//点击水波纹
 		ripple: { type: Boolean, default: true },
+		//是否有圆角，Boolean:大小同size，String:自定义大小
+		rounded: { type: [Boolean, String], default: true },
+		//是否有阴影，Boolean:大小同size，String:自定义大小
+		shadow: [Boolean, String],
 		//图标，大小同size
 		icon: String,
 		//是否有边框
@@ -76,11 +78,15 @@ export default {
 		},
 		buttonClass() {
 			return [
-				'n-button h-max relative overflow-hidden flex items-center justify-center gap-2 tranistion appearance-none',
+				'n-button h-max flex items-center justify-center gap-2 tranistion appearance-none',
 				//按钮大小
 				tailwindui.buttonSize(this.size),
 				//圆角大小
-				this.rounded ? tailwindui.roundedSize(this.size) : '',
+				this.rounded ? tailwindui.roundedSize(this.rounded, this.size) : '',
+				//阴影大小
+				this.shadow ? tailwindui.shadowSize(this.shadow, this.size) : '',
+				//点击水波纹
+				this.ripple ? 'animate-ripple' : '',
 				//按钮边框
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.color) : '',
@@ -88,8 +94,6 @@ export default {
 				this.plain ? 'bg-white' : this.color == 'white' ? '' : 'text-white',
 				//空心：按钮字体颜色；非空心：按钮背景颜色
 				this.plain ? tailwindui.textColor(this.color) : tailwindui.bgColor(this.color),
-				//点击水波纹
-				this.ripple ? 'ripple' : '',
 				//禁用：无事件，禁用鼠标，不使用pointer-events-none，与cursor-not-allowed样式冲突
 				this.formDisabled ? 'cursor-not-allowed' : 'cursor-pointer',
 				//禁用：空心->字体透明，边框透明。非空心->背景透明；非禁用：空心hover->字体透明，边框透明。非空心hover->背景透明
@@ -133,29 +137,3 @@ export default {
 	}
 }
 </script>
-
-<style lang="scss">
-.n-button {
-	&.ripple:not(.cursor-not-allowed):after {
-		content: '';
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		pointer-events: none;
-		background-image: radial-gradient(circle, #fff 10%, transparent 10%);
-		background-repeat: no-repeat;
-		background-position: 50%;
-		transform: scale(10, 10);
-		transition: transform 0.3s, opacity 0.5s;
-		opacity: 0;
-	}
-	&.ripple:not(.cursor-not-allowed):active:after {
-		transform: scale(0, 0);
-		transition: 0s;
-		opacity: 0.3;
-	}
-}
-</style>

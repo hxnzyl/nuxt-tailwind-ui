@@ -6,6 +6,7 @@
 				:key="key"
 				class="hover:bg-gray-200"
 				:class="[
+					ripple ? 'animate-ripple' : '',
 					direction == 'row' ? 'border-l-2 bg-white' : 'border-b-2',
 					!isActived(tab, key)
 						? disabled
@@ -51,6 +52,8 @@ export default {
 		active: Function,
 		//[{label:显示文本, to:跳转链接}]
 		tabs: { type: Array, required: true },
+		//点击水波纹
+		ripple: { type: Boolean, default: true },
 		//方向
 		direction: { type: String, default: 'row' },
 		//内容class

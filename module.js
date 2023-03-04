@@ -46,7 +46,7 @@ module.exports = function nuxtTailwindUIModule(_moduleOptions = {}) {
 	})
 
 	// Add Global Css
-	css.push(resolver.resolveAlias('node_modules/animate.css'))
+	css.push(resolve(__dirname, './assets/scss/animate.scss'))
 
 	// Resolve svg include
 	const svgIncludes = ['node_modules/feather-icons/dist/icons']

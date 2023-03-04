@@ -98,7 +98,7 @@ export default {
 		//@overwrite输入框类型
 		type: { type: String, default: 'text' },
 		//是否有圆角
-		rounded: { type: Boolean, default: true },
+		rounded: { type: [Boolean, String], default: true },
 		//是否有边框
 		border: { type: Boolean, default: true },
 		//是否有轮廓环
@@ -125,7 +125,7 @@ export default {
 				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor) : '',
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidRule == null) : '',
-				this.rounded ? tailwindui.roundedTBRSize(this.size) : '',
+				this.rounded ? tailwindui.roundedTBRSize(this.rounded, this.size) : '',
 				this.formDisabled ? 'bg-opacity-50' : ''
 			]
 		},
@@ -144,8 +144,8 @@ export default {
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidRule == null) : '',
 				this.rounded
 					? this.$slots.default
-						? tailwindui.roundedTBLSize(this.size)
-						: tailwindui.roundedSize(this.size)
+						? tailwindui.roundedTBLSize(this.rounded, this.size)
+						: tailwindui.roundedSize(this.rounded, this.size)
 					: '',
 				this.formDisabled ? 'bg-gray-200 bg-opacity-50' : 'bg-white',
 				this.formDisabled ? 'pointer-events-none' : this.readonly ? 'cursor-default' : ''

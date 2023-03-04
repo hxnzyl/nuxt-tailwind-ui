@@ -10,7 +10,7 @@ export default {
 	 * @returns {String}
 	 */
 	buttonSize(size) {
-		if (size == 'none' || size == 'custom') return ''
+		if (size == 'none') return ''
 		if (size == 'xs') return 'px-2 py-px text-xs'
 		if (size == 'sm') return 'px-3 py-1 text-sm'
 		if (size == 'md') return 'px-4 py-1.5 text-base'
@@ -24,7 +24,7 @@ export default {
 	 * @returns {String}
 	 */
 	iconSize(size) {
-		if (size == 'none' || size == 'custom') return ''
+		if (size == 'none') return ''
 		if (size == 'xs') return 'w-2 h-2 text-xs'
 		if (size == 'sm') return 'w-3 h-3 text-sm'
 		if (size == 'md') return 'w-4 h-4 text-md'
@@ -38,7 +38,7 @@ export default {
 	 * @returns {String}
 	 */
 	textBoxSize(size) {
-		if (size == 'none' || size == 'custom') return ''
+		if (size == 'none') return ''
 		if (size == 'xs') return 'px-1 py-px text-xs'
 		if (size == 'sm') return 'px-2 py-1 text-xs'
 		if (size == 'md') return 'px-3 py-2 text-sm'
@@ -48,41 +48,61 @@ export default {
 	/**
 	 * 全边框大小
 	 *
+	 * @param {Boolean|String} rounded
 	 * @param {String} size
 	 * @returns {String}
 	 */
-	roundedSize(size) {
-		if (size == 'none' || size == 'custom') return ''
-		if (size == 'sm') return 'rounded-sm'
-		if (size == 'md') return 'rounded-md'
-		if (size == 'lg') return 'rounded-lg'
-		if (size == 'xl') return 'rounded-xl'
+	roundedSize(rounded, size) {
+		if (rounded === true) rounded = size
+		if (rounded == 'none') return ''
+		if (rounded == 'sm') return 'rounded-sm'
+		if (rounded == 'md') return 'rounded-md'
+		if (rounded == 'lg') return 'rounded-lg'
+		if (rounded == 'xl') return 'rounded-xl'
 	},
 	/**
 	 * 左上左下边框大小
 	 *
+	 * @param {Boolean|String} rounded
 	 * @param {String} size
 	 * @returns {String}
 	 */
-	roundedTBLSize(size) {
-		if (size == 'none' || size == 'custom') return ''
-		if (size == 'sm') return 'rounded-tl-sm rounded-bl-sm'
-		if (size == 'md') return 'rounded-tl-md rounded-bl-md'
-		if (size == 'lg') return 'rounded-tl-lg rounded-bl-lg'
-		if (size == 'xl') return 'rounded-tl-xl rounded-bl-xl'
+	roundedTBLSize(rounded, size) {
+		if (rounded === true) rounded = size
+		if (rounded == 'none') return ''
+		if (rounded == 'sm') return 'rounded-tl-sm rounded-bl-sm'
+		if (rounded == 'md') return 'rounded-tl-md rounded-bl-md'
+		if (rounded == 'lg') return 'rounded-tl-lg rounded-bl-lg'
+		if (rounded == 'xl') return 'rounded-tl-xl rounded-bl-xl'
 	},
 	/**
 	 * 右上右下边框大小
 	 *
+	 * @param {Boolean|String} rounded
 	 * @param {String} size
 	 * @returns {String}
 	 */
-	roundedTBRSize(size) {
-		if (size == 'none' || size == 'custom') return ''
-		if (size == 'sm') return 'rounded-tr-sm rounded-br-sm'
-		if (size == 'md') return 'rounded-tr-md rounded-br-md'
-		if (size == 'lg') return 'rounded-tr-lg rounded-br-lg'
-		if (size == 'xl') return 'rounded-tr-xl rounded-br-xl'
+	roundedTBRSize(rounded, size) {
+		if (rounded === true) rounded = size
+		if (rounded == 'none') return ''
+		if (rounded == 'sm') return 'rounded-tr-sm rounded-br-sm'
+		if (rounded == 'md') return 'rounded-tr-md rounded-br-md'
+		if (rounded == 'lg') return 'rounded-tr-lg rounded-br-lg'
+		if (rounded == 'xl') return 'rounded-tr-xl rounded-br-xl'
+	},
+	/**
+	 * 盒阴影
+	 *
+	 * @param {Boolean|String} shadow
+	 * @returns {String}
+	 */
+	shadowSize(shadow, size) {
+		if (shadow === true) shadow = size || 'md'
+		if (shadow == 'none') return ''
+		if (shadow == 'sm') return 'shadow-sm'
+		if (shadow == 'md') return 'shadow-md'
+		if (shadow == 'lg') return 'shadow-lg'
+		if (shadow == 'xl') return 'shadow-xl'
 	},
 	/**
 	 * 轮廓颜色
@@ -187,11 +207,8 @@ export default {
 				if (grid == 2) return 'grid grid-cols-2'
 				if (grid == 3) return 'grid grid-cols-3'
 				if (grid == 4) return 'grid grid-cols-4'
-				return ''
-			case 'string':
-				return grid
 		}
-		return ''
+		return grid || ''
 	},
 	/**
 	 * 粘性布局
@@ -205,25 +222,6 @@ export default {
 				return sticky ? 'sticky z-50 top-0' : ''
 			case 'string':
 				return sticky
-		}
-		return ''
-	},
-	/**
-	 * 盒阴影
-	 *
-	 * @param {Boolean|String} scale
-	 * @returns {String}
-	 */
-	shadow(shadow) {
-		switch (typeof shadow) {
-			case 'boolean':
-				return shadow ? 'shadow' : ''
-			case 'string':
-				if (shadow == 'sm') return 'shadow-sm'
-				if (shadow == 'md') return 'shadow-md'
-				if (shadow == 'lg') return 'shadow-lg'
-				if (shadow == 'xl') return 'shadow-xl'
-				return shadow
 		}
 		return ''
 	}

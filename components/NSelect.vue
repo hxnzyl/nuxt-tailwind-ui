@@ -59,13 +59,19 @@
 			>
 				<slot name="options">
 					<div v-if="options.length > 0" class="py-2 bg-gray-100 rounded-md shadow-lg">
-						<div class="max-h-96 overflow-x-hidden overflow-y-auto" :class="{ 'divide-y': multiple }" @mousewheel.stop="">
+						<div
+							class="max-h-96 overflow-x-hidden overflow-y-auto"
+							:class="{ 'divide-y': multiple }"
+							@mousewheel.stop=""
+						>
 							<div
 								v-for="(option, key) in options"
 								:key="key"
 								class="min-w-max px-6 py-2 text-sm transition"
 								:class="
-									isActived(option) ? 'text-white bg-blue-500 hover:bg-opacity-50' : 'text-gray-500 hover:text-white hover:bg-blue-500'
+									isActived(option)
+										? 'text-white bg-blue-500 hover:bg-opacity-50'
+										: 'text-gray-500 hover:text-white hover:bg-blue-500'
 								"
 								@click.stop="onChange(option, key)"
 							>
@@ -121,8 +127,10 @@ export default {
 		color: { type: String, default: 'gray' },
 		//大小
 		size: { type: String, default: 'md' },
+		//点击水波纹
+		ripple: { type: Boolean, default: true },
 		//是否有圆角
-		rounded: { type: Boolean, default: true },
+		rounded: { type: [Boolean, String], default: true },
 		//是否有边框
 		border: { type: Boolean, default: true },
 		//是否有轮廓环
@@ -145,12 +153,13 @@ export default {
 			return [
 				tailwindui.textColor(this.invalidColor),
 				tailwindui.textBoxSize(this.size),
-				this.formDisabled ? 'pointer-events-none' : ''
+				this.formDisabled ? 'pointer-events-none' : '',
+				this.ripple ? 'animate-ripple' : ''
 			]
 		},
 		selectClass() {
 			return [
-				this.rounded ? tailwindui.roundedSize(this.size) : '',
+				this.rounded ? tailwindui.roundedSize(this.rounded, this.size) : '',
 				this.border ? 'border' : '',
 				this.border ? tailwindui.borderColor(this.invalidColor, this.invalidRule == null) : '',
 				this.ring && this.currentVisible ? 'ring-1 ring-opacity-50' : '',

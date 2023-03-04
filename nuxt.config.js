@@ -33,7 +33,7 @@ export default {
 	},
 
 	// Global CSS: https://go.nuxtjs.dev/config-css
-	css: ['animate.css'],
+	css: ['~assets/scss/animate.scss'],
 
 	// tailwindcss Defaults options
 	tailwindcss: {

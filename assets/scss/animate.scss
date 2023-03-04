@@ -1,0 +1,32 @@
+//animate.css @link https://animate.style/
+@import url(animate.css/animate.css);
+
+//#region 点击水波纹
+.animate-ripple {
+	position: relative;
+	overflow: hidden;
+}
+
+.animate-ripple:not(.cursor-not-allowed):after {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	background-image: radial-gradient(circle, #fff 10%, transparent 10%);
+	background-repeat: no-repeat;
+	background-position: 50%;
+	transform: scale(10, 10);
+	transition: transform 0.3s, opacity 0.5s;
+	opacity: 0;
+}
+
+.animate-ripple:not(.cursor-not-allowed):active:after {
+	transform: scale(0, 0);
+	transition: 0s;
+	opacity: 0.3;
+}
+//#endregion 点击水波纹

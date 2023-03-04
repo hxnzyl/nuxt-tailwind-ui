@@ -24,7 +24,9 @@
 					:href="menu.to"
 					:target="menu.target"
 					class="hover:font-bold"
-					:class="{ 'font-bold': $route && $route.path.replace(/^\/+|\/+$/g, '') === menu.to.replace(/^\/+|\/+$/g, '') }"
+					:class="{
+						'font-bold': $route && $route.path.replace(/^\/+|\/+$/g, '') === menu.to.replace(/^\/+|\/+$/g, '')
+					}"
 				>
 					{{ menu.label }}
 				</a>
@@ -57,7 +59,7 @@ export default {
 		navClass() {
 			return [
 				tailwindui.sticky(this.sticky),
-				this.kiosk ? '' : tailwindui.shadow(this.shadow),
+				this.kiosk ? '' : tailwindui.shadowSize(this.shadow, 'md'),
 				this.kiosk ? 'bg-transparent text-white' : tailwindui.bgColor(this.color)
 			]
 		}
