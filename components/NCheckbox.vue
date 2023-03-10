@@ -116,8 +116,7 @@ export default {
 	},
 	methods: {
 		updateValue(init, value) {
-			if (this.formDisabled) return
-			if (!init && value === this.currentValue) return
+			if (!init && (this.formDisabled || value === this.currentValue)) return
 			this.currentValue = value === this.checkedValue ? this.checkedValue : this.uncheckedValue
 			if (init) return
 			this.$emit('change', this.currentValue)
