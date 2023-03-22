@@ -75,7 +75,7 @@ export default {
 	methods: {
 		//@overwrite visitable.show
 		show(title, message) {
-			if (!message) message = title
+			if (!message) (message = title), (title = '')
 			this.currentTitle = title || this.title
 			this.currentMessage = message || this.message
 			return visitable.methods.show.call(this)

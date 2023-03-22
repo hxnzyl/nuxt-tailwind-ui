@@ -1,8 +1,8 @@
 {
 	"name": "nuxt-tailwind-ui",
-	"version": "1.2.31",
+	"version": "1.2.32",
 	"description": "Nuxt JS&Tailwind CSS&Feather Icons UI Framework~",
-	"main": "dist/nuxt-tailwind-ui.umd.js",
+	"main": "dist/module.js",
 	"scripts": {
 		"dev": "cross-env MODE=dev nuxt",
 		"build": "vue-cli-service build --target lib main.js"
@@ -48,6 +48,15 @@
 		"svg-sprite-loader": "^6.0.11",
 		"sass": "^1.32.8",
 		"sass-loader": "^10.1.1"
+	},
+	"peerDependencies": {
+		"animate.css": "^4.1.1",
+		"feather-icons": "^4.29.0",
+		"nuxt": "^2.15.8",
+		"swiper": "^5.4.5",
+		"tailwindcss": "^3.2.4",
+		"vue": "2.7.10",
+		"vue-awesome-swiper": "^4.1.1"
 	},
 	"overrides": {
 		"@nuxtjs/tailwindcss": {

@@ -50,13 +50,12 @@ export default {
 			return true
 		},
 		leave(event) {
-			if (this.visible || !this.currentVisible || this.formDisabled) return false
+			if (this.visible || !this.currentVisible || this.formDisabled) return
 			let { root } = this.$refs
 			if (!root) return
 			let rootElement = root.$el || root
 			let mouseElement = getMouseElement(event)
 			if (!mouseElement || !rootElement.contains(mouseElement)) this.hide()
-			return true
 		},
 		toggle() {
 			return this.currentVisible ? this.hide() : this.show()

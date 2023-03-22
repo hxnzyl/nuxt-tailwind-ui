@@ -23,7 +23,7 @@ function createNModal(plugin, propsData, events) {
 
 NModalPlugin.prototype = {
 	show(title, message) {
-		createNModal(this, { title, message }).show()
+		createNModal(this, {}).show(title, message)
 	},
 	hide() {
 		if (this.component) this.component.hide(), (this.component = null)
@@ -32,16 +32,16 @@ NModalPlugin.prototype = {
 		return new Promise((resolve) =>
 			createNModal(
 				this,
-				{ title, message, showCancelButton: true, icon, bodyClass: 'gap-3' },
+				{ showCancelButton: true, icon, bodyClass: 'gap-3' },
 				{ confirm: () => resolve(true), cancel: () => resolve(false) }
-			).show()
+			).show(title, message)
 		)
 	},
 	success(title, message, icon = 'check-circle') {
-		createNModal(this, { title, message, icon, bodyClass: 'gap-3 text-green-500' }).show()
+		createNModal(this, { icon, bodyClass: 'gap-3 text-green-500' }).show(title, message)
 	},
 	error(title, message, icon = 'alert-triangle') {
-		createNModal(this, { title, message, icon, bodyClass: 'gap-3 text-red-500' }).show()
+		createNModal(this, { icon, bodyClass: 'gap-3 text-red-500' }).show(title, message)
 	},
 	warn() {},
 	info() {}
