@@ -1,31 +1,32 @@
 <template>
 	<div class="n-tabs flex relative" :class="[direction == 'row' ? 'gap-4' : 'flex-col']">
-		<div class="flex" :class="[direction == 'row' ? 'flex-col w-1/5' : 'w-full bg-white']">
-			<div
-				v-for="(tab, key) in tabs"
-				:key="key"
-				class="hover:bg-gray-200"
-				:class="[
-					ripple ? 'animate-ripple' : '',
-					direction == 'row' ? 'border-l-2 bg-white' : 'border-b-2',
-					!isActived(tab, key)
-						? disabled
-							? 'border-transparent text-gray-500 text-opacity-50 pointer-events-none'
-							: 'border-transparent'
-						: 'text-indigo-500 border-indigo-500'
-				]"
-			>
-				<NLink v-if="tab.to" :to="tab.to" :target="tab.target" class="block p-4">{{ tab.label }}</NLink>
-				<a
-					v-else-if="queryName"
-					:href="`?${queryName}=${tab.value}`"
-					@click.prevent="onChange(tab, key)"
-					class="block p-4"
+		<div
+			class="flex justify-between"
+			:class="[direction == 'row' ? 'flex-col w-1/5' : 'w-full bg-white items-center']"
+		>
+			<div class="flex flex-grow" :class="[direction == 'row' ? 'flex-col' : '']">
+				<div
+					v-for="(tab, key) in tabs"
+					:key="key"
+					class="hover:bg-gray-200"
+					:class="[
+						ripple ? 'animate-ripple' : '',
+						direction == 'row' ? 'w-full border-l-2 bg-white' : 'border-b-2',
+						!isActived(tab, key)
+							? disabled
+								? 'border-transparent text-gray-500 text-opacity-50 pointer-events-none'
+								: 'border-transparent'
+							: 'text-indigo-500 border-indigo-500'
+					]"
 				>
-					{{ tab.label }}
-				</a>
-				<div v-else class="p-4 cursor-pointer" @click.stop="onChange(tab, key)">{{ tab.label }}</div>
+					<NLink v-if="tab.to" :to="tab.to" :target="tab.target" class="block p-4">{{ tab.label }}</NLink>
+					<a v-else-if="queryName" :href="`?${queryName}=${tab.value}`" @click.prevent="onChange(tab, key)" class="block p-4">
+						{{ tab.label }}
+					</a>
+					<div v-else class="p-4 cursor-pointer" @click.stop="onChange(tab, key)">{{ tab.label }}</div>
+				</div>
 			</div>
+			<slot name="more"></slot>
 		</div>
 		<div class="flex bg-white" :class="[bodyClass, direction == 'row' ? 'w-4/5' : 'flex-col flex-grow']">
 			<slot v-bind="{ index: currentIndex, tab: currentTab, value: currentValue }"></slot>
