@@ -73,7 +73,7 @@ export default {
 			if (this.NForm && this.required) rules.push({ required: true, message: this.placeholder })
 			if (!rules.length) return
 			let _rules = this.NForm.validateRules
-			if (_rules[this.name]) _rules[this.name].push(...rules)
+			if (_rules[this.name]) _rules[this.name] = rules.concat(_rules[this.name])
 			else _rules[this.name] = rules
 		}
 	},
