@@ -93,12 +93,7 @@ export default {
 	},
 	computed: {
 		menusClass() {
-			let type = typeof this.grid
-			return [
-				type === 'boolean' && this.grid === true ? 'grid grid-cols-2' : '',
-				type === 'number' && this.grid > 0 ? tailwindui.grid(this.grid) : '',
-				type === 'string' && this.grid !== '' ? this.grid : ''
-			]
+			return [tailwindui.grid(this.grid)]
 		}
 	},
 	data() {

@@ -78,7 +78,7 @@ export default {
 		}
 	},
 	methods: {
-		validate(trigger) {
+		validate(trigger, value) {
 			return new Promise((resolve) => {
 				if (this.formDisabled || this.validateStatus === 'ing')
 					return (this.validateStatus = 'abort'), resolve([false, new Error('Abort')])
@@ -86,7 +86,7 @@ export default {
 				let rules = this.getRules(trigger)
 				if (!rules.length) return this.validateOk(resolve)
 				const validator = new AsyncValidator({ [this.name]: rules })
-				const value = this.checked == null ? this.currentValue : this.checked || null
+				if (value === undefined) value = this.checked == null ? this.currentValue : this.checked || null
 				validator.validate({ [this.name]: value }, { firstFields: true }, (errors) =>
 					errors ? this.validateNo(resolve, errors) : this.validateOk(resolve)
 				)

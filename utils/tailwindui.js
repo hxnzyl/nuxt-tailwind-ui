@@ -203,12 +203,16 @@ export default {
 		switch (typeof grid) {
 			case 'boolean':
 				return grid ? 'grid grid-cols-2' : ''
+			case 'string':
+				return grid !== '' ? grid : ''
 			case 'number':
+				if (grid <= 0) return ''
 				if (grid == 2) return 'grid grid-cols-2'
 				if (grid == 3) return 'grid grid-cols-3'
 				if (grid == 4) return 'grid grid-cols-4'
+				if (grid == 5) return 'grid grid-cols-5'
 		}
-		return grid || ''
+		return ''
 	},
 	/**
 	 * 粘性布局

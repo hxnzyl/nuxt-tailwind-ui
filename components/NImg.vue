@@ -4,7 +4,7 @@
 		<img v-else :src="src" :class="nativeClass" />
 		<slot></slot>
 	</a>
-	<div v-else class="n-img overflow-hidden rounded-md" :class="{ 'cursor-pointer': preview }" @click.stop="onClick">
+	<div v-else class="n-img overflow-hidden rounded-md" :class="{ 'cursor-pointer': preview }" @click="onClick">
 		<img v-if="lazy" :lazy-src="src" :class="nativeClass" />
 		<img v-else :src="src" :class="nativeClass" />
 		<slot></slot>
@@ -43,7 +43,7 @@ export default {
 	},
 	methods: {
 		onClick(event) {
-			if (this.preview) (this.previewModal = true), (this.previewSrc = this.src)
+			if (this.preview) event.stopPropagation(), (this.previewModal = true), (this.previewSrc = this.src)
 			else this.$emit('click', event)
 		}
 	}

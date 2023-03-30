@@ -60,7 +60,7 @@ export default {
 			],
 			components: [
 				{ label: 'NButton', to: '/components/NButton' },
-				// { label: 'NInput', to: '/components/NInput' },
+				{ label: 'NInput', to: '/components/NInput' },
 				{ label: 'NModal', to: '/components/NModal' },
 				{ label: 'NSelect', to: '/components/NSelect' }
 				// { label: 'NForm', to: '/components/NForm' }

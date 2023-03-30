@@ -2,11 +2,11 @@
 	<div class="n-input flex" :class="formColDirection ? 'flex-col' : 'relative'">
 		<div class="flex flex-grow" :class="{ 'flex-col gap-2': formColDirection }">
 			<div
-				v-if="label || formColDirection"
+				v-if="label || $slots.label || formColDirection"
 				class="flex items-center"
 				:class="[formColDirection ? 'justify-between' : '', this.formLabelClass]"
 			>
-				<div v-if="label" class="text-base">
+				<div v-if="label || $slots.label" class="text-base">
 					<slot name="label">
 						<span class="text-gray-500">{{ label }}</span>
 					</slot>
@@ -17,53 +17,67 @@
 				</div>
 			</div>
 			<div class="flex flex-grow" :class="{ 'cursor-not-allowed': formDisabled }">
-				<div class="flex items-center flex-grow group" :class="inputClass">
-					<textarea
-						v-if="type === 'textarea'"
-						ref="input"
-						:class="nativeClass"
-						@input="onInput"
-						@focus="onFocus"
-						@blur="onBlur"
-						:placeholder="placeholder"
-						:readonly="readonly"
-						:disabled="formDisabled"
-						:autocomplete="formAutoComplete"
-					/>
-					<input
-						v-else
-						ref="input"
-						:class="nativeClass"
-						@input="onInput"
-						@focus="onFocus"
-						@blur="onBlur"
-						:type="currentType"
-						:placeholder="placeholder"
-						:readonly="readonly"
-						:disabled="formDisabled"
-						:autocomplete="formAutoComplete"
-					/>
-					<a
-						v-if="clearable"
-						href="#clear"
-						@click.stop.prevent="clear"
-						class="hidden hover:text-opacity-50 text-gray-400 pr-2"
-						:class="{ 'group-hover:block': valueNotEmpty }"
-					>
-						<NSvg name="x"></NSvg>
-					</a>
-					<a
-						v-if="showEyeIcon"
-						href="#eye"
-						@click.stop.prevent="
-							;(eye === true || eye === 'click') && (currentType = currentType === 'text' ? 'password' : 'text')
-						"
-						@mousedown.stop.prevent="eye === 'press' && (currentType = 'text')"
-						@mouseup.stop.prevent="eye === 'press' && (currentType = 'password')"
-						class="hidden group-hover:block hover:text-opacity-50 text-gray-400 pr-2"
-					>
-						<NSvg :name="currentType === 'password' ? 'eye' : 'eye-off'"></NSvg>
-					</a>
+				<div class="flex flex-grow" :class="inputClass">
+					<div v-if="showTags" class="flex flex-wrap items-center gap-2">
+						<div
+							v-for="(tag, index) in tags"
+							:key="index"
+							class="flex items-center gap-2 text-white text-sm bg-blue-500 rounded-md px-2 py-1"
+						>
+							<span>{{ tag }}</span>
+							<a href="#remove" @click.stop="removeTag(tag, index)" class="hover:text-red-500">
+								<NSvg name="x"></NSvg>
+							</a>
+						</div>
+					</div>
+					<div class="flex items-center flex-grow group">
+						<textarea
+							v-if="type === 'textarea'"
+							ref="input"
+							:class="nativeClass"
+							@input="onInput"
+							@focus="onFocus"
+							@blur="onBlur"
+							@keyup.enter="onEnter"
+							:placeholder="placeholder"
+							:readonly="readonly"
+							:disabled="formDisabled"
+							:autocomplete="formAutoComplete"
+						/>
+						<input
+							v-else
+							ref="input"
+							:class="nativeClass"
+							@input="onInput"
+							@focus="onFocus"
+							@blur="onBlur"
+							@keyup.enter="onEnter"
+							:type="currentType"
+							:placeholder="placeholder"
+							:readonly="readonly"
+							:disabled="formDisabled"
+							:autocomplete="formAutoComplete"
+						/>
+						<a
+							v-if="clearable"
+							href="#clear"
+							@click.stop.prevent="clear"
+							class="hidden hover:text-opacity-50 text-gray-400 pr-2"
+							:class="{ 'group-hover:block': valueNotEmpty }"
+						>
+							<NSvg name="x"></NSvg>
+						</a>
+						<a
+							v-if="showEyeIcon"
+							href="#eye"
+							@click.stop.prevent=";(eye === true || eye === 'click') && (currentType = currentType === 'text' ? 'password' : 'text')"
+							@mousedown.stop.prevent="eye === 'press' && (currentType = 'text')"
+							@mouseup.stop.prevent="eye === 'press' && (currentType = 'password')"
+							class="hidden group-hover:block hover:text-opacity-50 text-gray-400 pr-2"
+						>
+							<NSvg :name="currentType === 'password' ? 'eye' : 'eye-off'"></NSvg>
+						</a>
+					</div>
 				</div>
 				<div v-if="$slots.default" class="flex" :class="defaultClass">
 					<slot></slot>
@@ -106,7 +120,15 @@ export default {
 		//只读状态
 		readonly: Boolean,
 		//type=password,click:点击查看密码原文,press:按住查看密码原文
-		eye: { type: [Boolean, String], default: 'click' }
+		eye: { type: [Boolean, String], default: 'click' },
+		//是否有标签
+		tag: Boolean,
+		//标签分割符表达式，默认：,|，
+		tagExp: { type: RegExp, default: () => /,|，/ },
+		//标签最终分割符，默认：,
+		tagSep: { type: String, default: ',' },
+		//标签限制数量
+		tagMaxLength: { type: Number, default: Infinity }
 	},
 	computed: {
 		invalidColor() {
@@ -114,6 +136,9 @@ export default {
 		},
 		currentValue() {
 			return this.value == null ? '' : this.value + ''
+		},
+		showTags() {
+			return this.tag && this.tags.length > 0
 		},
 		showEyeIcon() {
 			return !!this.eye && this.type === 'password'
@@ -132,12 +157,15 @@ export default {
 		nativeClass() {
 			return [
 				'flex-grow appearance-none focus:outline-none bg-transparent',
+				this.showTags ? '!pl-0 !pr-0' : '',
 				tailwindui.textColor(this.color),
 				tailwindui.textBoxSize(this.size)
 			]
 		},
 		inputClass() {
 			return [
+				this.showTags ? 'flex-col !pb-0' : '',
+				this.showTags ? tailwindui.textBoxSize(this.size) : '',
 				this.ring && this.focusing ? 'ring-1 ring-opacity-50' : '',
 				this.ring && this.focusing ? tailwindui.ringColor(this.invalidColor) : '',
 				this.border ? (this.$slots.default ? 'border-t border-b border-l' : 'border') : '',
@@ -162,6 +190,7 @@ export default {
 	},
 	data() {
 		return {
+			tags: [],
 			focusing: false,
 			bluring: false,
 			currentType: this.type
@@ -173,18 +202,48 @@ export default {
 	methods: {
 		updateValue(init, value) {
 			let { input } = this.$refs
-			//非二态切换可能没change
-			if (!input || (!init && input.value === value)) return
-			//初始化如果禁用需要给值
-			input.value = value
-			if (init || input.disabled) return
-			this.$emit('input', value)
+			if (!input) return
+			if (this.tag) {
+				//标签文本框
+				if (!init || input.disabled) return
+				input.value = ''
+				this.updateTag(true, value)
+			} else {
+				//正常文本框
+				if (!init && input.value === value) return
+				input.value = value
+				if (init || input.disabled) return
+				this.$emit('input', value)
+				if (this.name) this.$nextTick(() => this.validate('input'))
+			}
+		},
+		getTags(value) {
+			return [...new Set(this.tags.concat(value.split(this.tagExp)))].filter((tag) => tag.trim() !== '')
+		},
+		updateTag(init, value) {
+			let newTags = [...new Set(this.tags.concat(value.split(this.tagExp)))].filter((tag) => tag.trim() !== '')
+			if (newTags.length > this.tagMaxLength) return
+			this.tags = newTags
+			if (init) return
+			this.$emit('input', newTags.join(this.tagSep))
 			if (this.name) this.$nextTick(() => this.validate('input'))
+		},
+		removeTag(tag, index) {
+			this.tags.splice(index == null ? this.tags.findIndex((v) => v === tag) : index, 1)
+			this.$emit('input', this.tags.join(this.tagSep))
+			if (this.name) this.$nextTick(() => this.validate('input'))
+		},
+		onEnter() {
+			let { input } = this.$refs
+			if (!input || input.disabled || input.value === '') return
+			let value = input.value
+			if (this.tag) (input.value = ''), this.updateTag(false, value)
+			this.$emit('enter', value)
 		},
 		onInput() {
 			let { input } = this.$refs
 			if (!input || input.disabled || input.value === this.currentValue) return
-			this.$emit('input', input.value)
+			if (!this.tag) this.$emit('input', input.value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
 		onFocus() {

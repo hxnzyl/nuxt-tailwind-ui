@@ -2,11 +2,11 @@
 	<div class="flex" :class="[`n-${type}`, formColDirection ? 'flex-col' : 'relative items-center']">
 		<div class="flex flex-grow" :class="formColDirection ? 'flex-col gap-2' : 'items-center'">
 			<div
-				v-if="label || formColDirection"
+				v-if="label || $slots.label || formColDirection"
 				class="flex items-center"
 				:class="[formColDirection ? 'justify-between' : '', this.formLabelClass]"
 			>
-				<div v-if="label" class="text-base">
+				<div v-if="label || $slots.label" class="text-base">
 					<slot name="label">
 						<span class="text-gray-500">{{ label }}</span>
 					</slot>
@@ -17,10 +17,10 @@
 				</div>
 			</div>
 			<div class="flex items-center flex-grow gap-2" :class="checkboxClass" @click.stop="onChange">
-				<div v-if="type == 'checkbox'" class="flex items-center justify-center" :class="nativeClass">
+				<div v-if="type == 'checkbox'" class="flex items-center justify-center flex-shrink-0" :class="nativeClass">
 					<NSvg v-show="checked" name="check"></NSvg>
 				</div>
-				<div v-else class="flex items-center justify-center rounded-full" :class="nativeClass">
+				<div v-else class="flex items-center justify-center rounded-full flex-shrink-0" :class="nativeClass">
 					<div v-show="checked" class="rounded-full w-1/2 h-1/2" :class="radioClass"></div>
 				</div>
 				<div class="flex items-center flex-grow" :class="bodyClass">
