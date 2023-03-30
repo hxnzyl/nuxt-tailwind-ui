@@ -205,7 +205,7 @@ export default {
 			if (!input) return
 			if (this.tag) {
 				//标签文本框
-				if (!init || input.disabled) return
+				if (input.disabled) return
 				input.value = ''
 				this.updateTag(true, value)
 			} else {
@@ -221,6 +221,8 @@ export default {
 			return [...new Set(this.tags.concat(value.split(this.tagExp)))].filter((tag) => tag.trim() !== '')
 		},
 		updateTag(init, value) {
+			let isClear = value === ''
+			if (isClear) this.tags = []
 			let newTags = [...new Set(this.tags.concat(value.split(this.tagExp)))].filter((tag) => tag.trim() !== '')
 			if (newTags.length > this.tagMaxLength) return
 			this.tags = newTags
@@ -252,7 +254,7 @@ export default {
 			this.focusing = true
 			this.bluring = false
 			this.$emit('focus')
-			if (this.name && input.value !== this.currentValue) this.validate('focus')
+			if (this.name && (this.tag || input.value !== this.currentValue)) this.validate('focus')
 		},
 		onBlur() {
 			let { input } = this.$refs
@@ -260,7 +262,7 @@ export default {
 			this.focusing = false
 			this.bluring = true
 			this.$emit('blur')
-			if (this.name && input.value !== this.currentValue) this.validate('blur')
+			if (this.name && (this.tag || input.value !== this.currentValue)) this.validate('blur')
 		},
 		focus() {
 			let { input } = this.$refs
