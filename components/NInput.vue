@@ -207,6 +207,7 @@ export default {
 				//标签文本框
 				if (input.disabled) return
 				input.value = ''
+				this.tags = []
 				this.updateTag(true, value)
 			} else {
 				//正常文本框
@@ -221,8 +222,6 @@ export default {
 			return [...new Set(this.tags.concat(value.split(this.tagExp)))].filter((tag) => tag.trim() !== '')
 		},
 		updateTag(init, value) {
-			let isClear = value === ''
-			if (isClear) this.tags = []
 			let newTags = [...new Set(this.tags.concat(value.split(this.tagExp)))].filter((tag) => tag.trim() !== '')
 			if (newTags.length > this.tagMaxLength) return
 			this.tags = newTags
