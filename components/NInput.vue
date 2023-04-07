@@ -18,19 +18,20 @@
 			</div>
 			<div class="flex flex-grow" :class="{ 'cursor-not-allowed': formDisabled }">
 				<div class="flex flex-grow" :class="inputClass">
-					<div v-if="showTags" class="flex flex-wrap items-center gap-2">
+					<div v-if="showTags" class="flex flex-wrap items-center gap-2" :class="{ 'pb-2': readonly }">
 						<div
 							v-for="(tag, index) in tags"
 							:key="index"
-							class="flex items-center gap-2 text-white text-sm bg-blue-500 rounded-md px-2 py-1"
+							class="flex items-center gap-2 text-white text-sm bg-blue-500 rounded-md px-2 py-0.5"
+							:class="{ 'bg-opacity-50': formDisabled }"
 						>
 							<span>{{ tag }}</span>
-							<a href="#remove" @click.stop="removeTag(tag, index)" class="hover:text-red-500">
+							<a v-if="!readonly" href="#remove" @click.stop="removeTag(tag, index)" class="hover:text-red-500">
 								<NSvg name="x"></NSvg>
 							</a>
 						</div>
 					</div>
-					<div class="flex items-center flex-grow group">
+					<div v-if="!tag || !readonly" class="flex items-center flex-grow group">
 						<textarea
 							v-if="type === 'textarea'"
 							ref="input"
@@ -59,7 +60,7 @@
 							:autocomplete="formAutoComplete"
 						/>
 						<a
-							v-if="clearable"
+							v-if="clearable && !readonly"
 							href="#clear"
 							@click.stop.prevent="clear"
 							class="hidden hover:text-opacity-50 text-gray-400 pr-2"
@@ -123,8 +124,8 @@ export default {
 		eye: { type: [Boolean, String], default: 'click' },
 		//是否有标签
 		tag: Boolean,
-		//标签分割符表达式，默认：,|，
-		tagExp: { type: RegExp, default: () => /,|，/ },
+		//标签分割符表达式，默认：/(?:,|，| )+/
+		tagExp: { type: RegExp, default: () => /(?:,|，| )+/ },
 		//标签最终分割符，默认：,
 		tagSep: { type: String, default: ',' },
 		//标签限制数量
@@ -202,16 +203,17 @@ export default {
 	methods: {
 		updateValue(init, value) {
 			let { input } = this.$refs
-			if (!input) return
 			if (this.tag) {
 				//标签文本框
-				if (input.disabled) return
-				input.value = ''
+				if (input) {
+					if (input.disabled) return
+					input.value = ''
+				}
 				this.tags = []
 				this.updateTag(true, value)
 			} else {
 				//正常文本框
-				if (!init && input.value === value) return
+				if (!input || (!init && input.value === value)) return
 				input.value = value
 				if (init || input.disabled) return
 				this.$emit('input', value)
