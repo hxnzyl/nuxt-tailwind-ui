@@ -30,6 +30,8 @@ export default {
 		if (size == 'md') return 'w-4 h-4 text-md'
 		if (size == 'lg') return 'w-5 h-5 text-lg'
 		if (size == 'xl') return 'w-6 h-6 text-xl'
+		if (size == '2xl') return 'w-12 h-12 text-2xl'
+		if (size == '4xl') return 'w-24 h-24 text-4xl'
 	},
 	/**
 	 * 文本框大小（input,textarea,select）
