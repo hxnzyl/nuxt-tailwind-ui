@@ -95,10 +95,11 @@
 import tailwindui from '../utils/tailwindui'
 import validator from '../mixins/validator'
 import clearable from '../mixins/clearable'
+import field from '../mixins/field'
 
 export default {
 	name: 'NInput',
-	mixins: [validator, clearable],
+	mixins: [field('NInputGroup'), validator, clearable],
 	model: {
 		prop: 'value',
 		event: 'input'
@@ -217,6 +218,8 @@ export default {
 				input.value = value
 				if (init || input.disabled) return
 				this.$emit('input', value)
+				let group = this.$options.name + 'Group'
+				if (this[group]) this[group].updateValue(init, value)
 				if (this.name) this.$nextTick(() => this.validate('input'))
 			}
 		},
@@ -247,6 +250,8 @@ export default {
 			let { input } = this.$refs
 			if (!input || input.disabled || input.value === this.currentValue) return
 			if (!this.tag) this.$emit('input', input.value)
+			let group = this.$options.name + 'Group'
+			if (this[group]) this[group].onInput(this.currentValue)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
 		onFocus() {
@@ -255,6 +260,8 @@ export default {
 			this.focusing = true
 			this.bluring = false
 			this.$emit('focus')
+			let group = this.$options.name + 'Group'
+			if (this[group]) this[group].onFocus()
 			if (this.name && (this.tag || input.value !== this.currentValue)) this.validate('focus')
 		},
 		onBlur() {
@@ -263,6 +270,8 @@ export default {
 			this.focusing = false
 			this.bluring = true
 			this.$emit('blur')
+			let group = this.$options.name + 'Group'
+			if (this[group]) this[group].onBlur()
 			if (this.name && (this.tag || input.value !== this.currentValue)) this.validate('blur')
 		},
 		focus() {
