@@ -41,7 +41,7 @@ export default {
 		event: 'input'
 	},
 	props: {
-		value: [Boolean, String, Number]
+		value: String
 	},
 	watch: {
 		value(newValue, oldValue) {
@@ -58,6 +58,7 @@ export default {
 	},
 	methods: {
 		updateValue(init, value) {
+			console.log('###group', value, this.currentValue)
 			if (!init && this.currentValue === value) return
 			this.currentValue = value
 			if (init) return

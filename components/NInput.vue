@@ -251,7 +251,7 @@ export default {
 			if (!input || input.disabled || input.value === this.currentValue) return
 			if (!this.tag) this.$emit('input', input.value)
 			let group = this.$options.name + 'Group'
-			if (this[group]) this[group].onInput(this.currentValue)
+			if (this[group]) this[group].onInput(input.value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
 		onFocus() {
