@@ -57,18 +57,21 @@ export default {
 		this.updateValue(true, this.value)
 	},
 	methods: {
+		normzlizeValue(value) {
+			if (value !== '') return value
+			//group的值默认取它下面所有input中不为空的那项
+			let field = this.fields.find((field) => field.currentValue !== '')
+			return field ? field.currentValue : ''
+		},
 		updateValue(init, value) {
-			console.log('###group', value, this.currentValue)
-			if (!init && this.currentValue === value) return
-			this.currentValue = value
+			this.currentValue = this.normzlizeValue(value)
 			if (init) return
 			this.$emit('input', value)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
 		onInput(value) {
-			if (this.currentValue === value) return
-			this.currentValue = value
-			this.$emit('input', value)
+			this.currentValue = this.normzlizeValue(value)
+			this.$emit('input', this.currentValue)
 			if (this.name) this.$nextTick(() => this.validate('input'))
 		},
 		onFocus() {
