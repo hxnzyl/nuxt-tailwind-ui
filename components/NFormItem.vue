@@ -1,6 +1,6 @@
 <template>
 	<div class="n-form-item flex" :class="{ 'flex-col': formColDirection, relative: formRowDirection }">
-		<div class="flex flex-grow gap-2" :class="{ 'flex-col': formColDirection }">
+		<div class="flex flex-grow" :class="{ 'flex-col gap-2': formColDirection }">
 			<div
 				v-if="label || $slots.label || formColDirection"
 				class="flex items-center"
