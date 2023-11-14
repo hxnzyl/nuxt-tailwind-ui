@@ -1,6 +1,10 @@
 <template>
 	<NMask v-model="currentVisible" :click-mask-close="clickMaskClose" fixed>
-		<div ref="root" class="flex flex-col gap-3 relative z-40 bg-white min-w-96 p-3 rounded-md shadow-md text-gray-500">
+		<div
+			ref="root"
+			class="flex flex-col gap-3 relative z-40 bg-white p-3 rounded-md shadow-md text-gray-500"
+			:class="rootClass"
+		>
 			<div v-if="showHeader" class="flex text-base font-semibold">
 				<slot name="header">
 					{{ currentTitle }}
@@ -36,8 +40,10 @@ export default {
 		title: String,
 		//消息
 		message: String,
+		//root类名
+		rootClass: [String, Array, Object],
 		//slot-body类名
-		bodyClass: String,
+		bodyClass: [String, Array, Object],
 		//内容icon
 		icon: String,
 		//内容icon大小

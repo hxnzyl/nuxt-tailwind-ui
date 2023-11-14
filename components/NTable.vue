@@ -135,9 +135,11 @@ export default {
 	methods: {
 		layerLoaded(layerTable) {
 			layerTable.heads.forEach((head, key) => {
-				let layerTdList = layerTable.$refs[`td-${key}`].map((td) => td.offsetWidth)
-				layerTdList.push(this.layerThWidth[key] || 0)
-				this.$set(this.layerThWidth, key, Math.max(...layerTdList))
+				const layerTdList = layerTable.$refs[`td-${key}`]
+				if (!layerTdList) return
+				let layerTdWidth = layerTdList.map((td) => td.offsetWidth)
+				layerTdWidth.push(this.layerThWidth[key] || 0)
+				this.$set(this.layerThWidth, key, Math.max(...layerTdWidth))
 			})
 		},
 		getRowspan(item, head) {
@@ -157,7 +159,7 @@ export default {
 				[]
 			)
 		},
-        /**
+		/**
 		 * 自定义渲染组件
 		 */
 		component(item, head) {
@@ -165,7 +167,7 @@ export default {
 			//展示来自layerTarget的数据
 			if (target) item = this.layerTarget || {}
 			//NULL值处理
-			if (item[key] == null) return this.valuePlaceholder
+			if (item[key] == null) return { value: this.valuePlaceholder }
 			//自定义组件，将当前值当value传递
 			if (typeof component === 'string') return { is: component, value: item[key] }
 			//自定义组件参数处理
