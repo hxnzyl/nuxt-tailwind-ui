@@ -79,11 +79,11 @@
 									class="flex flex-col items-center justify-center gap-2"
 								>
 									<template slot="if" slot-scope="action">
-										<NButton v-bind="action"></NButton>
+										<NButton v-bind="action.data" v-on="action.events" />
 									</template>
 									<template slot="else">{{ valuePlaceholder }}</template>
 								</NVFor>
-								<NComponent v-else-if="head.component" :value="component(item, head)"></NComponent>
+								<NComponent v-else-if="head.component" :value="component(item, head)" />
 								<div v-else-if="head.formatter" v-html="formatter(item, head)"></div>
 								<template v-else>{{ formatter(item, head) }}</template>
 							</td>
@@ -154,10 +154,14 @@ export default {
 			item._layerRowspan[head.key] = 1
 		},
 		getActions(item, head) {
-			return (this.actions || []).reduce(
-				(actions, action, props) => actions.concat((props = action(item, head, this)) || []),
-				[]
-			)
+			return (this.actions || []).reduce((actions, action) => {
+				const data = action(item, head, this)
+				if (!data) return actions
+				const events = Object.keys(data)
+					.filter((name) => name.indexOf('on') === 0 && typeof data[name] === 'function')
+					.reduce((evts, name) => ((evts[name.replace(/^on/, '').toLowerCase()] = data[name]), evts), {})
+				return actions.concat({ data, events })
+			}, [])
 		},
 		/**
 		 * 自定义渲染组件
