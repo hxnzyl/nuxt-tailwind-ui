@@ -32,7 +32,7 @@ NModalPlugin.prototype = {
 		return new Promise((resolve) =>
 			createNModal(
 				this,
-				{ showCancelButton: true, icon, rootClass: 'w-2/5', bodyClass: 'gap-3' },
+				{ showCancelButton: true, icon, rootClass: 'w-1/5', bodyClass: 'gap-3' },
 				{ confirm: () => resolve(true), cancel: () => resolve(false) }
 			).show(title, message)
 		)

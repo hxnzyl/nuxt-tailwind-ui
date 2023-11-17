@@ -4,7 +4,7 @@
 			<div
 				v-if="label || $slots.label || formColDirection"
 				class="flex items-center"
-				:class="[formColDirection ? 'justify-between' : '', this.formLabelClass]"
+				:class="[formColDirection ? 'justify-between' : '', formLabelClass]"
 			>
 				<div v-if="label || $slots.label" class="text-base">
 					<slot name="label">
@@ -106,7 +106,7 @@ export default {
 	},
 	props: {
 		//文本框值
-		value: String,
+		value: [String, Number],
 		//文本颜色
 		color: { type: String, default: 'gray' },
 		//大小
