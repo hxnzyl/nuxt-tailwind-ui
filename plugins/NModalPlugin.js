@@ -2,23 +2,25 @@ import Vue from 'vue'
 import NModal from '../components/NModal'
 
 function NModalPlugin() {
-	this.component = null
+	this.components = {} //所有弹窗实例集合
+	this.componentIndex = 0 //当前弹窗的索引
 	this.name = '$nModal'
 }
 
 function createNModal(plugin, propsData, events) {
-	if (plugin.component) return plugin.component
 	const VueExtend = Vue.extend(NModal)
-	plugin.component = new VueExtend({ propsData }).$mount()
-	if (events) for (let type in events) plugin.component.$once(type, events[type])
-	plugin.component.$once('hide', () => {
-		if (!plugin.component) return
-		document.body.removeChild(plugin.component.$el)
-		plugin.component.$destroy()
-		plugin.component = null
+	let component = new VueExtend({ propsData }).$mount()
+	let componentIndex = plugin.componentIndex
+	if (events) for (let type in events) component.$once(type, events[type])
+	component.$once('hide', () => {
+		if (!component) return
+		document.body.removeChild(component.$el)
+		component.$destroy()
+		component = null
+		delete plugin.components[componentIndex]
 	})
-	document.body.appendChild(plugin.component.$el)
-	return plugin.component
+	document.body.appendChild(component.$el)
+	return (plugin.components[plugin.componentIndex++] = component)
 }
 
 NModalPlugin.prototype = {
@@ -26,7 +28,8 @@ NModalPlugin.prototype = {
 		createNModal(this, options).show(title, message)
 	},
 	hide() {
-		if (this.component) this.component.hide(), (this.component = null)
+		const component = this.components[this.componentIndex]
+		if (component) component.hide(), delete this.components[this.componentIndex]
 	},
 	confirm(title, message, icon = 'help-circle') {
 		return new Promise((resolve) =>
